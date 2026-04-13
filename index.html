@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maskin — Build the machine that does work for you</title>
+  <meta name="description" content="A purpose-built workspace for collaboration between humans and AI agents. Open source. Extensible. Yours.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --text: #ededed;
+      --text-muted: #999;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --surface: #141414;
+      --border: #222;
+      --max-width: 1080px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* SECTIONS */
+    section {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      max-width: 800px;
+    }
+
+    .hero .subheadline {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .hero .tagline {
+      font-size: 1rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--text-muted); }
+
+    /* MANIFESTO */
+    .manifesto { border-top: 1px solid var(--border); }
+
+    .manifesto-text {
+      max-width: 720px;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .manifesto-text p { margin-bottom: 1.5rem; }
+
+    /* TABS SECTION */
+    .tabs-section { border-top: 1px solid var(--border); }
+
+    .tabs-section h2 {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .tabs-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 3rem;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 2rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:not(:last-child) { border-right: 1px solid var(--border); }
+    .tab-btn.active { background: var(--accent); color: #fff; }
+    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface); }
+
+    .tab-content {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2.5rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .tab-content.active { display: block; }
+
+    /* DIFFERENTIATORS */
+    .diff-section { border-top: 1px solid var(--border); }
+
+    .diff-section h2 {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+
+    .diff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .diff-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .diff-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .diff-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* BUILDERS */
+    .builders-section { border-top: 1px solid var(--border); }
+
+    .builders-section h2 {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+
+    .builders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .builder-card {
+      padding: 1.75rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .builder-card:hover { border-color: var(--accent); }
+
+    .builder-card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .builder-card p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* WAITLIST */
+    .waitlist-section {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .waitlist-section h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .waitlist-form {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .waitlist-form input[type="email"] {
+      flex: 1;
+      min-width: 240px;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form input[type="email"]:focus { border-color: var(--accent); }
+
+    .waitlist-form input[type="email"]::placeholder { color: var(--text-muted); }
+
+    /* CLOSING */
+    .closing-section {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .closing-section .closing-text {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .byline {
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      section { padding: 4rem 1.25rem; }
+      .nav-links { gap: 1rem; }
+      .tab-buttons { width: 100%; }
+      .tab-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.8rem; }
+      .tab-content { padding: 1.5rem; }
+      .diff-grid, .builders-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">Maskin</a>
+    <div class="nav-links">
+      <a href="#manifesto">Manifesto</a>
+      <a href="#how-it-works">How it works</a>
+      <a href="https://github.com/sindre-ai/sindre-ai.github.io">GitHub</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Build the machine that does work for you</h1>
+    <p class="subheadline">A purpose-built workspace for collaboration between humans and AI agents. Open source. Extensible. Yours.</p>
+    <p class="tagline">Stop prompting. Start collaborating.</p>
+    <div class="btn-group">
+      <a href="https://github.com/sindre-ai/sindre-ai.github.io" class="btn btn-primary">Get started</a>
+      <a href="https://github.com/sindre-ai/sindre-ai.github.io" class="btn btn-secondary">&#9733; Star on GitHub</a>
+    </div>
+  </section>
+
+  <!-- WHAT WE BELIEVE IN -->
+  <section class="manifesto" id="manifesto">
+    <p class="section-label">What we believe in</p>
+    <div class="manifesto-text">
+      <p>For fifty years, every methodology we built answered the same question: how do you protect expensive engineering time from being wasted? Waterfall. Agile. Scrum. SAFe. OKRs. They were all coordination tools. And someone had to manage all of it. Product managers became the integration layer between customer and engineer, because nothing else could be.</p>
+      <p>We got good at it. So good we forgot: the process was never the product. It was the cost of coordination. And we were optimising the cost, not the outcome.</p>
+      <p>Now that cost is collapsing. What took a sprint takes an afternoon. What required three engineers requires one with an agent. The scarcity that justified every ticket, every standup, every backlog grooming session is gone.</p>
+      <p>The instinct is to use AI to do the old job faster. Generate the roadmap. Write the PRD. Summarise the standup. It feels productive. It is a trap. Accelerating the overhead is not escaping it. The opportunity was never speed. It is replacement.</p>
+      <p>Strip away the process and what remains is the work people were always supposed to do. Judgment: which bet is worth making. Creative leaps: the insight that connects signals no one else saw. Relationships: the trust that closes the deal. Craft: the quality bar that separates good enough from great.</p>
+      <p>Agents carry the process. Humans carry the product. That is the future we are building.</p>
+    </div>
+  </section>
+
+  <!-- SEE THE MACHINE IN ACTION -->
+  <section class="tabs-section" id="how-it-works">
+    <h2>See the machine in action</h2>
+    <p class="tabs-subtitle">Real agents. Real work. One decision from you.</p>
+
+    <div class="tab-buttons">
+      <button class="tab-btn active" data-tab="product">Product</button>
+      <button class="tab-btn" data-tab="growth">Growth</button>
+      <button class="tab-btn" data-tab="sales">Sales</button>
+    </div>
+
+    <div class="tab-content active" id="tab-product">
+      A customer signal arrives. The Insight Scout catches it, enriches it, links it to a cluster of related signals. The Bet Shepherd proposes an experiment: two weeks, a clear success metric. You review, accept. One decision. Tasks decompose automatically. The agent executes.
+    </div>
+
+    <div class="tab-content" id="tab-growth">
+      The Pipeline Scout spots a pattern: one ICP segment converts at 3x the average, but outreach is flat. The Growth Strategist proposes a campaign. The SDR Agent drafts personalised messages, researched, unique, queued for your review. You approve. The rest runs.
+    </div>
+
+    <div class="tab-content" id="tab-sales">
+      Import your contacts. The SDR Agent researches each one, drafts outreach, times the follow-up. You review what matters. Adjust one message. Close the deal yourself, because that part was always yours.
+    </div>
+  </section>
+
+  <!-- WHAT MAKES MASKIN DIFFERENT -->
+  <section class="diff-section">
+    <h2>What makes Maskin different</h2>
+    <div class="diff-grid">
+      <div class="diff-card">
+        <h3>Humans and agents as equals</h3>
+        <p>Same API surface. Same workspace. Agents are not tools you pick up and put down. They are digital colleagues with persistent memory, defined roles, and ongoing responsibilities. You decide. They execute. Everyone sees the same data.</p>
+      </div>
+      <div class="diff-card">
+        <h3>Extensible by design</h3>
+        <p>Three primitives: Insights, Bets, Tasks. They mirror the scientific method: observe, hypothesise, experiment. Add your own object types on top. The same system composes differently for every team.</p>
+      </div>
+      <div class="diff-card">
+        <h3>Secure and sandboxed</h3>
+        <p>Agents run in parallel, each safely contained. Built with security in mind. Inspect every layer, run on your own infrastructure, bring your own models. Trust is not optional.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILT FOR BUILDERS -->
+  <section class="builders-section">
+    <h2>Built for builders</h2>
+    <div class="builders-grid">
+      <div class="builder-card">
+        <h3>MCP-native</h3>
+        <p>Every agent speaks MCP. Import integrations, connect tools, bring your own model.</p>
+      </div>
+      <div class="builder-card">
+        <h3>Knowledge graph</h3>
+        <p>Objects, relationships, and extensions. Not another database with a chat wrapper.</p>
+      </div>
+      <div class="builder-card">
+        <h3>Triggers and automation</h3>
+        <p>Fire agents on schedules or state changes. The machine runs while you sleep.</p>
+      </div>
+      <div class="builder-card">
+        <h3>Open source</h3>
+        <p>Inspect every layer. Fork it. Extend it. Ship it on your infra.</p>
+      </div>
+    </div>
+    <a href="https://github.com/sindre-ai/sindre-ai.github.io" class="btn btn-secondary">View on GitHub</a>
+  </section>
+
+  <!-- WAITLIST -->
+  <section class="waitlist-section">
+    <h2>Be first when Maskin Cloud launches</h2>
+    <form class="waitlist-form" action="mailto:magnus@meshfirm.com" method="POST" enctype="text/plain">
+      <input type="email" name="email" placeholder="you@company.com" required>
+      <button type="submit" class="btn btn-primary">Join waitlist</button>
+    </form>
+  </section>
+
+  <!-- CLOSING CTA -->
+  <section class="closing-section">
+    <p class="closing-text">The best teams will be the ones where the process runs itself, so the humans can do the work only humans can do. That is Maskin.</p>
+    <div class="btn-group" style="justify-content: center;">
+      <a href="https://github.com/sindre-ai/sindre-ai.github.io" class="btn btn-primary">Get the code</a>
+      <a href="https://sindre.ai/together" class="btn btn-secondary">Read the manifesto</a>
+    </div>
+    <p class="byline">Sebastian Krumhausen and Magnus Noddegaard, Co-founders, sindre.ai</p>
+  </section>
+
+  <footer>
+    &copy; 2026 Maskin by sindre.ai
+  </footer>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
