@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>When humans and AI work together — Maskin</title>
+  <meta name="description" content="The process was never the product. It was the cost of coordination. Agents carry the process. Humans carry the product." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --bg-surface: #131316;
+      --bg-elevated: #1c1c20;
+      --bg-hover: #222228;
+      --bg-glass: rgba(9,9,11,0.82);
+      --text: #f4f4f5;
+      --text-secondary: #8a8f98;
+      --text-muted: #52525b;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.1);
+      --accent: #6366f1;
+      --accent-text: #a5b4fc;
+      --accent-subtle: rgba(99,102,241,0.1);
+    }
+
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-surface: #f4f4f5;
+      --bg-elevated: #ffffff;
+      --bg-hover: #e4e4e7;
+      --bg-glass: rgba(250,250,250,0.82);
+      --text: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #a1a1aa;
+      --border: rgba(0,0,0,0.06);
+      --border-hover: rgba(0,0,0,0.1);
+      --accent: #6366f1;
+      --accent-text: #4338ca;
+      --accent-subtle: rgba(99,102,241,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* Noise */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: 0.025;
+    }
+    [data-theme="light"] body::before { opacity: 0.018; }
+
+    /* Fade-up */
+    .fade-up {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* Nav */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 72px;
+    }
+    .nav-logo {
+      font-size: 17px; font-weight: 600; color: var(--text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo svg { width: 22px; height: 22px; opacity: 0.9; }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-right a {
+      font-size: 14px; font-weight: 450; color: var(--text-muted);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-right a:hover { color: var(--text); }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.2s;
+    }
+    .theme-toggle:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+
+    /* Article */
+    .article {
+      max-width: 720px; margin: 0 auto;
+      padding: 132px 32px 80px;
+    }
+    .article-header { margin-bottom: 56px; }
+    .article-header .label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent-text);
+      margin-bottom: 20px;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .article-header h1 {
+      font-size: clamp(36px, 5vw, 52px); font-weight: 600;
+      line-height: 1.08; letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .article-header .byline {
+      font-size: 14px; color: var(--text-muted); letter-spacing: 0.01em;
+    }
+
+    .article-body p {
+      font-size: 18px; line-height: 1.8; color: var(--text-secondary);
+      margin-bottom: 28px; max-width: 680px;
+    }
+    .article-body p strong { color: var(--text); font-weight: 600; }
+    .article-body p em { color: var(--text); }
+    .article-body h2 {
+      font-size: 28px; font-weight: 600; color: var(--text);
+      margin: 72px 0 24px; line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .article-body ul {
+      list-style: none; margin-bottom: 28px; padding-left: 0;
+    }
+    .article-body ul li {
+      font-size: 18px; line-height: 1.8; color: var(--text-secondary);
+      padding-left: 24px; margin-bottom: 10px; position: relative;
+    }
+    .article-body ul li::before {
+      content: ''; position: absolute; left: 0; top: 13px;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .article-body ul li strong { color: var(--text); font-weight: 600; }
+    .article-body hr {
+      border: none; border-top: 1px solid var(--border);
+      margin: 72px 0;
+    }
+
+    /* Pull quotes — editorial, not italic */
+    .article-body .highlight {
+      font-size: 22px; line-height: 1.5; font-weight: 500;
+      color: var(--text); letter-spacing: -0.015em;
+      padding: 40px 0; margin: 48px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      max-width: 680px;
+    }
+
+    /* Callout block */
+    .article-body .callout {
+      padding: 32px 36px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      margin: 40px 0;
+    }
+    .article-body .callout p { max-width: none; }
+
+    /* CTA */
+    .article-cta {
+      padding: 56px 0; margin-top: 56px;
+      border-top: 1px solid var(--border);
+    }
+    .article-cta h2 {
+      font-size: 28px; font-weight: 600; margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .article-cta p {
+      font-size: 16px; color: var(--text-secondary); margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      background: var(--text); color: var(--bg); text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+
+    .footer-sig {
+      padding: 32px 32px 56px;
+      font-size: 14px; color: var(--text-muted);
+      max-width: 720px; margin: 0 auto;
+    }
+
+    @media (max-width: 640px) {
+      .article { padding: 116px 20px 60px; }
+      .article-body .highlight { font-size: 19px; padding: 28px 0; margin: 32px 0; }
+      .nav-inner { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Maskin
+    </a>
+    <div class="nav-right">
+      <a href="index.html">Home</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<article class="article">
+  <header class="article-header fade-up">
+    <div class="label">The manifesto</div>
+    <h1>When humans and AI<br>work together</h1>
+    <p class="byline">Sebastian Krumhausen &amp; Magnus N&oslash;ddegaard &middot; sindre.ai</p>
+  </header>
+
+  <div class="article-body">
+
+    <p class="fade-up">For fifty years, the tech industry's most urgent problem was the same: how do you protect expensive engineering time from being wasted?</p>
+
+    <p class="fade-up">Every methodology we built was an answer to that question. Waterfall gave us sequential phases so nothing got built before it was specified. Agile gave us sprints so scope couldn't sprawl. Scrum gave us ceremonies &mdash; standups, retrospectives, planning poker &mdash; so the team stayed aligned without constant interruption. SAFe scaled it across programs and portfolios. OKRs connected company strategy to quarterly execution so engineers were never building the wrong thing.</p>
+
+    <p class="fade-up">And someone had to manage all of it. Product managers became the guardian of the process &mdash; the translator between customer and engineer, the connective tissue holding the system together. Decisions lived in meetings. Context lived in people's heads. Signals arrived in five different tools and had to be manually assembled into something an engineer could act on.</p>
+
+    <div class="highlight fade-up">The human was the integration layer. Because nothing else could be.</div>
+
+    <p class="fade-up">We got good at it. So good that we forgot: the process was never the product. It was the cost of coordination. And we were optimising the cost, not the outcome.</p>
+
+    <h2 class="fade-up">And with it, the entire operating model</h2>
+
+    <p class="fade-up">What took a sprint now takes an afternoon. What required three engineers now requires one with an agent. The cost of implementation has dropped by an order of magnitude &mdash; and it's still falling.</p>
+
+    <p class="fade-up">The scarcity that justified the entire operating model &mdash; the reason every request needed a ticket, every ticket needed a priority, every priority needed a meeting &mdash; is gone.</p>
+
+    <p class="fade-up">And now the question you couldn't ask before is unavoidable:</p>
+
+    <div class="highlight fade-up">If an agent can write the PRD, generate the roadmap, and triage the backlog &mdash; were those ever really product decisions?</div>
+
+    <p class="fade-up">They were coordination overhead dressed up as product work. The process was necessary. It was never the job.</p>
+
+    <h2 class="fade-up">The first response</h2>
+
+    <p class="fade-up">The instinct is to use AI to do the old job faster. Generate the roadmap. Write the PRD. Summarise the standup.</p>
+
+    <p class="fade-up">It feels productive. It is a trap.</p>
+
+    <p class="fade-up">Accelerating the overhead isn't escaping it. The teams treating AI as a productivity layer on top of the existing model are still running the same operating model &mdash; just at higher velocity toward the same destination.</p>
+
+    <div class="highlight fade-up">The opportunity was never speed. It's replacement.</div>
+
+    <h2 class="fade-up">What the job actually is</h2>
+
+    <p class="fade-up">Strip away the process and what's left is the work people were always supposed to do.</p>
+
+    <p class="fade-up"><strong>Judgment.</strong> Which market? Which bet? Which problem is worth solving right now? These are taste calls, not logic problems. No amount of data resolves them &mdash; someone has to make the call and own the outcome.</p>
+
+    <p class="fade-up"><strong>Creative leaps.</strong> The insight that connects two unrelated signals into a hypothesis nobody's tested. The pattern that lives in a conversation from last week, not in the data yet. Agents can surface signals. They can't make the jump.</p>
+
+    <p class="fade-up"><strong>Relationships.</strong> The meeting. The handshake. The "I trust you" that closes the deal. Agents can draft the outreach, research the prospect, time the follow-up. Humans close it.</p>
+
+    <p class="fade-up"><strong>Craft.</strong> The decision that makes something feel <em>right</em>. The quality bar that separates good enough from genuinely good.</p>
+
+    <p class="fade-up">This is the job. It was always the job. It just got buried under everything else.</p>
+
+    <h2 class="fade-up">Maskin</h2>
+
+    <p class="fade-up">Making this work requires more than better prompts. It requires a shared environment &mdash; where agents and humans see the same data, share context, and hand off to each other without a human acting as the integration layer. Where agents are not tools you query and put down, but digital colleagues with persistent memory, defined roles, and ongoing responsibilities.</p>
+
+    <p class="fade-up">Maskin is that environment. An open-source agent operating system &mdash; a framework for orchestrating humans and AI agents over a shared, extensible knowledge graph.</p>
+
+    <div class="callout fade-up">
+      <p style="margin-bottom:16px"><strong>Actors.</strong> Humans and agents are first-class citizens with the same API surface. Both can create objects, update state, traverse relationships, and trigger workflows. Agents carry a system prompt, persistent memory, configurable tools, and their own LLM. Everything speaks MCP. Bring your own model.</p>
+
+      <p style="margin-bottom:16px"><strong>Objects and the scientific method.</strong> Three primitives mirror the oldest rigorous loop for operating under uncertainty: observe, hypothesise, experiment.</p>
+
+      <ul>
+        <li><strong>Insights</strong> capture signals.</li>
+        <li><strong>Bets</strong> turn them into testable hypotheses with defined investment and success criteria.</li>
+        <li><strong>Tasks</strong> make them happen. The middle step &mdash; forming the hypothesis before jumping to execution &mdash; is what most tooling skips. It's also why teams build things nobody wanted.</li>
+      </ul>
+
+      <p><strong>The graph.</strong> Everything connects. An insight <em>informs</em> a bet. A bet <em>breaks into</em> tasks. A task <em>blocks</em> another. Agents navigate this graph the way you'd navigate a codebase &mdash; by following relationships, not re-reading every document from scratch. Extensions add domain-specific types on top. Triggers fire agents on schedules or state changes. Workspaces scope it all.</p>
+    </div>
+
+    <h2 class="fade-up">Build the machine that works for you</h2>
+
+    <p class="fade-up">The same primitives compose differently depending on the team.</p>
+
+    <p class="fade-up"><strong>A product team.</strong></p>
+
+    <p class="fade-up">A customer signal arrives. The Insight Scout Agent catches it, enriches it, links it to a cluster of related signals &mdash; the fourth one this week pointing the same direction. The Bet Shepherd sees the cluster and proposes an experiment: two weeks, a clear success metric, a scoped investment.</p>
+
+    <p class="fade-up">The product manager gets a notification. Reviews the proposal. Accepts it. <em>One decision.</em></p>
+
+    <p class="fade-up">The Bet Decomposer breaks it into tasks with dependencies mapped. The Task Nagger monitors progress. The Daily Briefing closes the loop each morning &mdash; what moved, what's stuck, what needs a call today.</p>
+
+    <p class="fade-up"><strong>A growth team.</strong></p>
+
+    <p class="fade-up">No signal triggered this. The Pipeline Scout has been running weekly analysis on segment performance and spots the pattern before anyone asks: one ICP segment is converting at 3x the average, but outreach volume is flat. It surfaces the opportunity.</p>
+
+    <p class="fade-up">The Growth Strategist agent proposes a bet: a two-week campaign to double outreach to that segment. The SDR Agent drafts personalised messages for each contact &mdash; researched, unique, queued for human review before anything sends. The Content Creator turns the initiative into supporting assets. The Curator scores each piece against audience data and surfaces the strongest version.</p>
+
+    <p class="fade-up">The revenue lead reviews, approves the outreach, and adjusts one message. The rest runs.</p>
+
+    <div class="highlight fade-up">In both cases: agents carry the process. Humans carry the product.</div>
+
+    <h2 class="fade-up">Why open source</h2>
+
+    <p class="fade-up">An agent operating system only works if you trust it. How decisions flow, how data moves, how agents behave &mdash; that should be visible, not hidden behind an API key.</p>
+
+    <p class="fade-up">Open source means you can inspect every layer, run it on your own infrastructure, bring your own models, and extend it for your domain.</p>
+
+    <hr />
+
+    <p class="fade-up">The best teams will be the ones where the process runs itself &mdash; so the humans can do the work only humans can do.</p>
+
+    <p class="fade-up">That's Maskin. <a href="https://github.com/sindre-ai/maskin" style="color:var(--accent-text); font-weight:500; text-decoration:none;">Get the code &rarr;</a></p>
+
+  </div>
+
+  <div class="article-cta fade-up">
+    <h2>Ready to build the machine?</h2>
+    <p>Maskin is open source. Clone it, extend it, make it yours.</p>
+    <a href="https://github.com/sindre-ai/maskin" class="btn-primary" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+</article>
+
+<div class="footer-sig">
+  <em>Sebastian Krumhausen and Magnus N&oslash;ddegaard</em> &middot; Co-founders, sindre.ai
+</div>
+
+<script>
+function getTheme() {
+  const saved = localStorage.getItem('maskin-theme');
+  if (saved) return saved;
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+function applyTheme(t) {
+  if (t === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('maskin-theme', t);
+  document.querySelector('.sun-icon').style.display = t === 'light' ? 'block' : 'none';
+  document.querySelector('.moon-icon').style.display = t === 'light' ? 'none' : 'block';
+}
+function toggleTheme() {
+  applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
+}
+applyTheme(getTheme());
+
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

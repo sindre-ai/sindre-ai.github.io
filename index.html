@@ -1,506 +1,1181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Maskin — Build the machine that does work for you</title>
-  <meta name="description" content="A purpose-built workspace for collaboration between humans and AI agents. Open source. Extensible. Yours.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="A purpose-built workspace for collaboration between humans and AI agents. Open source." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css" rel="stylesheet" />
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ===== DARK-FIRST DESIGN SYSTEM ===== */
     :root {
-      --bg: #0a0a0a;
-      --text: #ededed;
-      --text-muted: #999;
+      --bg: #09090b;
+      --bg-surface: #131316;
+      --bg-elevated: #1c1c20;
+      --bg-hover: #222228;
+      --bg-glass: rgba(9,9,11,0.82);
+      --text: #f4f4f5;
+      --text-secondary: #8a8f98;
+      --text-muted: #71717a;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.1);
+      --border-strong: rgba(255,255,255,0.14);
       --accent: #6366f1;
       --accent-hover: #818cf8;
-      --surface: #141414;
-      --border: #222;
-      --max-width: 1080px;
+      --accent-subtle: rgba(99,102,241,0.1);
+      --accent-text: #a5b4fc;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 2px 4px rgba(0,0,0,0.2), 0 8px 24px -4px rgba(0,0,0,0.4);
+      --shadow-lg: 0 2px 4px rgba(0,0,0,0.2), 0 12px 32px -4px rgba(0,0,0,0.5), 0 32px 64px -8px rgba(0,0,0,0.3);
+      --mock-bg: #111114;
+      --mock-sidebar: #0e0e11;
+      --mock-border: rgba(255,255,255,0.06);
+      --mock-chrome: #0e0e11;
+      --green: #34d399;
+      --green-bg: rgba(16,185,129,0.12);
+      --green-text: #6ee7b7;
+      --blue-bg: rgba(59,130,246,0.12);
+      --blue-text: #93c5fd;
+      --amber-bg: rgba(245,158,11,0.12);
+      --amber-text: #fcd34d;
+      --rose-bg: rgba(244,63,94,0.12);
+      --rose-text: #fda4af;
+      --purple-bg: rgba(139,92,246,0.12);
+      --purple-text: #c4b5fd;
+    }
+
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-surface: #f4f4f5;
+      --bg-elevated: #ffffff;
+      --bg-hover: #e4e4e7;
+      --bg-glass: rgba(250,250,250,0.82);
+      --text: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #a1a1aa;
+      --border: rgba(0,0,0,0.06);
+      --border-hover: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.14);
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-subtle: rgba(99,102,241,0.06);
+      --accent-text: #4338ca;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 2px 4px rgba(0,0,0,0.03), 0 8px 24px -4px rgba(0,0,0,0.06);
+      --shadow-lg: 0 2px 4px rgba(0,0,0,0.03), 0 12px 32px -4px rgba(0,0,0,0.08), 0 32px 64px -8px rgba(0,0,0,0.06);
+      --mock-bg: #ffffff;
+      --mock-sidebar: #f8f8fa;
+      --mock-border: rgba(0,0,0,0.06);
+      --mock-chrome: #f4f4f5;
+      --green: #10b981;
+      --green-bg: #ecfdf5;
+      --green-text: #065f46;
+      --blue-bg: #eff6ff;
+      --blue-text: #1e40af;
+      --amber-bg: #fffbeb;
+      --amber-text: #92400e;
+      --rose-bg: #fff1f2;
+      --rose-text: #9f1239;
+      --purple-bg: #f5f3ff;
+      --purple-text: #5b21b6;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 1rem 2rem;
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(12px);
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: 0.025;
+    }
+    [data-theme="light"] body::before { opacity: 0.018; }
+
+    /* Fade-up animation */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.d1 { transition-delay: 0.1s; }
+    .fade-up.d2 { transition-delay: 0.2s; }
+    .fade-up.d3 { transition-delay: 0.3s; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
       border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
-
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 72px;
+    }
     .nav-logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      text-decoration: none;
+      font-size: 17px; font-weight: 600; color: var(--text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+      letter-spacing: -0.01em;
     }
-
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-logo svg { width: 22px; height: 22px; opacity: 0.9; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      transition: color 0.2s;
+      font-size: 14px; font-weight: 450; color: var(--text-secondary);
+      text-decoration: none; transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
-
-    /* SECTIONS */
-    section {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 6rem 2rem;
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      background: var(--bg-elevated); color: var(--text); text-decoration: none;
+      border: 1px solid var(--border-hover);
+      transition: all 0.2s;
     }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
+    .nav-cta:hover { border-color: var(--border-strong); background: var(--bg-hover); }
+    .theme-toggle {
+      background: none; border: none; border-radius: 8px;
+      width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.2s;
     }
+    .theme-toggle:hover { color: var(--text-secondary); }
 
-    /* HERO */
+    /* ===== HERO ===== */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding-top: 5rem;
+      position: relative;
+      padding: 164px 32px 100px;
+      max-width: 1200px; margin: 0 auto;
     }
-
+    .hero::before {
+      content: '';
+      position: absolute; top: 40px; left: -10%; width: 800px; height: 500px;
+      background: radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%);
+      opacity: 0.06; filter: blur(80px);
+      pointer-events: none; z-index: -1;
+    }
+    .hero-label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent-text);
+      margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+    }
+    .hero-label svg { width: 14px; height: 14px; opacity: 0.7; }
     .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      max-width: 800px;
+      font-size: clamp(48px, 6vw, 72px); font-weight: 600;
+      line-height: 1.05; letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 20px; max-width: 720px;
     }
-
-    .hero .subheadline {
-      font-size: clamp(1.1rem, 2vw, 1.35rem);
-      color: var(--text-muted);
-      max-width: 600px;
-      margin-bottom: 1rem;
-      line-height: 1.6;
+    .hero p {
+      font-size: 18px; color: var(--text-secondary);
+      max-width: 520px; line-height: 1.6; margin-bottom: 40px;
     }
-
-    .hero .tagline {
-      font-size: 1rem;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 2.5rem;
-    }
-
-    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-    }
-
+    .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .btn-primary {
-      background: var(--accent);
-      color: #fff;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      background: var(--text); color: var(--bg); text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: none; cursor: pointer;
     }
-    .btn-primary:hover { background: var(--accent-hover); }
-
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
     .btn-secondary {
-      background: transparent;
-      color: var(--text);
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      background: transparent; color: var(--text-secondary); text-decoration: none;
+      border: 1px solid var(--border-hover); cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-1px); }
+
+    /* ===== APP MOCKUP ===== */
+    .mockup-section {
+      position: relative;
+      padding: 0 32px 120px; max-width: 1200px; margin: 0 auto;
+    }
+    .mockup-section::before {
+      content: '';
+      position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+      width: 80%; height: 400px;
+      background: radial-gradient(ellipse at center, var(--accent) 0%, transparent 70%);
+      opacity: 0.04; filter: blur(60px);
+      pointer-events: none; z-index: -1;
+    }
+    .app-mock {
+      width: 100%; border-radius: 12px;
+      border: 1px solid var(--border-hover);
+      background: var(--mock-bg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden; user-select: none;
+      font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, sans-serif;
+    }
+    .mock-chrome {
+      display: flex; align-items: center; gap: 5px;
+      padding: 10px 14px; background: var(--mock-chrome);
+      border-bottom: 1px solid var(--mock-border);
+    }
+    .mock-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--text-muted); opacity: 0.4; }
+    .mock-url { margin-left: 14px; font-size: 11px; color: var(--text-muted); font-weight: 500; letter-spacing: 0.01em; }
+    .mock-body { display: flex; min-height: 440px; }
+
+    /* Sidebar */
+    .mock-sidebar {
+      width: 192px; flex-shrink: 0;
+      border-right: 1px solid var(--mock-border);
+      background: var(--mock-sidebar);
+      padding: 16px 10px; display: flex; flex-direction: column;
+    }
+    .mock-sidebar-logo { display: flex; align-items: center; gap: 8px; padding: 0 8px; margin-bottom: 20px; }
+    .mock-sidebar-logo span { font-size: 13px; font-weight: 600; color: var(--text); }
+    .mock-sidebar-logo .logo-icon {
+      width: 18px; height: 18px; border-radius: 4px;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 10px; font-weight: 700;
+    }
+    .mock-nav { display: flex; flex-direction: column; gap: 1px; }
+    .mock-nav-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 8px; border-radius: 6px; font-size: 13px; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; transition: all 0.15s;
+      border: 1px solid transparent; background: none;
+      text-align: left; width: 100%;
+    }
+    .mock-nav-item:hover { color: var(--text-secondary); background: var(--bg-hover); }
+    .mock-nav-item.active {
+      color: var(--text); background: var(--bg-elevated);
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-sm);
+    }
+    .mock-nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* Main content area */
+    .mock-main { flex: 1; min-width: 0; overflow: hidden; position: relative; }
+    .mock-screen {
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    .mock-screen.active { opacity: 1; pointer-events: auto; position: relative; }
+    .mock-content-header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid var(--mock-border);
+    }
+    .mock-content-header h2 { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .mock-content-header .meta {
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 4px; font-size: 12px; color: var(--text-muted);
+    }
+    .mock-content-body { padding: 18px 24px; flex: 1; }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex; align-items: center; padding: 2px 7px;
+      border-radius: 4px; font-size: 11px; font-weight: 500; letter-spacing: 0.01em;
+    }
+    .badge-green { background: var(--green-bg); color: var(--green-text); }
+    .badge-blue { background: var(--blue-bg); color: var(--blue-text); }
+    .badge-amber { background: var(--amber-bg); color: var(--amber-text); }
+    .badge-rose { background: var(--rose-bg); color: var(--rose-text); }
+    .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+
+    /* Avatars */
+    .avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; flex-shrink: 0;
+      border: 2px solid var(--mock-bg);
+    }
+    .avatar-sm { width: 18px; height: 18px; font-size: 7px; border-width: 1.5px; }
+    .avatar-green { background: var(--green-bg); color: var(--green-text); }
+    .avatar-blue { background: var(--blue-bg); color: var(--blue-text); }
+    .avatar-amber { background: var(--amber-bg); color: var(--amber-text); }
+    .avatar-rose { background: var(--rose-bg); color: var(--rose-text); }
+    .avatar-purple { background: var(--purple-bg); color: var(--purple-text); }
+
+    /* Pulse screen */
+    .pulse-cards { display: flex; flex-direction: column; gap: 8px; }
+    .pulse-card {
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--mock-border);
+      background: var(--bg-elevated); transition: all 0.2s; cursor: pointer;
+    }
+    .pulse-card:hover { border-color: var(--border-hover); }
+    .pulse-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .pulse-card-header .left { display: flex; align-items: center; gap: 8px; }
+    .pulse-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+    .pulse-card .agent-name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .pulse-card .time { font-size: 11px; color: var(--text-muted); }
+    .pulse-actions { display: flex; gap: 5px; margin-top: 8px; }
+    .pulse-btn {
+      padding: 3px 10px; border-radius: 5px; font-size: 11px; font-weight: 500;
+      border: 1px solid var(--border); background: transparent; color: var(--text-secondary);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .pulse-btn:hover { background: var(--bg-hover); color: var(--text); }
+    .pulse-btn.primary { background: var(--accent); color: white; border-color: transparent; }
+    .pulse-btn.primary:hover { background: var(--accent-hover); }
+
+    /* Objects screen — data table matching real app */
+    .objects-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .objects-tabs { display: flex; gap: 0; }
+    .objects-tab {
+      padding: 5px 12px; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); cursor: pointer; background: none;
+      border: 1px solid var(--border); transition: all 0.15s;
+    }
+    .objects-tab:first-child { border-radius: 5px 0 0 5px; }
+    .objects-tab:last-child { border-radius: 0 5px 5px 0; }
+    .objects-tab:not(:first-child) { border-left: none; }
+    .objects-tab.active { color: var(--text); background: var(--bg-hover); }
+    .objects-table { width: 100%; }
+    .objects-header {
+      display: grid; grid-template-columns: 1fr 72px 60px 80px 72px;
+      gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--mock-border);
+      font-size: 11px; font-weight: 500; color: var(--text-muted);
+    }
+    .objects-row {
+      display: grid; grid-template-columns: 1fr 72px 60px 80px 72px;
+      gap: 8px; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--mock-border);
+      font-size: 12px; cursor: pointer; transition: all 0.1s;
+    }
+    .objects-row:hover { background: var(--bg-hover); margin: 0 -6px; padding: 8px 6px; border-radius: 4px; }
+    .objects-row .title { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .objects-row .col-muted { font-size: 11px; color: var(--text-muted); }
+    /* Type badge colors */
+    .badge-insight { background: rgba(245,158,11,0.12); color: var(--amber-text); }
+    .badge-bet { background: var(--accent-subtle); color: var(--accent-text); }
+    .badge-task { background: rgba(113,113,122,0.12); color: var(--text-secondary); }
+    [data-theme="light"] .badge-insight { background: #fef3c7; color: #92400e; }
+    [data-theme="light"] .badge-bet { background: #e0e7ff; color: #3730a3; }
+    [data-theme="light"] .badge-task { background: #f4f4f5; color: #71717a; }
+
+    /* Agents screen — card grid matching real app */
+    .agents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .agent-card {
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--mock-border); background: var(--bg-elevated);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .agent-card:hover { border-color: var(--border-hover); }
+    .agent-card.working { border-color: var(--accent); background: rgba(99,102,241,0.04); }
+    .agent-card.failed { border-color: var(--rose-text); }
+    .agent-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px; }
+    .agent-card-header .left { display: flex; align-items: center; gap: 8px; }
+    .agent-card-header .name { font-size: 12px; font-weight: 600; color: var(--text); }
+    .agent-status { font-size: 11px; font-weight: 500; }
+    .agent-status.working { color: var(--accent); }
+    .agent-status.idle { color: var(--text-muted); }
+    .agent-status.failed { color: var(--rose-text); }
+    .status-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+    .status-dot.working { background: var(--accent); animation: pulse-dot 2s infinite; }
+    .status-dot.idle { background: var(--text-muted); }
+    .agent-card .role { font-size: 11px; color: var(--text-muted); line-height: 1.45; margin-bottom: 6px; margin-left: 30px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .agent-card .activity-line { font-size: 11px; color: var(--text-muted); margin-left: 30px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .agent-card.working .activity-line { color: var(--accent); }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    /* Activity screen — single-line feed matching real app */
+    .activity-feed { display: flex; flex-direction: column; }
+    .activity-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 0; font-size: 12px;
+    }
+    .activity-item.agent { opacity: 0.75; }
+    .activity-item .activity-icon { width: 14px; height: 14px; flex-shrink: 0; color: var(--text-muted); }
+    .activity-item .actor-name { font-weight: 600; color: var(--text); white-space: nowrap; }
+    .activity-item .desc { color: var(--text-muted); }
+    .activity-item .entity { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .activity-item .time { margin-left: auto; white-space: nowrap; font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+
+    /* Triggers screen — list matching real app */
+    .trigger-rows { display: flex; flex-direction: column; gap: 8px; }
+    .trigger-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 8px;
+      border: 1px solid var(--mock-border); background: var(--bg-elevated);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .trigger-row:hover { border-color: var(--border-hover); }
+    .trigger-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .trigger-dot.enabled { background: var(--green); }
+    .trigger-dot.disabled { background: var(--text-muted); opacity: 0.4; }
+    .trigger-info { flex: 1; }
+    .trigger-info .trigger-name { font-size: 12px; font-weight: 500; color: var(--text); }
+    .trigger-info .trigger-meta { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      padding: 100px 32px; max-width: 1200px; margin: 0 auto;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--accent-text);
+      margin-bottom: 14px;
+      padding-left: 14px;
+      border-left: 2px solid var(--accent);
+    }
+    .section h2 {
+      font-size: clamp(32px, 4vw, 44px); font-weight: 600;
+      line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 16px;
+    }
+    .section .subtitle {
+      font-size: 17px; color: var(--text-secondary);
+      max-width: 560px; line-height: 1.65; margin-bottom: 48px;
+    }
+
+    /* Method block */
+    .method-block {
+      padding: 40px 44px; border-radius: 12px;
       border: 1px solid var(--border);
+      background: var(--bg-surface);
     }
-    .btn-secondary:hover { border-color: var(--text-muted); }
-
-    /* MANIFESTO */
-    .manifesto { border-top: 1px solid var(--border); }
-
-    .manifesto-text {
-      max-width: 720px;
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      line-height: 1.8;
+    .method-block blockquote {
+      font-size: 20px; line-height: 1.55; color: var(--text);
+      font-weight: 500; margin-bottom: 20px; max-width: 600px;
+      letter-spacing: -0.01em;
     }
-
-    .manifesto-text p { margin-bottom: 1.5rem; }
-
-    /* TABS SECTION */
-    .tabs-section { border-top: 1px solid var(--border); }
-
-    .tabs-section h2 {
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 0.75rem;
+    .method-block .method-desc {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.65;
+      margin-bottom: 24px; max-width: 600px;
     }
-
-    .tabs-subtitle {
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      margin-bottom: 3rem;
+    .method-block .method-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 500; color: var(--accent-text);
+      text-decoration: none; transition: gap 0.2s;
     }
+    .method-block .method-link:hover { gap: 10px; }
 
-    .tab-buttons {
-      display: flex;
-      gap: 0;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 2rem;
-      width: fit-content;
-    }
-
-    .tab-btn {
-      padding: 0.75rem 2rem;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
+    /* Use case button group */
+    .carousel-tabs { display: flex; gap: 0; }
+    .carousel-tab {
+      padding: 8px 20px; cursor: pointer;
+      border: 1px solid var(--border); background: transparent;
+      font-size: 13px; font-weight: 500; color: var(--text-muted);
       transition: all 0.2s;
     }
+    .carousel-tab:first-child { border-radius: 8px 0 0 8px; }
+    .carousel-tab:last-child { border-radius: 0 8px 8px 0; }
+    .carousel-tab:not(:first-child) { border-left: none; }
+    .carousel-tab.active { color: var(--text); background: var(--bg-hover); }
 
-    .tab-btn:not(:last-child) { border-right: 1px solid var(--border); }
-    .tab-btn.active { background: var(--accent); color: #fff; }
-    .tab-btn:hover:not(.active) { color: var(--text); background: var(--surface); }
-
-    .tab-content {
+    /* Use case mockup */
+    .uc-mock {
+      width: 100%; border-radius: 12px;
+      border: 1px solid var(--border-hover);
+      background: var(--mock-bg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden; user-select: none;
+    }
+    .uc-mock .mock-chrome {
+      display: flex; align-items: center; gap: 5px;
+      padding: 10px 14px; background: var(--mock-chrome);
+      border-bottom: 1px solid var(--mock-border);
+    }
+    .uc-mock .uc-mock-body { display: flex; min-height: 360px; }
+    .uc-mock .uc-sidebar {
+      width: 180px; flex-shrink: 0;
+      border-right: 1px solid var(--mock-border);
+      background: var(--mock-sidebar); padding: 14px 10px;
       display: none;
-      background: var(--surface);
+    }
+    .uc-mock .uc-sidebar-logo { display: flex; align-items: center; gap: 7px; padding: 0 6px; margin-bottom: 16px; }
+    .uc-mock .uc-sidebar-logo .logo-icon {
+      width: 18px; height: 18px; border-radius: 4px;
+      background: var(--accent); display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 10px; font-weight: 700;
+    }
+    .uc-mock .uc-sidebar-logo span { font-size: 12px; font-weight: 600; color: var(--text); }
+    .uc-mock .uc-nav-item {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 7px; border-radius: 5px; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); margin-bottom: 1px;
+    }
+    .uc-mock .uc-nav-item.active {
+      color: var(--text); background: var(--bg-elevated);
+      border: 1px solid var(--border-hover); box-shadow: var(--shadow-sm);
+    }
+    .uc-mock .uc-nav-item svg { width: 14px; height: 14px; }
+    .uc-mock .uc-main { flex: 1; min-width: 0; overflow: hidden; }
+    .uc-mock .uc-header {
+      padding: 16px 20px 12px; border-bottom: 1px solid var(--mock-border);
+    }
+    .uc-mock .uc-header h3 { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .uc-mock .uc-header .meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .uc-mock .uc-body { padding: 16px 20px; }
+    .uc-mock .uc-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 10px 12px; border-radius: 6px;
+      border: 1px solid var(--mock-border); background: var(--bg-elevated);
+      margin-bottom: 6px;
+    }
+    .uc-mock .uc-item .item-text { flex: 1; }
+    .uc-mock .uc-item .item-title { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+    .uc-mock .uc-item .item-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+    .uc-mock .uc-item .item-meta { font-size: 10px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+    .uc-mock .uc-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--mock-border);
+      font-size: 12px;
+    }
+    .uc-mock .uc-row .title { flex: 1; color: var(--text); font-weight: 500; }
+    .uc-mock .uc-row .assignee { color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 4px; }
+
+    /* Pillars */
+    .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pillar {
+      padding: 28px; border-radius: 12px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2.5rem;
-      line-height: 1.8;
-      color: var(--text-muted);
-      font-size: 1rem;
+      background: var(--bg-surface);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    .tab-content.active { display: block; }
-
-    /* DIFFERENTIATORS */
-    .diff-section { border-top: 1px solid var(--border); }
-
-    .diff-section h2 {
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 3rem;
+    .pillar:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .pillar-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--accent-subtle); color: var(--accent-text);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
     }
+    .pillar h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .pillar p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
 
-    .diff-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
+    /* Tech bar */
+    .tech-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap;
     }
-
-    .diff-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
+    .tech-item {
+      text-align: center; padding: 0 32px;
+      border-right: 1px solid var(--border);
     }
-
-    .diff-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      color: var(--text);
+    .tech-item:last-child { border-right: none; }
+    .tech-item .label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); font-weight: 500; margin-bottom: 4px;
     }
+    .tech-item .value { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
 
-    .diff-card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-
-    /* BUILDERS */
-    .builders-section { border-top: 1px solid var(--border); }
-
-    .builders-section h2 {
-      font-size: clamp(1.75rem, 3vw, 2.5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 3rem;
-    }
-
-    .builders-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .builder-card {
-      padding: 1.75rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: border-color 0.2s;
-    }
-
-    .builder-card:hover { border-color: var(--accent); }
-
-    .builder-card h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .builder-card p {
-      color: var(--text-muted);
-      font-size: 0.875rem;
-      line-height: 1.6;
-    }
-
-    /* WAITLIST */
-    .waitlist-section {
+    /* Footer */
+    .footer {
       border-top: 1px solid var(--border);
-      text-align: center;
+      padding: 48px 32px; margin-top: 40px;
     }
-
-    .waitlist-section h2 {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1.5rem;
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
     }
+    .footer-left .footer-brand { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }
+    .footer-left p { font-size: 13px; color: var(--text-muted); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
 
-    .waitlist-form {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      max-width: 500px;
-      margin: 0 auto;
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .pillars { grid-template-columns: 1fr 1fr; }
     }
-
-    .waitlist-form input[type="email"] {
-      flex: 1;
-      min-width: 240px;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 0.9rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
+    @media (max-width: 768px) {
+      .hero { padding: 128px 20px 64px; }
+      .section { padding: 64px 20px; }
+      .mockup-section { padding: 0 20px 80px; }
+      .mock-sidebar { display: none; }
+      .pillars { grid-template-columns: 1fr; }
+      .agents-grid { grid-template-columns: 1fr; }
+      .carousel-tabs { flex-direction: column; }
+      .carousel-tab { border-radius: 0; border-left: 1px solid var(--border); }
+      .carousel-tab:first-child { border-radius: 8px 8px 0 0; }
+      .carousel-tab:last-child { border-radius: 0 0 8px 8px; }
+      .carousel-tab:not(:first-child) { border-top: none; border-left: 1px solid var(--border); }
+      .flow { gap: 4px; }
+      .flow-step { min-width: 90px; font-size: 11px; padding: 10px 10px; }
+      .nav-inner { padding: 0 20px; }
+      .nav-links a.hide-mobile { display: none; }
+      .tech-item { padding: 0 16px; }
+      .objects-header { grid-template-columns: 1fr 60px 50px; }
+      .objects-row { grid-template-columns: 1fr 60px 50px; }
+      .objects-header span:nth-child(n+4), .objects-row span:nth-child(n+4) { display: none; }
     }
-
-    .waitlist-form input[type="email"]:focus { border-color: var(--accent); }
-
-    .waitlist-form input[type="email"]::placeholder { color: var(--text-muted); }
-
-    /* CLOSING */
-    .closing-section {
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .closing-section .closing-text {
-      font-size: clamp(1.1rem, 2vw, 1.3rem);
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-    }
-
-    .byline {
-      margin-top: 3rem;
-      color: var(--text-muted);
-      font-size: 0.875rem;
-    }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 640px) {
-      section { padding: 4rem 1.25rem; }
-      .nav-links { gap: 1rem; }
-      .tab-buttons { width: 100%; }
-      .tab-btn { flex: 1; padding: 0.75rem 1rem; font-size: 0.8rem; }
-      .tab-content { padding: 1.5rem; }
-      .diff-grid, .builders-grid { grid-template-columns: 1fr; }
+    @media (max-width: 480px) {
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+      .hero h1 { font-size: 36px; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <a href="#" class="nav-logo">Maskin</a>
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Maskin</a>
     <div class="nav-links">
-      <a href="#manifesto">Manifesto</a>
-      <a href="#how-it-works">How it works</a>
-      <a href="https://github.com/sindre-ai/maskin">GitHub</a>
+      <a href="#method" class="hide-mobile">Method</a>
+      <a href="#use-cases" class="hide-mobile">Use cases</a>
+      <a href="together.html" class="hide-mobile">Together</a>
+      <a href="https://github.com/sindre-ai/maskin" class="nav-cta" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub
+      </a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
-  </nav>
+  </div>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <h1>Build the machine that does work for you</h1>
-    <p class="subheadline">A purpose-built workspace for collaboration between humans and AI agents. Open source. Extensible. Yours.</p>
-    <p class="tagline">Stop prompting. Start collaborating.</p>
-    <div class="btn-group">
-      <a href="https://github.com/sindre-ai/maskin" class="btn btn-primary">Get started</a>
-      <a href="https://github.com/sindre-ai/maskin" class="btn btn-secondary">&#9733; Star on GitHub</a>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-label fade-up">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Open source
+  </div>
+  <h1 class="fade-up d1">Build the machine that<br>does work for you</h1>
+  <p class="fade-up d2">A purpose-built workspace for collaboration between humans and AI agents. Stop prompting. Start collaborating.</p>
+  <div class="hero-actions fade-up d3">
+    <a href="https://github.com/sindre-ai/maskin" class="btn-primary" target="_blank">
+      Get started
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="together.html" class="btn-secondary">Read the manifesto</a>
+  </div>
+</section>
+
+<!-- Interactive Mockup with Use Case Carousel -->
+<section class="mockup-section fade-up" id="use-cases">
+  <!-- Use case button group -->
+  <div class="carousel-tabs" style="margin-bottom:16px;">
+    <button class="carousel-tab active" data-usecase="product">Product</button>
+    <button class="carousel-tab" data-usecase="growth">Growth</button>
+    <button class="carousel-tab" data-usecase="sales">Sales</button>
+  </div>
+
+  <div class="app-mock">
+    <div class="mock-chrome">
+      <span class="mock-dot"></span>
+      <span class="mock-dot"></span>
+      <span class="mock-dot"></span>
+      <span class="mock-url">app.maskin.dev</span>
     </div>
-  </section>
-
-  <!-- WHAT WE BELIEVE IN -->
-  <section class="manifesto" id="manifesto">
-    <p class="section-label">What we believe in</p>
-    <div class="manifesto-text">
-      <p>For fifty years, every methodology we built answered the same question: how do you protect expensive engineering time from being wasted? Waterfall. Agile. Scrum. SAFe. OKRs. They were all coordination tools. And someone had to manage all of it. Product managers became the integration layer between customer and engineer, because nothing else could be.</p>
-      <p>We got good at it. So good we forgot: the process was never the product. It was the cost of coordination. And we were optimising the cost, not the outcome.</p>
-      <p>Now that cost is collapsing. What took a sprint takes an afternoon. What required three engineers requires one with an agent. The scarcity that justified every ticket, every standup, every backlog grooming session is gone.</p>
-      <p>The instinct is to use AI to do the old job faster. Generate the roadmap. Write the PRD. Summarise the standup. It feels productive. It is a trap. Accelerating the overhead is not escaping it. The opportunity was never speed. It is replacement.</p>
-      <p>Strip away the process and what remains is the work people were always supposed to do. Judgment: which bet is worth making. Creative leaps: the insight that connects signals no one else saw. Relationships: the trust that closes the deal. Craft: the quality bar that separates good enough from great.</p>
-      <p>Agents carry the process. Humans carry the product. That is the future we are building.</p>
-    </div>
-  </section>
-
-  <!-- SEE THE MACHINE IN ACTION -->
-  <section class="tabs-section" id="how-it-works">
-    <h2>See the machine in action</h2>
-    <p class="tabs-subtitle">Real agents. Real work. One decision from you.</p>
-
-    <div class="tab-buttons">
-      <button class="tab-btn active" data-tab="product">Product</button>
-      <button class="tab-btn" data-tab="growth">Growth</button>
-      <button class="tab-btn" data-tab="sales">Sales</button>
-    </div>
-
-    <div class="tab-content active" id="tab-product">
-      A customer signal arrives. The Insight Scout catches it, enriches it, links it to a cluster of related signals. The Bet Shepherd proposes an experiment: two weeks, a clear success metric. You review, accept. One decision. Tasks decompose automatically. The agent executes.
-    </div>
-
-    <div class="tab-content" id="tab-growth">
-      The Pipeline Scout spots a pattern: one ICP segment converts at 3x the average, but outreach is flat. The Growth Strategist proposes a campaign. The SDR Agent drafts personalised messages, researched, unique, queued for your review. You approve. The rest runs.
-    </div>
-
-    <div class="tab-content" id="tab-sales">
-      Import your contacts. The SDR Agent researches each one, drafts outreach, times the follow-up. You review what matters. Adjust one message. Close the deal yourself, because that part was always yours.
-    </div>
-  </section>
-
-  <!-- WHAT MAKES MASKIN DIFFERENT -->
-  <section class="diff-section">
-    <h2>What makes Maskin different</h2>
-    <div class="diff-grid">
-      <div class="diff-card">
-        <h3>Humans and agents as equals</h3>
-        <p>Same API surface. Same workspace. Agents are not tools you pick up and put down. They are digital colleagues with persistent memory, defined roles, and ongoing responsibilities. You decide. They execute. Everyone sees the same data.</p>
+    <div class="mock-body">
+      <!-- Sidebar -->
+      <div class="mock-sidebar">
+        <div class="mock-sidebar-logo">
+          <div class="logo-icon">M</div>
+          <span>Acme Corp</span>
+        </div>
+        <nav class="mock-nav">
+          <button class="mock-nav-item active" data-screen="pulse">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+            Pulse
+          </button>
+          <button class="mock-nav-item" data-screen="objects">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
+            Objects
+          </button>
+          <button class="mock-nav-item" data-screen="agents">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+            Agents
+          </button>
+          <button class="mock-nav-item" data-screen="triggers">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
+            Triggers
+          </button>
+          <button class="mock-nav-item" data-screen="activity">
+            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            Activity
+          </button>
+        </nav>
       </div>
-      <div class="diff-card">
-        <h3>Extensible by design</h3>
-        <p>Three primitives: Insights, Bets, Tasks. They mirror the scientific method: observe, hypothesise, experiment. Add your own object types on top. The same system composes differently for every team.</p>
-      </div>
-      <div class="diff-card">
-        <h3>Secure and sandboxed</h3>
-        <p>Agents run in parallel, each safely contained. Built with security in mind. Inspect every layer, run on your own infrastructure, bring your own models. Trust is not optional.</p>
+
+      <!-- Main area — 15 screens: 3 use cases × 5 pages -->
+      <div class="mock-main">
+
+        <!-- ==================== PRODUCT ==================== -->
+
+        <!-- Product × Pulse -->
+        <div class="mock-screen active" id="screen-product-pulse">
+          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Product workspace &middot; 1 recommendation</span></div></div>
+          <div class="mock-content-body">
+            <div class="pulse-cards">
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="agent-name">Insight Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">2 min ago</span></div>
+                <p>Detected signal cluster: 4 customer conversations this week mention <strong>"onboarding friction"</strong>. Related signals linked. Proposing a bet to investigate mobile signup flow.</p>
+              </div>
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">BS</span><span class="agent-name">Bet Shepherd</span><span class="badge badge-blue">Needs input</span></div><span class="time">just now</span></div>
+                <p>Proposed bet: <strong>"Mobile onboarding redesign"</strong> &mdash; 2 weeks, success metric: reduce drop-off by 20%. 5 tasks auto-decomposed. Waiting for PM approval.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">Accept bet</button><button class="pulse-btn">Adjust scope</button></div>
+              </div>
+              <div class="pulse-card" style="opacity:0.45;">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">TD</span><span class="agent-name">Task Decomposer</span></div><span class="time">waiting</span></div>
+                <p>Ready to create: Design audit, User interview analysis, Prototype, A/B test setup, Metrics dashboard</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product × Objects -->
+        <div class="mock-screen" id="screen-product-objects">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Product workspace &middot; 5 objects</span></div></div>
+          <div class="mock-content-body">
+            <div class="objects-toolbar">
+              <div class="objects-tabs">
+                <button class="objects-tab active">All</button>
+                <button class="objects-tab">Insight</button>
+                <button class="objects-tab">Bet</button>
+                <button class="objects-tab">Task</button>
+              </div>
+            </div>
+            <div class="objects-table">
+              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
+              <div class="objects-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span><span class="col-muted">Insight Scout</span><span class="col-muted">2h ago</span></div>
+              <div class="objects-row"><span class="title">Mobile onboarding redesign</span><span class="badge badge-blue">proposed</span><span class="badge badge-bet">bet</span><span class="col-muted">Sarah K.</span><span class="col-muted">just now</span></div>
+              <div class="objects-row"><span class="title">Design audit of signup flow</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
+              <div class="objects-row"><span class="title">User interview analysis</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
+              <div class="objects-row"><span class="title">Prototype new onboarding</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product × Agents -->
+        <div class="mock-screen" id="screen-product-agents">
+          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Product workspace &middot; 3 agents</span></div></div>
+          <div class="mock-content-body">
+            <div class="agents-grid">
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="name">Insight Scout</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Scans customer signals and clusters patterns</div>
+                <div class="activity-line">Analyzing 4 new Intercom conversations &middot; 2m</div>
+              </div>
+              <div class="agent-card">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">BS</span><span class="name">Bet Shepherd</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
+                <div class="role">Proposes experiments from validated insights</div>
+                <div class="activity-line">Proposed &ldquo;Mobile onboarding redesign&rdquo; &middot; 1h ago</div>
+              </div>
+              <div class="agent-card">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">TD</span><span class="name">Task Decomposer</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
+                <div class="role">Breaks bets into executable tasks</div>
+                <div class="activity-line">Awaiting bet approval</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product × Triggers -->
+        <div class="mock-screen" id="screen-product-triggers">
+          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Product workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="trigger-rows">
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New customer signal</div><div class="trigger-meta">event &rarr; Insight Scout</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Weekly insight digest</div><div class="trigger-meta">cron &middot; every Monday 9:00 AM</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product × Activity -->
+        <div class="mock-screen" id="screen-product-activity">
+          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Product workspace &middot; today</span></div></div>
+          <div class="mock-content-body">
+            <div class="activity-feed">
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Insight Scout</span><span class="desc">created</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="actor-name">Insight Scout</span><span class="desc">linked 4 signals to</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">BS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Bet Shepherd</span><span class="desc">created</span><span class="entity">Mobile onboarding redesign</span><span class="time">1h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">BS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span class="actor-name">Bet Shepherd</span><span class="desc">updated status to</span><span class="entity">proposed</span><span class="time">1h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">TD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Task Decomposer</span><span class="desc">created 5 tasks for</span><span class="entity">Mobile onboarding redesign</span><span class="time">58m ago</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== GROWTH ==================== -->
+
+        <!-- Growth × Pulse -->
+        <div class="mock-screen" id="screen-growth-pulse">
+          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Growth workspace &middot; 1 recommendation</span></div></div>
+          <div class="mock-content-body">
+            <div class="pulse-cards">
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Signal</span></div><span class="time">1 day ago</span></div>
+                <p>Detected conversion pattern: <strong>ICP segment converting at 3x average</strong>, but outreach volume to this segment is flat. Recommending targeted campaign.</p>
+              </div>
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">GS</span><span class="agent-name">Growth Strategist</span><span class="badge badge-blue">Needs input</span></div><span class="time">2h ago</span></div>
+                <p>Proposed campaign: <strong>"Double outreach to high-converting segment"</strong> &mdash; 2 weeks, 47 contacts, target 2x reply rate. 4 tasks decomposed.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">Approve campaign</button><button class="pulse-btn">Adjust scope</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth × Objects -->
+        <div class="mock-screen" id="screen-growth-objects">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Growth workspace &middot; 6 objects</span></div></div>
+          <div class="mock-content-body">
+            <div class="objects-toolbar">
+              <div class="objects-tabs">
+                <button class="objects-tab active">All</button>
+                <button class="objects-tab">Insight</button>
+                <button class="objects-tab">Bet</button>
+                <button class="objects-tab">Task</button>
+              </div>
+            </div>
+            <div class="objects-table">
+              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
+              <div class="objects-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
+              <div class="objects-row"><span class="title">Double outreach to high-converting segment</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Growth Lead</span><span class="col-muted">2h ago</span></div>
+              <div class="objects-row"><span class="title">Draft personalised outreach &mdash; 47 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">6h ago</span></div>
+              <div class="objects-row"><span class="title">Create supporting case study assets</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Content Creator</span><span class="col-muted">8h ago</span></div>
+              <div class="objects-row"><span class="title">Send approved outreach sequence</span><span class="badge badge-blue">in progress</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">2h ago</span></div>
+              <div class="objects-row"><span class="title">Measure reply rate &amp; report back</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">Growth Strategist</span><span class="col-muted">&mdash;</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth × Agents -->
+        <div class="mock-screen" id="screen-growth-agents">
+          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Growth workspace &middot; 4 agents</span></div></div>
+          <div class="mock-content-body">
+            <div class="agents-grid">
+              <div class="agent-card">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="name">Pipeline Scout</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
+                <div class="role">Monitors pipeline data for conversion patterns</div>
+                <div class="activity-line">Found ICP segment pattern &middot; 1d ago</div>
+              </div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">GS</span><span class="name">Growth Strategist</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Designs campaigns from pipeline insights</div>
+                <div class="activity-line">Building outreach plan &middot; 15m</div>
+              </div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="name">SDR Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Executes personalised outreach sequences</div>
+                <div class="activity-line">Sending batch 2 of 3 &middot; 5m</div>
+              </div>
+              <div class="agent-card">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-amber">CC</span><span class="name">Content Creator</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
+                <div class="role">Generates supporting content and assets</div>
+                <div class="activity-line">Created 3 case study variants &middot; 8h ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth × Triggers -->
+        <div class="mock-screen" id="screen-growth-triggers">
+          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Growth workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="trigger-rows">
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Conversion pattern alert</div><div class="trigger-meta">event &rarr; Growth Strategist</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Weekly pipeline review</div><div class="trigger-meta">cron &middot; every Friday 4:00 PM</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth × Activity -->
+        <div class="mock-screen" id="screen-growth-activity">
+          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Growth workspace &middot; today</span></div></div>
+          <div class="mock-content-body">
+            <div class="activity-feed">
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">PS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Pipeline Scout</span><span class="desc">created</span><span class="entity">High-converting ICP segment pattern</span><span class="time">3d ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">GS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Growth Strategist</span><span class="desc">created</span><span class="entity">Double outreach to high-converting segment</span><span class="time">1d ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">GS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Growth Strategist</span><span class="desc">created 4 tasks for</span><span class="entity">Double outreach campaign</span><span class="time">1d ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">SDR Agent</span><span class="desc">completed</span><span class="entity">Draft personalised outreach</span><span class="time">6h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-amber">CC</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">Content Creator</span><span class="desc">completed</span><span class="entity">Create case study assets</span><span class="time">8h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">SDR Agent</span><span class="desc">started session</span><span class="entity">Sending outreach batch</span><span class="time">2h ago</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SALES ==================== -->
+
+        <!-- Sales × Pulse -->
+        <div class="mock-screen" id="screen-sales-pulse">
+          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Sales workspace &middot; 1 action needed</span></div></div>
+          <div class="mock-content-body">
+            <div class="pulse-cards">
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="agent-name">Research Agent</span><span class="badge badge-green">Done</span></div><span class="time">9:16 AM</span></div>
+                <p>Enriched &amp; qualified <strong>83 contacts</strong> from HubSpot import &mdash; 31 high-fit, 42 medium, 10 disqualified. Ready for outreach.</p>
+              </div>
+              <div class="pulse-card">
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="agent-name">SDR Agent</span><span class="badge badge-blue">Review needed</span></div><span class="time">9:22 AM</span></div>
+                <p>Drafted personalised outreach for <strong>31 high-fit contacts</strong>. Messages ready for review before sending.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">Approve &amp; send</button><button class="pulse-btn">Edit drafts</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales × Objects -->
+        <div class="mock-screen" id="screen-sales-objects">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace &middot; 5 objects</span></div></div>
+          <div class="mock-content-body">
+            <div class="objects-toolbar">
+              <div class="objects-tabs">
+                <button class="objects-tab active">All</button>
+                <button class="objects-tab">Insight</button>
+                <button class="objects-tab">Bet</button>
+                <button class="objects-tab">Task</button>
+              </div>
+            </div>
+            <div class="objects-table">
+              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
+              <div class="objects-row"><span class="title">HubSpot contact import &mdash; 83 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Johan K.</span><span class="col-muted">9:14 AM</span></div>
+              <div class="objects-row"><span class="title">Enrich &amp; qualify contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">9:16 AM</span></div>
+              <div class="objects-row"><span class="title">Draft outreach for high-fit contacts</span><span class="badge badge-blue">in review</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">9:22 AM</span></div>
+              <div class="objects-row"><span class="title">Approve outreach batch</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">Johan K.</span><span class="col-muted">&mdash;</span></div>
+              <div class="objects-row"><span class="title">Send approved outreach</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">&mdash;</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales × Agents -->
+        <div class="mock-screen" id="screen-sales-agents">
+          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Sales workspace &middot; 2 agents</span></div></div>
+          <div class="mock-content-body">
+            <div class="agents-grid">
+              <div class="agent-card">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="name">Research Agent</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
+                <div class="role">Enriches and qualifies contacts from CRM</div>
+                <div class="activity-line">Qualified 83 contacts &middot; 40m ago</div>
+              </div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="name">SDR Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Drafts personalised outreach for qualified contacts</div>
+                <div class="activity-line">Drafting outreach for 31 contacts &middot; 18m</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales × Triggers -->
+        <div class="mock-screen" id="screen-sales-triggers">
+          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Sales workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="trigger-rows">
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New contact imported</div><div class="trigger-meta">event &rarr; Research Agent</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Daily outreach batch</div><div class="trigger-meta">cron &middot; every weekday 9:00 AM</div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales × Activity -->
+        <div class="mock-screen" id="screen-sales-activity">
+          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Sales workspace &middot; today</span></div></div>
+          <div class="mock-content-body">
+            <div class="activity-feed">
+              <div class="activity-item"><span class="avatar avatar-sm avatar-amber">JK</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Johan K.</span><span class="desc">imported 83 contacts from</span><span class="entity">HubSpot</span><span class="time">9:14 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg><span class="actor-name">Research Agent</span><span class="desc">enriched &amp; qualified</span><span class="entity">83 contacts</span><span class="time">9:16 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">Research Agent</span><span class="desc">updated 31 contacts to</span><span class="entity">high-fit</span><span class="time">9:16 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">SDR Agent</span><span class="desc">created drafts for</span><span class="entity">31 high-fit contacts</span><span class="time">9:22 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">SDR Agent</span><span class="desc">started session</span><span class="entity">Outreach draft batch</span><span class="time">9:22 AM</span></div>
+              <div class="activity-item" style="opacity:0.45;"><span class="avatar avatar-sm avatar-amber">JK</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Johan K.</span><span class="desc">reviews, approves, and closes</span><span class="entity">the deals</span><span class="time">next step</span></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- BUILT FOR BUILDERS -->
-  <section class="builders-section">
-    <h2>Built for builders</h2>
-    <div class="builders-grid">
-      <div class="builder-card">
-        <h3>MCP-native</h3>
-        <p>Every agent speaks MCP. Import integrations, connect tools, bring your own model.</p>
-      </div>
-      <div class="builder-card">
-        <h3>Knowledge graph</h3>
-        <p>Objects, relationships, and extensions. Not another database with a chat wrapper.</p>
-      </div>
-      <div class="builder-card">
-        <h3>Triggers and automation</h3>
-        <p>Fire agents on schedules or state changes. The machine runs while you sleep.</p>
-      </div>
-      <div class="builder-card">
-        <h3>Open source</h3>
-        <p>Inspect every layer. Fork it. Extend it. Ship it on your infra.</p>
-      </div>
+<!-- Method -->
+<section class="section fade-up" id="method">
+  <div class="section-label">The method</div>
+  <h2>Agents carry the process.<br>Humans carry the product.</h2>
+  <div class="method-block">
+    <blockquote>"The process was never the product. It was the cost of coordination. And we were optimising the cost, not the outcome."</blockquote>
+    <p class="method-desc">For fifty years, every methodology we built was designed to protect expensive engineering time. Waterfall, Agile, Scrum, SAFe. Now agents can carry that coordination overhead &mdash; so humans can focus on judgment, creative leaps, relationships, and craft.</p>
+    <a href="https://sindre.ai/together" class="method-link">
+      The Thin Drill Method
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+
+<!-- Pillars -->
+<section class="section fade-up">
+  <div class="section-label">Why Maskin</div>
+  <h2>Built for the way work<br>actually happens now</h2>
+  <p class="subtitle"></p>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg></div>
+      <h3>Humans &amp; agents as first-class citizens</h3>
+      <p>Same API surface, persistent memory, defined roles. Not tools you pick up and put down &mdash; digital colleagues with ongoing responsibilities.</p>
     </div>
-    <a href="https://github.com/sindre-ai/maskin" class="btn btn-secondary">View on GitHub</a>
-  </section>
-
-  <!-- WAITLIST -->
-  <section class="waitlist-section">
-    <h2>Be first when Maskin Cloud launches</h2>
-    <form class="waitlist-form" action="mailto:magnus@meshfirm.com" method="POST" enctype="text/plain">
-      <input type="email" name="email" placeholder="you@company.com" required>
-      <button type="submit" class="btn btn-primary">Join waitlist</button>
-    </form>
-  </section>
-
-  <!-- CLOSING CTA -->
-  <section class="closing-section">
-    <p class="closing-text">The best teams will be the ones where the process runs itself, so the humans can do the work only humans can do. That is Maskin.</p>
-    <div class="btn-group" style="justify-content: center;">
-      <a href="https://github.com/sindre-ai/maskin" class="btn btn-primary">Get the code</a>
-      <a href="https://sindre.ai/together" class="btn btn-secondary">Read the manifesto</a>
+    <div class="pillar">
+      <div class="pillar-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.491 48.491 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"/></svg></div>
+      <h3>Extensible</h3>
+      <p>Add new object types, adapt to your workflow. The same primitives &mdash; Insights, Bets, Tasks &mdash; compose differently depending on the team.</p>
     </div>
-    <p class="byline">Sebastian Krumhausen and Magnus Noddegaard, Co-founders, sindre.ai</p>
-  </section>
+    <div class="pillar">
+      <div class="pillar-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/></svg></div>
+      <h3>Secure by design</h3>
+      <p>Agents run in parallel, safely sandboxed in containers. Open source &mdash; inspect every layer, run on your own infrastructure.</p>
+    </div>
+  </div>
+</section>
 
-  <footer>
-    &copy; 2026 Maskin by sindre.ai
-  </footer>
+<!-- Tech -->
+<section class="section fade-up" style="padding-top:0;">
+  <div class="tech-bar">
+    <div class="tech-item"><div class="label">Protocol</div><div class="value">MCP-native</div></div>
+    <div class="tech-item"><div class="label">Models</div><div class="value">Bring your own</div></div>
+    <div class="tech-item"><div class="label">License</div><div class="value">Apache 2.0</div></div>
+    <div class="tech-item"><div class="label">Deploy</div><div class="value">Self-host or managed</div></div>
+    <div class="tech-item"><div class="label">Integrations</div><div class="value">API tokens</div></div>
+    <div class="tech-item"><div class="label">GitHub</div><div class="value"><a href="https://github.com/sindre-ai/maskin" target="_blank" style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span id="star-count-tech">Stars</span></a></div></div>
+  </div>
+</section>
 
-  <script>
-    document.querySelectorAll('.tab-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-      });
-    });
-  </script>
+<!-- CTA -->
+<section class="section fade-up" style="padding-bottom:40px;">
+  <h2 style="margin-bottom:16px;">Make product operations<br>self-driving</h2>
+  <p class="subtitle">The best teams will be the ones where the process runs itself &mdash; so the humans can do the work only humans can do.</p>
+  <div class="hero-actions">
+    <a href="https://github.com/sindre-ai/maskin" class="btn-primary" target="_blank">
+      Get the code
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="together.html" class="btn-secondary">Read the manifesto</a>
+  </div>
+</section>
 
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-brand">Maskin</div>
+      <p>Sebastian Krumhausen &amp; Magnus N&oslash;ddegaard &middot; sindre.ai</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/sindre-ai/maskin" target="_blank">GitHub</a>
+      <a href="together.html">Together</a>
+      <a href="https://sindre.ai" target="_blank">sindre.ai</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Theme — dark-first
+function getTheme() {
+  const saved = localStorage.getItem('maskin-theme');
+  if (saved) return saved;
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+function applyTheme(t) {
+  if (t === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('maskin-theme', t);
+  document.querySelector('.sun-icon').style.display = t === 'light' ? 'block' : 'none';
+  document.querySelector('.moon-icon').style.display = t === 'light' ? 'none' : 'block';
+}
+function toggleTheme() {
+  applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
+}
+applyTheme(getTheme());
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
+// Mock state machine — use case × screen
+let currentUseCase = 'product';
+let currentScreen = 'pulse';
+
+function updateMock() {
+  // Hide all screens, show the matching one
+  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('screen-' + currentUseCase + '-' + currentScreen);
+  if (target) target.classList.add('active');
+
+  // Highlight active carousel tab
+  document.querySelectorAll('.carousel-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.querySelector('.carousel-tab[data-usecase="' + currentUseCase + '"]');
+  if (tab) tab.classList.add('active');
+
+  // Highlight active sidebar nav item
+  document.querySelectorAll('.mock-nav-item').forEach(b => b.classList.remove('active'));
+  const nav = document.querySelector('.mock-nav-item[data-screen="' + currentScreen + '"]');
+  if (nav) nav.classList.add('active');
+}
+
+// Carousel: changes use case, keeps current screen
+document.querySelectorAll('.carousel-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    currentUseCase = tab.dataset.usecase;
+    updateMock();
+  });
+});
+
+// Sidebar: changes screen, keeps current use case
+document.querySelectorAll('.mock-nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentScreen = btn.dataset.screen;
+    updateMock();
+  });
+});
+
+// Object tabs (visual only — scoped to closest screen)
+document.querySelectorAll('.objects-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const toolbar = tab.closest('.objects-toolbar');
+    toolbar.querySelectorAll('.objects-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Fetch GitHub star count
+fetch('https://api.github.com/repos/sindre-ai/maskin')
+  .then(r => r.json())
+  .then(data => {
+    if (data.stargazers_count !== undefined) {
+      const count = data.stargazers_count.toLocaleString();
+      const el = document.getElementById('star-count');
+      if (el) el.textContent = count;
+      const el2 = document.getElementById('star-count-tech');
+      if (el2) el2.textContent = count;
+    }
+  })
+  .catch(() => {});
+
+// Pulse buttons
+document.querySelectorAll('.pulse-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const card = btn.closest('.pulse-card');
+    card.style.opacity = '0.4'; card.style.transform = 'scale(0.98)';
+    card.style.transition = 'all 0.3s';
+    setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 500);
+  });
+});
+</script>
 </body>
 </html>
