@@ -1031,17 +1031,13 @@
 
         <!-- Sales × Pulse -->
         <div class="mock-screen" id="screen-sales-pulse">
-          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Sales workspace &middot; 1 action needed</span></div></div>
+          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Sales workspace &middot; 1 recommendation</span></div></div>
           <div class="mock-content-body">
             <div class="pulse-cards">
               <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="agent-name">Research Agent</span><span class="badge badge-green">Done</span></div><span class="time">9:16 AM</span></div>
-                <p>Enriched &amp; qualified <strong>83 contacts</strong> from HubSpot import &mdash; 31 high-fit, 42 medium, 10 disqualified. Ready for outreach.</p>
-              </div>
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="agent-name">SDR Agent</span><span class="badge badge-blue">Review needed</span></div><span class="time">9:22 AM</span></div>
-                <p>Drafted personalised outreach for <strong>31 high-fit contacts</strong>. Messages ready for review before sending.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">Approve &amp; send</span><button class="pulse-btn">Edit drafts</button></div>
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="agent-name">Research Agent</span><span class="badge badge-amber">Recommendation</span></div><span class="time">8:30 AM</span></div>
+                <p>Detected <strong>3 discovery calls booked for tomorrow</strong> with no prep materials. Historical data shows prepped calls convert at 2x the rate. Created bet: <strong>"Auto-prep tomorrow's discovery calls"</strong>. Research Agent, Prep Agent, and Competitive Intel Agent are building briefings.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
           </div>
@@ -1049,7 +1045,7 @@
 
         <!-- Sales × Objects -->
         <div class="mock-screen" id="screen-sales-objects">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace &middot; 5 objects</span></div></div>
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace &middot; 6 objects</span></div></div>
           <div class="mock-content-body">
             <div class="objects-toolbar">
               <div class="objects-tabs">
@@ -1061,29 +1057,86 @@
             </div>
             <div class="objects-table">
               <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">HubSpot contact import &mdash; 83 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Johan K.</span><span class="col-muted">9:14 AM</span></div>
-              <div class="objects-row"><span class="title">Enrich &amp; qualify contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">9:16 AM</span></div>
-              <div class="objects-row"><span class="title">Draft outreach for high-fit contacts</span><span class="badge badge-blue">in review</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">9:22 AM</span></div>
-              <div class="objects-row"><span class="title">Approve outreach batch</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">Johan K.</span><span class="col-muted">&mdash;</span></div>
-              <div class="objects-row"><span class="title">Send approved outreach</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">&mdash;</span></div>
+              <div class="objects-row"><span class="title">Prepped calls convert at 2x rate</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Research Agent</span><span class="col-muted">3d ago</span></div>
+              <div class="objects-row" id="objects-bet-row-sales"><span class="title">Auto-prep tomorrow's discovery calls</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Research Agent</span><span class="col-muted">8:30 AM</span></div>
+              <div class="objects-row"><span class="title">Research Acme Corp &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">8:32 AM</span></div>
+              <div class="objects-row"><span class="title">Research CloudScale &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">8:32 AM</span></div>
+              <div class="objects-row"><span class="title">Generate personalised talk tracks</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Prep Agent</span><span class="col-muted">8:34 AM</span></div>
+              <div class="objects-row"><span class="title">Pull competitive positioning for each call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Competitive Intel</span><span class="col-muted">8:34 AM</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sales × Bet Detail -->
+        <div class="mock-screen" id="screen-sales-bet-detail">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="bet-detail">
+              <div class="back-link" id="bet-detail-back-sales">&larr; Back to objects</div>
+              <div class="bet-detail-title">Auto-prep tomorrow's discovery calls</div>
+              <div class="bet-detail-meta">
+                <span class="badge badge-bet">bet</span>
+                <span class="badge badge-green">active</span>
+                <span class="meta-agent"><span class="avatar avatar-sm avatar-blue">RA</span> Research Agent &middot; 8:30 AM</span>
+              </div>
+
+              <h3>Summary</h3>
+              <p>3 discovery calls are booked for tomorrow with no prep materials created yet. Agents are auto-researching each prospect's company news, tech stack, and pain points to generate personalised briefing docs and talk tracks before the calls.</p>
+
+              <h3>Evidence</h3>
+              <ul class="evidence-list">
+                <li><strong>Calendar data</strong>: 3 discovery calls booked tomorrow &mdash; Acme Corp (10:00 AM), CloudScale (1:00 PM), DataFlow Inc (3:30 PM). No prep docs attached.</li>
+                <li><strong>CRM history</strong>: Reps who received auto-generated briefings closed discovery &rarr; demo at 62% vs. 31% without prep.</li>
+                <li><strong>Time savings</strong>: Manual research averages 45 min per prospect. Agents complete the same work in under 3 minutes.</li>
+              </ul>
+
+              <h3>Goal</h3>
+              <ol class="goal-list">
+                <li>100% prep coverage &mdash; every call has a briefing doc ready</li>
+                <li>Reduce rep prep time from 45 min to 5 min review per call</li>
+                <li>Increase discovery-to-demo conversion from 31% to 60%+</li>
+              </ol>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked tasks (4)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">Research Acme Corp &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row"><span class="title">Research CloudScale &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row related-hidden"><span class="title">Generate personalised talk tracks</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row related-hidden"><span class="title">Pull competitive positioning for each call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <span class="related-show-more">Show 2 more</span>
+              </div>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked insights (1)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">Prepped calls convert at 2x rate</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span></div>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Sales × Agents -->
         <div class="mock-screen" id="screen-sales-agents">
-          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Sales workspace &middot; 2 agents</span></div></div>
+          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Sales workspace &middot; 3 agents</span></div></div>
           <div class="mock-content-body">
             <div class="agents-grid">
-              <div class="agent-card">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="name">Research Agent</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
-                <div class="role">Enriches and qualifies contacts from CRM</div>
-                <div class="activity-line">Qualified 83 contacts &middot; 40m ago</div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="name">Research Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Researches prospects from calendar and CRM data</div>
+                <div class="activity-line">Researching Acme Corp &middot; 2m</div>
               </div>
               <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="name">SDR Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Drafts personalised outreach for qualified contacts</div>
-                <div class="activity-line">Drafting outreach for 31 contacts &middot; 18m</div>
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">PA</span><span class="name">Prep Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Generates briefing docs and personalised talk tracks</div>
+                <div class="activity-line">Generating talk tracks for 3 calls &middot; 1m</div>
+              </div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">CI</span><span class="name">Competitive Intel</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Pulls competitive positioning and battlecards</div>
+                <div class="activity-line">Analysing competitor overlap for 3 prospects &middot; 1m</div>
               </div>
             </div>
           </div>
@@ -1094,8 +1147,9 @@
           <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Sales workspace</span></div></div>
           <div class="mock-content-body">
             <div class="trigger-rows">
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New contact imported</div><div class="trigger-meta">event &rarr; Research Agent</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Daily outreach batch</div><div class="trigger-meta">cron &middot; every weekday 9:00 AM</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New meeting booked</div><div class="trigger-meta">event &rarr; Research Agent</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Research complete</div><div class="trigger-meta">event &rarr; Prep Agent, Competitive Intel</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Daily meeting prep</div><div class="trigger-meta">cron &middot; every weekday 8:30 AM</div></div></div>
             </div>
           </div>
         </div>
@@ -1105,12 +1159,12 @@
           <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Sales workspace &middot; today</span></div></div>
           <div class="mock-content-body">
             <div class="activity-feed">
-              <div class="activity-item"><span class="avatar avatar-sm avatar-amber">JK</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Johan K.</span><span class="desc">imported 83 contacts from</span><span class="entity">HubSpot</span><span class="time">9:14 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg><span class="actor-name">Research Agent</span><span class="desc">enriched &amp; qualified</span><span class="entity">83 contacts</span><span class="time">9:16 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">Research Agent</span><span class="desc">updated 31 contacts to</span><span class="entity">high-fit</span><span class="time">9:16 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">SDR Agent</span><span class="desc">created drafts for</span><span class="entity">31 high-fit contacts</span><span class="time">9:22 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">SDR Agent</span><span class="desc">started session</span><span class="entity">Outreach draft batch</span><span class="time">9:22 AM</span></div>
-              <div class="activity-item" style="opacity:0.45;"><span class="avatar avatar-sm avatar-amber">JK</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Johan K.</span><span class="desc">reviews, approves, and closes</span><span class="entity">the deals</span><span class="time">next step</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Research Agent</span><span class="desc">detected 3 unprepped calls in</span><span class="entity">tomorrow's calendar</span><span class="time">8:30 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Research Agent</span><span class="desc">created bet</span><span class="entity">Auto-prep tomorrow's discovery calls</span><span class="time">8:30 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Research Agent</span><span class="desc">started</span><span class="entity">Research Acme Corp</span><span class="time">8:32 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Research Agent</span><span class="desc">started</span><span class="entity">Research CloudScale</span><span class="time">8:32 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">PA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Prep Agent</span><span class="desc">started</span><span class="entity">Generate personalised talk tracks</span><span class="time">8:34 AM</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">CI</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Competitive Intel</span><span class="desc">started</span><span class="entity">Pull competitive positioning</span><span class="time">8:34 AM</span></div>
             </div>
           </div>
         </div>
@@ -1285,7 +1339,7 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
 document.querySelectorAll('.pulse-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     // "View bet" navigates to bet detail
-    if (btn.textContent.trim() === 'View bet' && (currentUseCase === 'product' || currentUseCase === 'growth')) {
+    if (btn.textContent.trim() === 'View bet') {
       e.stopPropagation();
       document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-' + currentUseCase + '-bet-detail').classList.add('active');
@@ -1316,6 +1370,18 @@ document.getElementById('objects-bet-row-growth').addEventListener('click', () =
 
 // Growth bet detail back link
 document.getElementById('bet-detail-back-growth').addEventListener('click', () => {
+  currentScreen = 'objects';
+  updateMock();
+});
+
+// Sales bet row in objects table
+document.getElementById('objects-bet-row-sales').addEventListener('click', () => {
+  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-sales-bet-detail').classList.add('active');
+});
+
+// Sales bet detail back link
+document.getElementById('bet-detail-back-sales').addEventListener('click', () => {
   currentScreen = 'objects';
   updateMock();
 });
