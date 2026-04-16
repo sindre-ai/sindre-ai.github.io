@@ -889,8 +889,9 @@
           <div class="mock-content-body">
             <div class="pulse-cards">
               <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Signal</span></div><span class="time">1 day ago</span></div>
-                <p>Detected conversion pattern: <strong>ICP segment converting at 3x average</strong>, but outreach volume to this segment is flat. Recommending targeted campaign.</p>
+                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">1 day ago</span></div>
+                <p>Detected conversion pattern: <strong>ICP segment converting at 3x average</strong>, but outreach volume to this segment is flat. Created bet: <strong>"Double outreach to high-converting segment"</strong>. Growth Strategist, SDR Agent, and Content Creator are executing the campaign.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
           </div>
@@ -910,12 +911,63 @@
             </div>
             <div class="objects-table">
               <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
-              <div class="objects-row"><span class="title">Double outreach to high-converting segment</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Growth Lead</span><span class="col-muted">2h ago</span></div>
+              <div class="objects-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
+              <div class="objects-row" id="objects-bet-row-growth"><span class="title">Double outreach to high-converting segment</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
               <div class="objects-row"><span class="title">Draft personalised outreach &mdash; 47 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">6h ago</span></div>
               <div class="objects-row"><span class="title">Create supporting case study assets</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Content Creator</span><span class="col-muted">8h ago</span></div>
               <div class="objects-row"><span class="title">Send approved outreach sequence</span><span class="badge badge-blue">in progress</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">2h ago</span></div>
               <div class="objects-row"><span class="title">Measure reply rate &amp; report back</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">Growth Strategist</span><span class="col-muted">&mdash;</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth × Bet Detail -->
+        <div class="mock-screen" id="screen-growth-bet-detail">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Growth workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="bet-detail">
+              <div class="back-link" id="bet-detail-back-growth">&larr; Back to objects</div>
+              <div class="bet-detail-title">Double outreach to high-converting segment</div>
+              <div class="bet-detail-meta">
+                <span class="badge badge-bet">bet</span>
+                <span class="badge badge-green">active</span>
+                <span class="meta-agent"><span class="avatar avatar-sm avatar-green">PS</span> Pipeline Scout &middot; 1 day ago</span>
+              </div>
+
+              <h3>Summary</h3>
+              <p>An ICP segment is converting at 3x the average rate, but current outreach volume to this segment is flat. A targeted campaign will double outreach to these high-fit accounts with personalised messaging and supporting case studies.</p>
+
+              <h3>Evidence</h3>
+              <ul class="evidence-list">
+                <li><strong>Pipeline data</strong>: ICP segment shows 3x conversion rate vs. average over the last 60 days across 47 accounts.</li>
+                <li><strong>Outreach volume</strong>: Only 12 of 47 high-fit accounts have been contacted. Current volume is flat month-over-month.</li>
+                <li><strong>Competitor activity</strong>: 3 competitors have increased messaging to this segment in the last 30 days.</li>
+              </ul>
+
+              <h3>Goal</h3>
+              <ol class="goal-list">
+                <li>Achieve 2x reply rate on targeted outreach vs. baseline</li>
+                <li>Contact all 47 high-fit accounts within 2 weeks</li>
+                <li>Increase qualified pipeline from this segment by 30%</li>
+              </ol>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked tasks (4)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">Draft personalised outreach &mdash; 47 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span></div>
+                <div class="related-row"><span class="title">Create supporting case study assets</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span></div>
+                <div class="related-row related-hidden"><span class="title">Send approved outreach sequence</span><span class="badge badge-blue">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row related-hidden"><span class="title">Measure reply rate &amp; report back</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span></div>
+                <span class="related-show-more">Show 2 more</span>
+              </div>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked insights (1)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1233,10 +1285,10 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
 document.querySelectorAll('.pulse-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     // "View bet" navigates to bet detail
-    if (btn.textContent.trim() === 'View bet' && currentUseCase === 'product') {
+    if (btn.textContent.trim() === 'View bet' && (currentUseCase === 'product' || currentUseCase === 'growth')) {
       e.stopPropagation();
       document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-product-bet-detail').classList.add('active');
+      document.getElementById('screen-' + currentUseCase + '-bet-detail').classList.add('active');
       // Highlight "Objects" in sidebar
       document.querySelectorAll('.mock-nav-item').forEach(b => b.classList.remove('active'));
       document.querySelector('.mock-nav-item[data-screen="objects"]').classList.add('active');
@@ -1254,6 +1306,18 @@ document.querySelectorAll('.pulse-btn').forEach(btn => {
 document.getElementById('objects-bet-row').addEventListener('click', () => {
   document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-product-bet-detail').classList.add('active');
+});
+
+// Growth bet row in objects table
+document.getElementById('objects-bet-row-growth').addEventListener('click', () => {
+  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-growth-bet-detail').classList.add('active');
+});
+
+// Growth bet detail back link
+document.getElementById('bet-detail-back-growth').addEventListener('click', () => {
+  currentScreen = 'objects';
+  updateMock();
 });
 
 // Bet detail back link
