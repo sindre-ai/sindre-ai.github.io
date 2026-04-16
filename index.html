@@ -395,6 +395,31 @@
     .agent-card.working .activity-line { color: var(--accent); }
     @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+    /* Bet detail view */
+    .bet-detail { max-width: 100%; }
+    .bet-detail-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .bet-detail-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 11px; }
+    .bet-detail-meta .badge { font-size: 10px; }
+    .bet-detail-meta .meta-agent { display: flex; align-items: center; gap: 4px; color: var(--text-muted); }
+    .bet-detail h3 { font-size: 13px; font-weight: 600; color: var(--text); margin: 16px 0 6px; }
+    .bet-detail h3:first-of-type { margin-top: 0; }
+    .bet-detail p { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+    .bet-detail .evidence-list { list-style: none; padding: 0; margin: 0; }
+    .bet-detail .evidence-list li { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 4px 0; padding-left: 12px; position: relative; }
+    .bet-detail .evidence-list li::before { content: "\2022"; position: absolute; left: 0; color: var(--text-muted); }
+    .bet-detail .evidence-list strong { color: var(--text); }
+    .bet-detail .goal-list { list-style: decimal; padding-left: 18px; margin: 0; }
+    .bet-detail .goal-list li { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding: 2px 0; }
+    .bet-detail-divider { border: none; border-top: 1px solid var(--mock-border); margin: 16px 0; }
+    .bet-detail .related-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .bet-detail .related-header span { font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.03em; text-transform: uppercase; }
+    .bet-detail .related-row { display: flex; align-items: center; gap: 6px; padding: 6px 0; font-size: 12px; color: var(--text-secondary); flex-wrap: wrap; }
+    .bet-detail .related-row .badge { font-size: 10px; }
+    .bet-detail .back-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-muted); cursor: pointer; margin-bottom: 12px; }
+    .bet-detail .back-link:hover { color: var(--text); }
+    .bet-detail .related-row.related-hidden { display: none; }
+    .related-show-more { display: inline-block; margin-top: 4px; padding: 0; font-size: 12px; color: var(--text-muted); background: none; border: none; cursor: default; font-weight: 500; }
+
     /* Activity screen — single-line feed matching real app */
     .activity-feed { display: flex; flex-direction: column; }
     .activity-item {
@@ -715,16 +740,8 @@
             <div class="pulse-cards">
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="agent-name">Insight Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">2 min ago</span></div>
-                <p>Detected signal cluster: 4 customer conversations this week mention <strong>"onboarding friction"</strong>. Related signals linked. Proposing a bet to investigate mobile signup flow.</p>
-              </div>
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">BS</span><span class="agent-name">Bet Shepherd</span><span class="badge badge-blue">Needs input</span></div><span class="time">just now</span></div>
-                <p>Proposed bet: <strong>"Mobile onboarding redesign"</strong> &mdash; 2 weeks, success metric: reduce drop-off by 20%. 5 tasks auto-decomposed. Waiting for PM approval.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">Accept bet</button><button class="pulse-btn">Adjust scope</button></div>
-              </div>
-              <div class="pulse-card" style="opacity:0.45;">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">TD</span><span class="agent-name">Task Decomposer</span></div><span class="time">waiting</span></div>
-                <p>Ready to create: Design audit, User interview analysis, Prototype, A/B test setup, Metrics dashboard</p>
+                <p>Detected signal cluster: 12 support tickets, 4 churn interviews, and 3 NPS detractors all reference <strong>"onboarding friction"</strong>. Root cause: new users don't understand which features match their use case. Created bet: <strong>"Onboarding quiz"</strong> to guide new users. Design Agent, Developer Agent, and User Persona Agent are already building it.</p>
+                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
           </div>
@@ -744,34 +761,94 @@
             </div>
             <div class="objects-table">
               <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span><span class="col-muted">Insight Scout</span><span class="col-muted">2h ago</span></div>
-              <div class="objects-row"><span class="title">Mobile onboarding redesign</span><span class="badge badge-blue">proposed</span><span class="badge badge-bet">bet</span><span class="col-muted">Sarah K.</span><span class="col-muted">just now</span></div>
-              <div class="objects-row"><span class="title">Design audit of signup flow</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
-              <div class="objects-row"><span class="title">User interview analysis</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
-              <div class="objects-row"><span class="title">Prototype new onboarding</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">&mdash;</span><span class="col-muted">&mdash;</span></div>
+              <div class="objects-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Insight Scout</span><span class="col-muted">2h ago</span></div>
+              <div class="objects-row" id="objects-bet-row"><span class="title">Onboarding quiz for new users</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Insight Scout</span><span class="col-muted">2 min ago</span></div>
+              <div class="objects-row"><span class="title">Design quiz flow and UI screens</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Design Agent</span><span class="col-muted">1 min ago</span></div>
+              <div class="objects-row"><span class="title">Build quiz engine and personalization logic</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Developer Agent</span><span class="col-muted">1 min ago</span></div>
+              <div class="objects-row"><span class="title">Map user personas to feature recommendations</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">User Persona Agent</span><span class="col-muted">1 min ago</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product × Bet Detail -->
+        <div class="mock-screen" id="screen-product-bet-detail">
+          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Product workspace</span></div></div>
+          <div class="mock-content-body">
+            <div class="bet-detail">
+              <div class="back-link" id="bet-detail-back">&larr; Back to objects</div>
+              <div class="bet-detail-title">Onboarding quiz for new users</div>
+              <div class="bet-detail-meta">
+                <span class="badge badge-bet">bet</span>
+                <span class="badge badge-green">in progress</span>
+                <span class="meta-agent"><span class="avatar avatar-sm avatar-purple">IS</span> Insight Scout &middot; 2 min ago</span>
+              </div>
+
+              <h3>Summary</h3>
+              <p>New users struggle to find relevant features for their use case, leading to high drop-off during onboarding. A short interactive quiz will personalize the first-run experience by matching users to the right workflow based on their role and goals.</p>
+
+              <h3>Evidence</h3>
+              <ul class="evidence-list">
+                <li><strong>12 support tickets</strong> (last 30 days): Users report feeling "overwhelmed" by the dashboard and not knowing where to start.</li>
+                <li><strong>4 churn interviews</strong>: Churned users cite "couldn't figure out what to do first" as primary reason for leaving.</li>
+                <li><strong>3 NPS detractors</strong>: All mention onboarding as the weakest part of the experience.</li>
+              </ul>
+
+              <h3>Goal</h3>
+              <ol class="goal-list">
+                <li>Reduce onboarding drop-off rate by 25% within 4 weeks</li>
+                <li>Increase Day-7 activation rate from 34% to 50%</li>
+                <li>Achieve 80%+ quiz completion rate</li>
+              </ol>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked tasks (3)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">Design quiz flow and UI screens</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row"><span class="title">Build quiz engine and personalization logic</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <div class="related-row related-hidden"><span class="title">Map user personas to feature recommendations</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
+                <span class="related-show-more">Show 1 more</span>
+              </div>
+
+              <hr class="bet-detail-divider">
+
+              <div class="related-header"><span>Linked insights (19)</span></div>
+              <div class="related-section">
+                <div class="related-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
+                <div class="related-row"><span class="title">"Dashboard is overwhelming" — 8 support tickets</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
+                <div class="related-row related-hidden"><span class="title">"Don't know where to start" — 4 churn interviews</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
+                <div class="related-row related-hidden"><span class="title">NPS detractor cluster: onboarding experience</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
+                <div class="related-row related-hidden"><span class="title">Feature discovery rate below 20% in first session</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
+                <span class="related-show-more">Show 17 more</span>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Product × Agents -->
         <div class="mock-screen" id="screen-product-agents">
-          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Product workspace &middot; 3 agents</span></div></div>
+          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Product workspace &middot; 4 agents</span></div></div>
           <div class="mock-content-body">
             <div class="agents-grid">
               <div class="agent-card working">
                 <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="name">Insight Scout</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
                 <div class="role">Scans customer signals and clusters patterns</div>
-                <div class="activity-line">Analyzing 4 new Intercom conversations &middot; 2m</div>
+                <div class="activity-line">Created bet &ldquo;Onboarding quiz&rdquo; &middot; 2m ago</div>
               </div>
-              <div class="agent-card">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">BS</span><span class="name">Bet Shepherd</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
-                <div class="role">Proposes experiments from validated insights</div>
-                <div class="activity-line">Proposed &ldquo;Mobile onboarding redesign&rdquo; &middot; 1h ago</div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">DA</span><span class="name">Design Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Designs UI flows and screen layouts</div>
+                <div class="activity-line">Designing quiz flow and UI screens &middot; 1m</div>
               </div>
-              <div class="agent-card">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">TD</span><span class="name">Task Decomposer</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
-                <div class="role">Breaks bets into executable tasks</div>
-                <div class="activity-line">Awaiting bet approval</div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">DV</span><span class="name">Developer Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Builds features and personalization logic</div>
+                <div class="activity-line">Building quiz engine &middot; 1m</div>
+              </div>
+              <div class="agent-card working">
+                <div class="agent-card-header"><div class="left"><span class="avatar avatar-amber">UP</span><span class="name">User Persona Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
+                <div class="role">Maps user personas to feature recommendations</div>
+                <div class="activity-line">Mapping personas to features &middot; 1m</div>
               </div>
             </div>
           </div>
@@ -783,6 +860,7 @@
           <div class="mock-content-body">
             <div class="trigger-rows">
               <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New customer signal</div><div class="trigger-meta">event &rarr; Insight Scout</div></div></div>
+              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Insight actioned</div><div class="trigger-meta">event &rarr; Design Agent, Developer Agent, User Persona Agent</div></div></div>
               <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Weekly insight digest</div><div class="trigger-meta">cron &middot; every Monday 9:00 AM</div></div></div>
             </div>
           </div>
@@ -794,10 +872,11 @@
           <div class="mock-content-body">
             <div class="activity-feed">
               <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Insight Scout</span><span class="desc">created</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="actor-name">Insight Scout</span><span class="desc">linked 4 signals to</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">BS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Bet Shepherd</span><span class="desc">created</span><span class="entity">Mobile onboarding redesign</span><span class="time">1h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">BS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg><span class="actor-name">Bet Shepherd</span><span class="desc">updated status to</span><span class="entity">proposed</span><span class="time">1h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">TD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Task Decomposer</span><span class="desc">created 5 tasks for</span><span class="entity">Mobile onboarding redesign</span><span class="time">58m ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="actor-name">Insight Scout</span><span class="desc">linked 19 signals to</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Insight Scout</span><span class="desc">created bet</span><span class="entity">Onboarding quiz for new users</span><span class="time">2m ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">DA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Design Agent</span><span class="desc">started</span><span class="entity">Design quiz flow and UI screens</span><span class="time">1m ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">DV</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Developer Agent</span><span class="desc">started</span><span class="entity">Build quiz engine and personalization logic</span><span class="time">1m ago</span></div>
+              <div class="activity-item agent"><span class="avatar avatar-sm avatar-amber">UP</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">User Persona Agent</span><span class="desc">started</span><span class="entity">Map user personas to feature recommendations</span><span class="time">1m ago</span></div>
             </div>
           </div>
         </div>
@@ -812,11 +891,6 @@
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Signal</span></div><span class="time">1 day ago</span></div>
                 <p>Detected conversion pattern: <strong>ICP segment converting at 3x average</strong>, but outreach volume to this segment is flat. Recommending targeted campaign.</p>
-              </div>
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">GS</span><span class="agent-name">Growth Strategist</span><span class="badge badge-blue">Needs input</span></div><span class="time">2h ago</span></div>
-                <p>Proposed campaign: <strong>"Double outreach to high-converting segment"</strong> &mdash; 2 weeks, 47 contacts, target 2x reply rate. 4 tasks decomposed.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">Approve campaign</button><button class="pulse-btn">Adjust scope</button></div>
               </div>
             </div>
           </div>
@@ -915,7 +989,7 @@
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="agent-name">SDR Agent</span><span class="badge badge-blue">Review needed</span></div><span class="time">9:22 AM</span></div>
                 <p>Drafted personalised outreach for <strong>31 high-fit contacts</strong>. Messages ready for review before sending.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">Approve &amp; send</button><button class="pulse-btn">Edit drafts</button></div>
+                <div class="pulse-actions"><button class="pulse-btn primary">Approve &amp; send</span><button class="pulse-btn">Edit drafts</button></div>
               </div>
             </div>
           </div>
@@ -1157,12 +1231,35 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
 
 // Pulse buttons
 document.querySelectorAll('.pulse-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  btn.addEventListener('click', (e) => {
+    // "View bet" navigates to bet detail
+    if (btn.textContent.trim() === 'View bet' && currentUseCase === 'product') {
+      e.stopPropagation();
+      document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-product-bet-detail').classList.add('active');
+      // Highlight "Objects" in sidebar
+      document.querySelectorAll('.mock-nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelector('.mock-nav-item[data-screen="objects"]').classList.add('active');
+      currentScreen = 'objects';
+      return;
+    }
     const card = btn.closest('.pulse-card');
     card.style.opacity = '0.4'; card.style.transform = 'scale(0.98)';
     card.style.transition = 'all 0.3s';
     setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 500);
   });
+});
+
+// Bet row in objects table
+document.getElementById('objects-bet-row').addEventListener('click', () => {
+  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-product-bet-detail').classList.add('active');
+});
+
+// Bet detail back link
+document.getElementById('bet-detail-back').addEventListener('click', () => {
+  currentScreen = 'objects';
+  updateMock();
 });
 </script>
 </body>
