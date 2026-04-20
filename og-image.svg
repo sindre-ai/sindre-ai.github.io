@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.28"/>
+      <stop offset="55%" stop-color="#6366f1" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="headline" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#c7c7cd"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#09090b"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- subtle grid -->
+  <g stroke="#ffffff" stroke-opacity="0.04" stroke-width="1">
+    <line x1="0" y1="158" x2="1200" y2="158"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
+    <line x1="0" y1="472" x2="1200" y2="472"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+  </g>
+
+  <!-- Logo mark -->
+  <g transform="translate(96, 96)">
+    <rect width="72" height="72" rx="16" fill="#6366f1"/>
+    <text x="36" y="52" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="46" font-weight="700" text-anchor="middle" fill="#ffffff" letter-spacing="-1">M</text>
+    <text x="96" y="50" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="32" font-weight="600" fill="#f4f4f5" letter-spacing="-0.5">Maskin</text>
+  </g>
+
+  <!-- Headline -->
+  <text x="96" y="310" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="72" font-weight="600" fill="url(#headline)" letter-spacing="-2.5">Your team's workspace</text>
+  <text x="96" y="395" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="72" font-weight="400" fill="#8a8f98" letter-spacing="-2.5">for working with AI <tspan font-style="italic" font-family="'Instrument Serif','Georgia',serif" font-weight="400" fill="#c7c7cd">agents</tspan>.</text>
+
+  <!-- Footer row -->
+  <g transform="translate(96, 520)">
+    <rect width="14" height="14" rx="3" fill="#6366f1"/>
+    <text x="28" y="13" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" fill="#8a8f98" letter-spacing="-0.3">sindre.ai</text>
+    <text x="28" y="46" font-family="'Geist','Inter',system-ui,-apple-system,sans-serif" font-size="18" font-weight="400" fill="#71717a" letter-spacing="-0.2">Shared memory, context, and process. Open source.</text>
+  </g>
+</svg>
