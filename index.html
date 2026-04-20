@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Maskin — Build the machine that does work for you</title>
-  <meta name="description" content="A purpose-built workspace for collaboration between humans and AI agents. Open source." />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link href="https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/style.css" rel="stylesheet" />
+  <title>Maskin — Your team's workspace for working with AI agents</title>
+  <meta name="description" content="Stop using AI alone. Maskin is the purpose-built workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. Open source." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -23,10 +24,10 @@
       --border: rgba(255,255,255,0.06);
       --border-hover: rgba(255,255,255,0.1);
       --border-strong: rgba(255,255,255,0.14);
-      --accent: #6366f1;
+      --accent: var(--tweak-accent, #6366f1);
       --accent-hover: #818cf8;
-      --accent-subtle: rgba(99,102,241,0.1);
-      --accent-text: #a5b4fc;
+      --accent-subtle: color-mix(in srgb, var(--accent) 10%, transparent);
+      --accent-text: color-mix(in srgb, var(--accent) 60%, #fff);
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
       --shadow-md: 0 2px 4px rgba(0,0,0,0.2), 0 8px 24px -4px rgba(0,0,0,0.4);
       --shadow-lg: 0 2px 4px rgba(0,0,0,0.2), 0 12px 32px -4px rgba(0,0,0,0.5), 0 32px 64px -8px rgba(0,0,0,0.3);
@@ -162,8 +163,63 @@
     /* ===== HERO ===== */
     .hero {
       position: relative;
-      padding: 164px 32px 100px;
+      padding: 164px 32px 80px;
       max-width: 1200px; margin: 0 auto;
+    }
+    .hero-label-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 0 4px var(--accent-subtle);
+      animation: pulse-dot 2.4s infinite;
+    }
+    .hero h1 em {
+      font-style: italic; font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400; color: var(--accent-text);
+      letter-spacing: -0.01em;
+    }
+    .split-narrative {
+      margin-top: 72px;
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr;
+      gap: 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      align-items: stretch;
+    }
+    .split-col { padding: 28px 32px; min-height: 220px; }
+    .split-before { border-right: 1px dashed var(--border); opacity: 0.72; }
+    .split-after { border-left: 1px dashed var(--border); padding-left: 32px; }
+    .split-divider {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent-text); font-size: 18px; opacity: 0.7;
+    }
+    .split-label {
+      font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .split-after .split-label { color: var(--accent-text); }
+    .split-title {
+      font-size: 20px; font-weight: 600; letter-spacing: -0.015em;
+      color: var(--text); margin-bottom: 16px; line-height: 1.25;
+    }
+    .split-list { list-style: none; padding: 0; margin: 0; }
+    .split-list li {
+      font-size: 14px; color: var(--text-secondary); line-height: 1.55;
+      padding: 6px 0 6px 18px; position: relative;
+    }
+    .split-before .split-list li::before {
+      content: '\2013'; position: absolute; left: 0; top: 6px;
+      color: var(--text-muted);
+    }
+    .split-after .split-list li::before {
+      content: ''; position: absolute; left: 0; top: 12px;
+      width: 8px; height: 1px; background: var(--accent);
+    }
+    @media (max-width: 768px) {
+      .split-narrative { grid-template-columns: 1fr; }
+      .split-divider { display: none; }
+      .split-before, .split-after { border: none; padding: 24px 20px; }
+      .split-before { border-bottom: 1px dashed var(--border); }
     }
     .hero::before {
       content: '';
@@ -187,6 +243,30 @@
     .hero p {
       font-size: 18px; color: var(--text-secondary);
       max-width: 520px; line-height: 1.6; margin-bottom: 40px;
+    }
+    .hero p.hero-explainer {
+      font-size: 22px; color: var(--text);
+      max-width: 640px; line-height: 1.5; margin-bottom: 18px;
+      font-weight: 400; letter-spacing: -0.01em;
+    }
+    .hero p.hero-explainer em, .hero p.hero-explainer strong {
+      font-weight: 500; color: var(--text);
+    }
+    @media (max-width: 640px) {
+      .hero p.hero-explainer { font-size: 18px; }
+    }
+    .demo-explainer {
+      font-size: clamp(22px, 2.2vw, 28px);
+      font-weight: 500;
+      line-height: 1.35; letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 760px;
+      margin: 0 auto 14px;
+      text-align: center;
+      text-wrap: balance;
+    }
+    @media (max-width: 640px) {
+      .demo-explainer { font-size: 20px; }
     }
     .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .btn-primary {
@@ -491,6 +571,91 @@
     }
     .method-block .method-link:hover { gap: 10px; }
 
+    /* Primitives */
+    .primitives-grid {
+      display: grid;
+      grid-template-columns: 1fr 24px 1fr 24px 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+    .primitive-card {
+      padding: 32px 28px; border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      display: flex; flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .primitive-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .primitive-step {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 36px; font-weight: 400; font-style: italic;
+      color: var(--accent-text); opacity: 0.6;
+      line-height: 1; margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .primitive-name {
+      font-size: 20px; font-weight: 600;
+      color: var(--text); margin-bottom: 10px;
+      letter-spacing: -0.015em;
+    }
+    .primitive-desc {
+      font-size: 14px; color: var(--text-secondary);
+      line-height: 1.6; margin-bottom: 20px;
+      flex: 1;
+    }
+    .primitive-example {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--mock-border);
+      font-size: 12px; color: var(--text);
+    }
+    .primitive-arrow {
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: var(--text-muted);
+      opacity: 0.5;
+    }
+    @media (max-width: 880px) {
+      .primitives-grid { grid-template-columns: 1fr; gap: 12px; }
+      .primitive-arrow { transform: rotate(90deg); padding: 4px 0; }
+    }
+
+    /* CTA card */
+    .cta-section { padding-top: 40px; }
+    .cta-card {
+      padding: 64px 48px; border-radius: 16px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--accent) 8%, var(--bg-surface)) 0%,
+        var(--bg-surface) 100%);
+      position: relative; overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute; top: -120px; right: -120px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, var(--accent) 0%, transparent 60%);
+      opacity: 0.10; pointer-events: none;
+    }
+    .cta-card > * { position: relative; z-index: 1; }
+    .cta-label {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--accent-text);
+      margin-bottom: 14px;
+      display: inline-block;
+      padding: 4px 12px; border-radius: 999px;
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent-subtle);
+    }
+    @media (max-width: 768px) {
+      .cta-card { padding: 40px 24px; }
+    }
+
     /* Use case button group */
     .carousel-tabs { display: flex; gap: 0; }
     .carousel-tab {
@@ -655,34 +820,61 @@
   <div class="nav-inner">
     <a href="/" class="nav-logo">Maskin</a>
     <div class="nav-links">
-      <a href="#use-cases" class="hide-mobile">Use cases</a>
-      <a href="#method" class="hide-mobile">Method</a>
+      <a href="#use-cases" class="hide-mobile">
+</a>
+      <a href="#method" class="hide-mobile">
+</a>
       <a href="https://github.com/sindre-ai/maskin" class="nav-cta" target="_blank">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
         GitHub
       </a>
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
     </div>
   </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
-  <h1 class="fade-up d1">Build the machine that<br>does work for you</h1>
-  <p class="fade-up d2">A purpose-built workspace for collaboration between humans and AI agents. Stop prompting. Start collaborating.</p>
+  <h1 class="fade-up d1" id="hero-headline">Your team has been<br>using AI <em>alone</em>.</h1>
+  <p class="fade-up d2" id="hero-sub">Context scattered across a hundred private Claude chats. Work nobody else can see, remember, or build on. Maskin is the workspace where your whole team &mdash; humans and AI agents &mdash; works together, with shared memory and a real process.</p>
   <div class="hero-actions fade-up d3">
-    <a href="https://github.com/sindre-ai/maskin" class="btn-primary" target="_blank">
-      View on GitHub
+    <a href="http://meshfirm.com/bookmagnus" class="btn-primary" target="_blank">
+      Join the waitlist
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
+    <a href="https://github.com/sindre-ai/maskin" class="btn-secondary" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      Explore on GitHub
+    </a>
+  </div>
+
+  <!-- Split narrative: Before / After -->
+  <div class="split-narrative fade-up d3">
+    <div class="split-col split-before">
+      <div class="split-title">Everyone uses AI alone.</div>
+      <ul class="split-list">
+        <li><span>Ten private Claude tabs. Zero shared context.</span></li>
+        <li><span>Same questions re-asked every Monday.</span></li>
+        <li><span>Prompts live in people's heads, not the team.</span></li>
+        <li><span>Agents are tools you pick up and put down.</span></li>
+      </ul>
+    </div>
+    <div class="split-divider"><span>&rarr;</span></div>
+    <div class="split-col split-after">
+      <div class="split-title">Your team works with AI.</div>
+      <ul class="split-list">
+        <li><span>One workspace. Humans and agents side-by-side.</span></li>
+        <li><span>Shared memory: insights, bets, tasks &mdash; persistent.</span></li>
+        <li><span>Agents have roles, not prompts. They stay on the job.</span></li>
+        <li><span>The process runs itself. You do the judgment work.</span></li>
+      </ul>
+    </div>
   </div>
 </section>
 
 <!-- Interactive Mockup with Use Case Carousel -->
 <section class="mockup-section fade-up" id="use-cases">
+  <p class="demo-explainer">Maskin is a shared workspace where your team and its AI agents work on the same insights, bets, and tasks.</p>
+  <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; text-align: center; letter-spacing: 0.01em; max-width: 640px; margin-left:auto; margin-right:auto; line-height:1.6;">An agent just spotted a pattern in your customer signals. Here&rsquo;s what happens next &mdash; pick a team to watch it play out.</p>
   <!-- Use case button group -->
   <div class="carousel-tabs" style="margin-bottom:16px;">
     <button class="carousel-tab active" data-usecase="product">Product</button>
@@ -740,7 +932,7 @@
             <div class="pulse-cards">
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="agent-name">Insight Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">2 min ago</span></div>
-                <p>Detected signal cluster: 12 support tickets, 4 churn interviews, and 3 NPS detractors all reference <strong>"onboarding friction"</strong>. Root cause: new users don't understand which features match their use case. Created bet: <strong>"Onboarding quiz"</strong> to guide new users. Design Agent, Developer Agent, and User Persona Agent are already building it.</p>
+                <p>19 signals point to <strong>"onboarding friction"</strong>. Created bet: <strong>"Onboarding quiz"</strong>. Three agents are already on it.</p>
                 <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
@@ -890,7 +1082,7 @@
             <div class="pulse-cards">
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">1 day ago</span></div>
-                <p>Detected conversion pattern: <strong>ICP segment converting at 3x average</strong>, but outreach volume to this segment is flat. Created bet: <strong>"Double outreach to high-converting segment"</strong>. Growth Strategist, SDR Agent, and Content Creator are executing the campaign.</p>
+                <p>ICP segment is converting at <strong>3x average</strong> but outreach is flat. Created bet: <strong>"Double outreach to high-converting segment"</strong>. Three agents are running the campaign.</p>
                 <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
@@ -1036,7 +1228,7 @@
             <div class="pulse-cards">
               <div class="pulse-card">
                 <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="agent-name">Research Agent</span><span class="badge badge-amber">Recommendation</span></div><span class="time">8:30 AM</span></div>
-                <p>Detected <strong>3 discovery calls booked for tomorrow</strong> with no prep materials. Historical data shows prepped calls convert at 2x the rate. Created bet: <strong>"Auto-prep tomorrow's discovery calls"</strong>. Research Agent, Prep Agent, and Competitive Intel Agent are building briefings.</p>
+                <p><strong>3 discovery calls</strong> booked for tomorrow, no prep. Prepped calls convert at <strong>2x</strong>. Created bet: <strong>"Auto-prep tomorrow's discovery calls"</strong>. Three agents are building briefings.</p>
                 <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
               </div>
             </div>
@@ -1174,13 +1366,42 @@
   </div>
 </section>
 
+<!-- Primitives -->
+<section class="section fade-up" id="primitives" style="padding-bottom:40px;">
+  <h2>Three objects.<br>Every workflow your team runs.</h2>
+  <p class="subtitle">Insights, bets, and tasks. The same three shapes that have always described how teams work &mdash; now typed, linked, and operable by humans and agents on equal footing.</p>
+  <div class="primitives-grid">
+    <div class="primitive-card">
+      <div class="primitive-step">01</div>
+      <div class="primitive-name">Insight</div>
+      <p class="primitive-desc">A pattern worth acting on. A support-ticket cluster. A conversion spike. A churn theme. Signals the team — or an agent — has noticed.</p>
+      <div class="primitive-example"><span class="badge badge-insight">insight</span> Onboarding drop-off signal cluster</div>
+    </div>
+    <div class="primitive-arrow">&rarr;</div>
+    <div class="primitive-card">
+      <div class="primitive-step">02</div>
+      <div class="primitive-name">Bet</div>
+      <p class="primitive-desc">A decision to try something. A scoped hypothesis with a goal, evidence, and a timeline. This is where human judgment compounds.</p>
+      <div class="primitive-example"><span class="badge badge-bet">bet</span> Onboarding quiz for new users</div>
+    </div>
+    <div class="primitive-arrow">&rarr;</div>
+    <div class="primitive-card">
+      <div class="primitive-step">03</div>
+      <div class="primitive-name">Task</div>
+      <p class="primitive-desc">The work itself. Assigned to a human or an agent with a role. Linked back to the bet, so progress is always in context.</p>
+      <div class="primitive-example"><span class="badge badge-task">task</span> Design quiz flow and UI screens</div>
+    </div>
+  </div>
+</section>
+
 <!-- Method -->
-<section class="section fade-up" id="method">
+<section class="section fade-up" id="method" style="padding-top:40px;">
   <div class="method-block">
-    <blockquote>"The process was never the product. It was the cost of coordination. And we were optimising the cost, not the outcome."</blockquote>
-    <p class="method-desc">For fifty years, every methodology we built was designed to protect expensive engineering time. Waterfall, Agile, Scrum, SAFe &mdash; all sophisticated answers to the same question: how do we coordinate scarce, expensive humans around a long-running build?</p>
-    <p class="method-desc">That constraint is dissolving. Agents can carry the standups, the tickets, the handoffs, the status updates, the documentation, the chasing. The coordination overhead that consumed most of a team's energy can now run itself.</p>
-    <p class="method-desc">What's left is what was always the actual work: judgment, creative leaps, relationships, and craft. The taste to know which bet is worth making. The conversation that surfaces what a customer actually needs. The instinct to throw out a draft and start again. These don't compress, and they don't delegate. They're the product.</p>
+    <blockquote>"Every great product is a series of bets placed with taste."</blockquote>
+    <p class="method-desc">Until now, software has treated AI like a vending machine. You prompt, it answers, you paste. The human does all the carrying.</p>
+    <p class="method-desc">Maskin is built for the opposite. Humans and agents share the same workspace, the same memory, the same insights and bets. An agent spots a signal cluster overnight; a PM wakes up and shapes it into a bet; another agent decomposes it into work; a designer picks up the prototype. Everyone &mdash; silicon and carbon &mdash; is a first-class teammate with a role, a history, and accountability.</p>
+    <p class="method-desc">We&rsquo;re entering a world where a team of three humans and four agents outperforms a team of twenty &mdash; not because the humans work harder, but because the agents never lose context and never wait to be told what&rsquo;s next. Taste still decides which bet is worth making. That&rsquo;s the part that doesn&rsquo;t delegate.</p>
+    <a href="https://github.com/sindre-ai/maskin" class="method-link" target="_blank">Read the full manifesto <span>&rarr;</span></a>
   </div>
 </section>
 
@@ -1221,14 +1442,20 @@
 </section>
 
 <!-- CTA -->
-<section class="section fade-up" style="padding-bottom:40px;">
-  <h2 style="margin-bottom:16px;">Make product operations<br>self-driving</h2>
-  <p class="subtitle">The best teams will be the ones where the process runs itself &mdash; so the humans can do the work only humans can do.</p>
-  <div class="hero-actions">
-    <a href="https://github.com/sindre-ai/maskin" class="btn-primary" target="_blank">
-      View on GitHub
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
+<section class="section fade-up cta-section" style="padding-bottom:40px;">
+  <div class="cta-card">
+    <h2 style="margin-bottom:18px;">Bring your team<br>into the workspace.</h2>
+    <p class="subtitle" style="margin-bottom:32px;">We&rsquo;re onboarding teams to the hosted beta. Or clone the repo today and self-host &mdash; your prompts, context, and agents live in one place, and your teammates finally live there with you.</p>
+    <div class="hero-actions">
+      <a href="http://meshfirm.com/bookmagnus" class="btn-primary" target="_blank">
+        Join the waitlist
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://github.com/sindre-ai/maskin" class="btn-secondary" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        Self-host on GitHub
+      </a>
+    </div>
   </div>
 </section>
 
@@ -1243,6 +1470,10 @@
       <a href="http://meshfirm.com/bookmagnus" target="_blank">Book a meeting</a>
       <a href="https://github.com/sindre-ai/maskin" target="_blank">GitHub</a>
       <a href="https://sindre.ai" target="_blank">sindre.ai</a>
+      <button class="theme-toggle footer-theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
     </div>
   </div>
 </footer>
@@ -1392,5 +1623,217 @@ document.getElementById('bet-detail-back').addEventListener('click', () => {
   updateMock();
 });
 </script>
+
+<!-- ===== TWEAKS ===== -->
+<div id="tweaks-panel" style="display:none;">
+  <div class="tweaks-head">
+    <span class="tweaks-title">Tweaks</span>
+    <button id="tweaks-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="tweaks-body">
+    <div class="tweak-group">
+      <label class="tweak-label">Accent color</label>
+      <div class="tweak-swatches" id="tweak-accent-swatches">
+        <button data-color="#6366f1" style="background:#6366f1" title="Indigo"></button>
+        <button data-color="#8b5cf6" style="background:#8b5cf6" title="Violet"></button>
+        <button data-color="#06b6d4" style="background:#06b6d4" title="Cyan"></button>
+        <button data-color="#10b981" style="background:#10b981" title="Emerald"></button>
+        <button data-color="#f59e0b" style="background:#f59e0b" title="Amber"></button>
+        <button data-color="#ef4444" style="background:#ef4444" title="Red"></button>
+        <button data-color="#ec4899" style="background:#ec4899" title="Pink"></button>
+        <button data-color="#c8ff4a" style="background:#c8ff4a" title="Lime"></button>
+      </div>
+    </div>
+    <div class="tweak-group">
+      <label class="tweak-label">Theme</label>
+      <div class="tweak-segment" id="tweak-theme-segment">
+        <button data-theme="dark">Dark</button>
+        <button data-theme="light">Light</button>
+      </div>
+    </div>
+    <div class="tweak-group">
+      <label class="tweak-label">Hero headline</label>
+      <div class="tweak-segment tweak-segment-vert" id="tweak-headline-segment">
+        <button data-headline="solo">Your team has been using AI <em>alone</em>.</button>
+        <button data-headline="together">Finally, a workspace<br>where your team<br>works <em>with</em> AI.</button>
+        <button data-headline="stop">Stop prompting.<br>Start <em>shipping</em>.</button>
+      </div>
+    </div>
+    <div class="tweak-group">
+      <label class="tweak-label">Hero background glow</label>
+      <div class="tweak-segment" id="tweak-glow-segment">
+        <button data-glow="on">On</button>
+        <button data-glow="off">Off</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #tweaks-panel {
+    position: fixed; right: 20px; bottom: 20px; z-index: 10000;
+    width: 300px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, sans-serif;
+    color: var(--text);
+    overflow: hidden;
+  }
+  .tweaks-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+  }
+  .tweaks-title { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+  #tweaks-close {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 20px; line-height: 1; cursor: pointer; padding: 0 4px;
+  }
+  #tweaks-close:hover { color: var(--text); }
+  .tweaks-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 16px; max-height: 70vh; overflow-y: auto; }
+  .tweak-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-muted); font-weight: 500; display: block; margin-bottom: 8px;
+  }
+  .tweak-swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tweak-swatches button {
+    width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border);
+    cursor: pointer; padding: 0; transition: all 0.15s;
+  }
+  .tweak-swatches button:hover { transform: scale(1.1); }
+  .tweak-swatches button.active {
+    box-shadow: 0 0 0 2px var(--bg-elevated), 0 0 0 4px var(--text);
+  }
+  .tweak-segment {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .tweak-segment-vert { grid-template-columns: 1fr; }
+  .tweak-segment button {
+    padding: 8px 10px; background: transparent; border: none;
+    color: var(--text-secondary); font-size: 12px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s;
+    text-align: left; line-height: 1.4;
+    font-family: inherit;
+  }
+  .tweak-segment button em {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-style: italic; font-weight: 400;
+  }
+  .tweak-segment:not(.tweak-segment-vert) button { text-align: center; }
+  .tweak-segment button + button { border-left: 1px solid var(--border); }
+  .tweak-segment-vert button + button { border-left: none; border-top: 1px solid var(--border); }
+  .tweak-segment button:hover { background: var(--bg-hover); color: var(--text); }
+  .tweak-segment button.active { background: var(--accent-subtle); color: var(--accent-text); }
+</style>
+
+<script>
+(function() {
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "#6366f1",
+    "theme": "dark",
+    "headline": "solo",
+    "glow": "on"
+  }/*EDITMODE-END*/;
+
+  const HEADLINES = {
+    solo: 'Your team has been<br>using AI <em>alone</em>.',
+    together: 'A workspace where<br>your team works <em>with</em> AI.',
+    stop: 'Stop prompting.<br>Start <em>shipping</em>.'
+  };
+  const SUBS = {
+    solo: "Context scattered across a hundred private Claude chats. Work nobody else can see, remember, or build on. Maskin is the workspace where your whole team — humans and AI agents — works together, with shared memory and a real process.",
+    together: "One place for humans and AI agents to work side-by-side. Shared memory, persistent context, real collaboration — not another chat window.",
+    stop: "AI works best when the whole team is in the loop. Maskin gives you one workspace with shared memory, defined agent roles, and a process that actually runs."
+  };
+
+  const state = { ...TWEAK_DEFAULTS };
+
+  function apply(patch) {
+    Object.assign(state, patch);
+    // Accent
+    document.documentElement.style.setProperty('--tweak-accent', state.accent);
+    // Theme
+    if (state.theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    try { localStorage.setItem('maskin-theme', state.theme); } catch(e){}
+    const sun = document.querySelector('.sun-icon'), moon = document.querySelector('.moon-icon');
+    if (sun) sun.style.display = state.theme === 'light' ? 'block' : 'none';
+    if (moon) moon.style.display = state.theme === 'light' ? 'none' : 'block';
+    // Headline
+    const h1 = document.getElementById('hero-headline');
+    const p = document.getElementById('hero-sub');
+    if (h1 && HEADLINES[state.headline]) h1.innerHTML = HEADLINES[state.headline];
+    if (p && SUBS[state.headline]) p.textContent = SUBS[state.headline];
+    // Glow
+    document.body.classList.toggle('no-glow', state.glow === 'off');
+    // Sync UI
+    syncUI();
+  }
+
+  function syncUI() {
+    document.querySelectorAll('#tweak-accent-swatches button').forEach(b => {
+      b.classList.toggle('active', b.dataset.color === state.accent);
+    });
+    document.querySelectorAll('#tweak-theme-segment button').forEach(b => {
+      b.classList.toggle('active', b.dataset.theme === state.theme);
+    });
+    document.querySelectorAll('#tweak-headline-segment button').forEach(b => {
+      b.classList.toggle('active', b.dataset.headline === state.headline);
+    });
+    document.querySelectorAll('#tweak-glow-segment button').forEach(b => {
+      b.classList.toggle('active', b.dataset.glow === state.glow);
+    });
+  }
+
+  function persist(edits) {
+    try {
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+    } catch(e) {}
+  }
+
+  // Wire controls
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-color]');
+    if (t) { apply({ accent: t.dataset.color }); persist({ accent: t.dataset.color }); return; }
+    const th = e.target.closest('#tweak-theme-segment [data-theme]');
+    if (th) { apply({ theme: th.dataset.theme }); persist({ theme: th.dataset.theme }); return; }
+    const hd = e.target.closest('#tweak-headline-segment [data-headline]');
+    if (hd) { apply({ headline: hd.dataset.headline }); persist({ headline: hd.dataset.headline }); return; }
+    const gl = e.target.closest('#tweak-glow-segment [data-glow]');
+    if (gl) { apply({ glow: gl.dataset.glow }); persist({ glow: gl.dataset.glow }); return; }
+  });
+
+  // Close button
+  document.getElementById('tweaks-close').addEventListener('click', () => {
+    document.getElementById('tweaks-panel').style.display = 'none';
+  });
+
+  // Listen for activate/deactivate
+  window.addEventListener('message', (e) => {
+    const d = e && e.data || {};
+    if (d.type === '__activate_edit_mode') {
+      document.getElementById('tweaks-panel').style.display = 'block';
+    } else if (d.type === '__deactivate_edit_mode') {
+      document.getElementById('tweaks-panel').style.display = 'none';
+    }
+  });
+
+  // Apply saved defaults on init
+  apply(state);
+
+  // Announce availability
+  try { window.parent.postMessage({ type: '__edit_mode_available' }, '*'); } catch(e) {}
+})();
+</script>
+
+<style>
+  body.no-glow .hero::before,
+  body.no-glow .mockup-section::before { display: none !important; }
+</style>
 </body>
 </html>
