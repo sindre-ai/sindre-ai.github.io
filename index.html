@@ -749,6 +749,28 @@
     .pillar h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; }
     .pillar p { font-size: 14px; color: var(--text-secondary); line-height: 1.55; }
 
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 820px; }
+    .faq-item {
+      border: 1px solid var(--border); border-radius: 12px;
+      background: var(--bg-surface);
+      transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .faq-item:hover { border-color: var(--border-hover); }
+    .faq-item summary {
+      list-style: none; cursor: pointer;
+      padding: 22px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-q { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+    .faq-chevron { color: var(--text-muted); transition: transform 0.25s ease; flex-shrink: 0; }
+    .faq-item[open] .faq-chevron { transform: rotate(180deg); color: var(--accent-text); }
+    .faq-a {
+      padding: 0 24px 22px; margin: 0;
+      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+    }
+
     /* Tech bar */
     .tech-bar {
       display: flex; align-items: center; justify-content: center;
@@ -1438,6 +1460,70 @@
     <div class="tech-item"><div class="label">Deploy</div><div class="value">Self-host or managed</div></div>
     <div class="tech-item"><div class="label">Integrations</div><div class="value">API tokens</div></div>
     <div class="tech-item"><div class="label">GitHub</div><div class="value"><a href="https://github.com/sindre-ai/maskin" target="_blank" style="color:var(--text);text-decoration:none;display:inline-flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.6"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span id="star-count-tech">Stars</span></a></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section fade-up" id="faq">
+  <h2>Questions, answered</h2>
+  <p class="subtitle">Eight things people ask before they sign up.</p>
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">How is this different from Claude Projects or ChatGPT Teams?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Those share prompts. Maskin shares state. The insight an agent spotted overnight is the same insight you open at 9am, linked to the bet you shaped yesterday, linked to the task your designer just picked up. A chat history is not a team memory.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">Do I need engineers to run this?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">No for hosted &mdash; sign up, invite the team, plug in a model key, go. Yes if you want to self-host, but it&rsquo;s one docker-compose file away.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">What&rsquo;s a &ldquo;bet&rdquo;?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">A scoped hypothesis with a goal, evidence, and a timeline. Borrowed from Shape Up. It&rsquo;s the unit where human judgment compounds &mdash; insights get noticed, tasks get executed, bets get chosen.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">What models can I use?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Bring your own. Anthropic, OpenAI, local via Ollama &mdash; anything that speaks a standard API. Your key, your spend, your rate limits.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">Where does my data live? Does it train anything?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Hosted: isolated tenants in EU or US regions. Self-host: wherever you put the container. Either way your prompts and context are never used as training data &mdash; they belong to you.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">Can I start solo, or do I need a team on day one?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Start solo. A lot of people do. Maskin works as a single-player tool and gets compounding-better the moment another teammate or agent joins. Nothing locks until you invite someone.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">What does it cost?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Free while we&rsquo;re in beta. Self-host stays free forever. Early users get a heads-up and a grace period before paid tiers land.</p>
+    </details>
+    <details class="faq-item">
+      <summary>
+        <span class="faq-q">Why &ldquo;Maskin&rdquo;?</span>
+        <svg class="faq-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </summary>
+      <p class="faq-a">Danish for &ldquo;the machine.&rdquo;</p>
+    </details>
   </div>
 </section>
 
