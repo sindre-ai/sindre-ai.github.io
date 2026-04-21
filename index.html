@@ -17,7 +17,10 @@
 
   <!-- Icons -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -25,7 +28,8 @@
   <meta property="og:url" content="https://sindre.ai/" />
   <meta property="og:title" content="Maskin — Your team's workspace for working with AI agents" />
   <meta property="og:description" content="Stop using AI alone. Maskin is the purpose-built workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. Open source." />
-  <meta property="og:image" content="https://sindre.ai/og-image.svg" />
+  <meta property="og:image" content="https://sindre.ai/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Maskin — Your team's workspace for working with AI agents" />
@@ -37,7 +41,7 @@
   <meta name="twitter:creator" content="@Sindre_ai" />
   <meta name="twitter:title" content="Maskin — Your team's workspace for working with AI agents" />
   <meta name="twitter:description" content="Stop using AI alone. Maskin is the workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. Open source." />
-  <meta name="twitter:image" content="https://sindre.ai/og-image.svg" />
+  <meta name="twitter:image" content="https://sindre.ai/og-image.png" />
   <meta name="twitter:image:alt" content="Maskin — Your team's workspace for working with AI agents" />
 
   <!-- Structured data -->
@@ -53,6 +57,113 @@
       "https://github.com/sindre-ai/maskin",
       "https://x.com/Sindre_ai",
       "https://www.linkedin.com/company/sindre"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Maskin",
+    "url": "https://sindre.ai/",
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": "Collaboration",
+    "operatingSystem": "Web, Self-hosted (Docker)",
+    "description": "MCP-native workspace for teams collaborating with AI agents. Shared memory, context, and process across humans and agents. Bring your own model. Open source.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "availability": "https://schema.org/InStock"
+    },
+    "softwareVersion": "beta",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "featureList": [
+      "MCP-native protocol (Model Context Protocol)",
+      "Bring your own model — Anthropic Claude, OpenAI ChatGPT, Ollama, or any standard API",
+      "Works with Claude, ChatGPT, Cursor, and any MCP client",
+      "Shared memory and context across humans and AI agents",
+      "Insights, Bets, and Tasks — typed primitives for team workflows",
+      "Apache 2.0 license — inspect every layer",
+      "Self-host with one docker-compose file, or use managed hosting",
+      "Sandboxed agents run safely in parallel containers"
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "Maskin",
+      "url": "https://sindre.ai/"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How is this different from Claude Projects or ChatGPT Teams?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Those share prompts. Maskin shares state. The insight an agent spotted overnight is the same insight you open at 9am, linked to the bet you shaped yesterday, linked to the task your designer just picked up. A chat history is not a team memory."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need engineers to run this?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No for hosted — sign up, invite the team, plug in a model key, go. Yes if you want to self-host, but it’s one docker-compose file away."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What’s a “bet”?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A scoped hypothesis with a goal, evidence, and a timeline. Borrowed from Shape Up. It’s the unit where human judgment compounds — insights get noticed, tasks get executed, bets get chosen."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What models can I use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Bring your own. Anthropic, OpenAI, local via Ollama — anything that speaks a standard API. Your key, your spend, your rate limits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where does my data live? Does it train anything?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Hosted: isolated tenants in EU or US regions. Self-host: wherever you put the container. Either way your prompts and context are never used as training data — they belong to you."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I start solo, or do I need a team on day one?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Start solo. A lot of people do. Maskin works as a single-player tool and gets compounding-better the moment another teammate or agent joins. Nothing locks until you invite someone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does it cost?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Free while we’re in beta. Self-host stays free forever. Early users get a heads-up and a grace period before paid tiers land."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Why “Maskin”?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Danish for “the machine.”"
+        }
+      }
     ]
   }
   </script>
@@ -1605,9 +1716,9 @@
     </div>
     <div class="footer-links">
       <a href="http://meshfirm.com/bookmagnus" target="_blank" rel="noopener">Book a meeting</a>
-      <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="noopener" aria-label="Maskin on GitHub">GitHub</a>
-      <a href="https://x.com/Sindre_ai" target="_blank" rel="noopener" aria-label="Sindre on X">X</a>
-      <a href="https://www.linkedin.com/company/sindre" target="_blank" rel="noopener" aria-label="Sindre on LinkedIn">LinkedIn</a>
+      <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="me noopener" aria-label="Maskin on GitHub">GitHub</a>
+      <a href="https://x.com/Sindre_ai" target="_blank" rel="me noopener" aria-label="Sindre on X">X</a>
+      <a href="https://www.linkedin.com/company/sindre" target="_blank" rel="me noopener" aria-label="Sindre on LinkedIn">LinkedIn</a>
       <a href="https://sindre.ai" target="_blank" rel="noopener">sindre.ai</a>
       <button class="theme-toggle footer-theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
         <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
