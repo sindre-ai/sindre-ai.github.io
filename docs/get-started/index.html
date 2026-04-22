@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Get started — Maskin</title>
+  <meta name="description" content="Connect Claude to the hosted Maskin MCP in under five minutes." />
+
+  <link rel="canonical" href="https://sindre.ai/docs/get-started/" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+  <meta name="color-scheme" content="dark light" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Maskin" />
+  <meta property="og:url" content="https://sindre.ai/docs/get-started/" />
+  <meta property="og:title" content="Get started — Maskin" />
+  <meta property="og:description" content="Connect Claude to the hosted Maskin MCP in under five minutes." />
+  <meta property="og:image" content="https://sindre.ai/og-image.svg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Get started — Maskin" />
+  <meta name="twitter:description" content="Connect Claude to the hosted Maskin MCP in under five minutes." />
+  <meta name="twitter:image" content="https://sindre.ai/og-image.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --bg-surface: #131316;
+      --bg-elevated: #1c1c20;
+      --bg-hover: #222228;
+      --bg-glass: rgba(9,9,11,0.82);
+      --text: #f4f4f5;
+      --text-secondary: #8a8f98;
+      --text-muted: #71717a;
+      --border: rgba(255,255,255,0.06);
+      --border-hover: rgba(255,255,255,0.1);
+      --border-strong: rgba(255,255,255,0.14);
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-subtle: color-mix(in srgb, var(--accent) 10%, transparent);
+      --accent-text: color-mix(in srgb, var(--accent) 60%, #fff);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 2px 4px rgba(0,0,0,0.2), 0 8px 24px -4px rgba(0,0,0,0.4);
+      --code-bg: #131316;
+      --code-border: rgba(255,255,255,0.08);
+    }
+
+    [data-theme="light"] {
+      --bg: #fafafa;
+      --bg-surface: #f4f4f5;
+      --bg-elevated: #ffffff;
+      --bg-hover: #e4e4e7;
+      --bg-glass: rgba(250,250,250,0.82);
+      --text: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #a1a1aa;
+      --border: rgba(0,0,0,0.06);
+      --border-hover: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.14);
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-subtle: rgba(99,102,241,0.06);
+      --accent-text: #4338ca;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 2px 4px rgba(0,0,0,0.03), 0 8px 24px -4px rgba(0,0,0,0.06);
+      --code-bg: #f4f4f5;
+      --code-border: rgba(0,0,0,0.06);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 9999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: 0.025;
+    }
+    [data-theme="light"] body::before { opacity: 0.018; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 72px;
+    }
+    .nav-logo {
+      font-size: 17px; font-weight: 600; color: var(--text);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a {
+      font-size: 14px; font-weight: 450; color: var(--text-secondary);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .theme-toggle {
+      background: none; border: none; border-radius: 8px;
+      width: 36px; height: 36px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted); transition: all 0.2s;
+    }
+    .theme-toggle:hover { color: var(--text-secondary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+
+    .page {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 128px 32px 120px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 28px;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .page-eyebrow {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.14em; color: var(--accent-text);
+    }
+    .page-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-secondary {
+      background: var(--bg-elevated);
+      color: var(--text);
+      border: 1px solid var(--border-hover);
+    }
+    .btn-secondary:hover { border-color: var(--border-strong); background: var(--bg-hover); }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+      border: 1px solid var(--text);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+    /* Markdown content styles */
+    main {
+      font-size: 16px;
+      color: var(--text);
+    }
+    main h1 {
+      font-size: clamp(36px, 4.5vw, 44px);
+      font-weight: 600; letter-spacing: -0.025em;
+      line-height: 1.12;
+      margin: 0 0 20px;
+      color: var(--text);
+    }
+    main h1 em {
+      font-style: italic;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400; color: var(--accent-text);
+    }
+    main h2 {
+      font-size: 24px; font-weight: 600; letter-spacing: -0.015em;
+      margin: 48px 0 16px; color: var(--text);
+    }
+    main h3 {
+      font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+      margin: 32px 0 12px; color: var(--text);
+    }
+    main p {
+      font-size: 16px; color: var(--text-secondary);
+      line-height: 1.7; margin: 0 0 16px;
+    }
+    main a {
+      color: var(--accent-text);
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent-text) 30%, transparent);
+      transition: border-color 0.15s;
+    }
+    main a:hover { border-bottom-color: var(--accent-text); }
+    main strong { color: var(--text); font-weight: 600; }
+    main ul, main ol {
+      margin: 0 0 20px; padding-left: 24px;
+      color: var(--text-secondary);
+    }
+    main li { margin: 6px 0; line-height: 1.65; }
+    main li::marker { color: var(--text-muted); }
+    main hr {
+      border: none; border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+    main blockquote {
+      border-left: 2px solid var(--accent);
+      padding: 4px 0 4px 20px;
+      margin: 24px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+    main code {
+      font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      color: var(--text);
+    }
+    main pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    main pre code {
+      padding: 0; border: none; background: none;
+      font-size: inherit;
+      color: var(--text);
+    }
+    main table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    main th, main td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    main th {
+      background: var(--bg-surface);
+      color: var(--text);
+      font-weight: 600;
+    }
+    main td { color: var(--text-secondary); }
+
+    .status {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--text-muted);
+      padding: 32px 0;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--text-muted);
+      animation: pulse-dot 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+    .error-box {
+      padding: 20px;
+      border: 1px solid var(--border-hover);
+      border-radius: 10px;
+      background: var(--bg-surface);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .error-box strong { color: var(--text); }
+
+    footer {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 32px 60px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .page { padding: 104px 20px 80px; }
+      .nav-inner { padding: 0 20px; }
+      .page-header { flex-direction: column; align-items: flex-start; }
+      footer { padding: 40px 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">Maskin</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="noopener">GitHub</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <header class="page-header">
+    <div>
+      <div class="page-eyebrow">Documentation</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-secondary" id="copy-page" type="button" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <span id="copy-page-label">Copy Page</span>
+      </button>
+      <a class="btn btn-primary" id="open-in-claude" href="#" aria-disabled="true">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/>
+        </svg>
+        Open in Claude
+      </a>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="status" id="status">
+      <span class="status-dot"></span>
+      <span>Loading&hellip;</span>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <span>&copy; Maskin</span>
+  <span>
+    <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md" target="_blank" rel="noopener">Edit on GitHub</a>
+  </span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var stored = null;
+    try { stored = localStorage.getItem('theme'); } catch (e) {}
+    if (stored === 'light' || stored === 'dark') {
+      root.setAttribute('data-theme', stored);
+    }
+    var btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.addEventListener('click', function () {
+        var current = root.getAttribute('data-theme');
+        var next = current === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('theme', next); } catch (e) {}
+      });
+    }
+  })();
+
+  (function () {
+    var statusEl = document.getElementById('status');
+    var contentEl = document.getElementById('content');
+
+    if (typeof marked === 'undefined') {
+      contentEl.innerHTML = '<div class="error-box"><strong>Could not load renderer.</strong> The marked.js CDN may be blocked. Try reloading, or read <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md">the source markdown on GitHub</a>.</div>';
+      return;
+    }
+
+    marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+
+    fetch('get-started.md', { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (md) {
+        contentEl.innerHTML = marked.parse(md);
+      })
+      .catch(function (err) {
+        contentEl.innerHTML = '<div class="error-box"><strong>Could not load get-started.md.</strong> ' +
+          String(err).replace(/</g, '&lt;') +
+          '. Read <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md">the source on GitHub</a> instead.</div>';
+      });
+  })();
+</script>
+
+</body>
+</html>
