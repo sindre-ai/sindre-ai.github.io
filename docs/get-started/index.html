@@ -351,7 +351,7 @@
         </svg>
         <span id="copy-page-label">Copy Page</span>
       </button>
-      <a class="btn btn-primary" id="open-in-claude" href="#" aria-disabled="true">
+      <a class="btn btn-primary" id="open-in-claude" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/>
         </svg>
@@ -392,6 +392,18 @@
         root.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
       });
+    }
+  })();
+
+  (function () {
+    var openInClaudeBtn = document.getElementById('open-in-claude');
+    if (openInClaudeBtn) {
+      var prompt =
+        'Help me set up the Maskin MCP server. The full setup guide is at ' +
+        'https://sindre.ai/docs/get-started/ — please fetch it, then walk me ' +
+        'through the steps and run the `claude mcp add` command once I give ' +
+        'you my Maskin API key and workspace ID.';
+      openInClaudeBtn.href = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
     }
   })();
 
