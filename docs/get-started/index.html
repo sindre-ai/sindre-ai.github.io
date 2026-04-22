@@ -177,14 +177,11 @@
       border: 1px solid var(--text);
     }
     .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
-    .btn[disabled] { opacity: 0.55; cursor: not-allowed; }
-    .btn[disabled]:hover { border-color: var(--border-hover); background: var(--bg-elevated); }
     .btn.is-copied {
       border-color: color-mix(in srgb, var(--accent) 55%, transparent);
       color: var(--accent-text);
     }
 
-    /* Markdown content styles */
     main {
       font-size: 16px;
       color: var(--text);
@@ -262,44 +259,6 @@
       font-size: inherit;
       color: var(--text);
     }
-    main table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 20px 0;
-      font-size: 14px;
-    }
-    main th, main td {
-      border: 1px solid var(--border);
-      padding: 8px 12px;
-      text-align: left;
-    }
-    main th {
-      background: var(--bg-surface);
-      color: var(--text);
-      font-weight: 600;
-    }
-    main td { color: var(--text-secondary); }
-
-    .status {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 14px; color: var(--text-muted);
-      padding: 32px 0;
-    }
-    .status-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--text-muted);
-      animation: pulse-dot 1.4s ease-in-out infinite;
-    }
-    @keyframes pulse-dot { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
-    .error-box {
-      padding: 20px;
-      border: 1px solid var(--border-hover);
-      border-radius: 10px;
-      background: var(--bg-surface);
-      font-size: 14px;
-      color: var(--text-secondary);
-    }
-    .error-box strong { color: var(--text); }
 
     footer {
       max-width: 760px;
@@ -344,7 +303,7 @@
       <div class="page-eyebrow">Documentation</div>
     </div>
     <div class="page-actions">
-      <button class="btn btn-secondary" id="copy-page" type="button" disabled>
+      <button class="btn btn-secondary" id="copy-page" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="9" y="9" width="13" height="13" rx="2"/>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
@@ -361,10 +320,86 @@
   </header>
 
   <main id="content">
-    <div class="status" id="status">
-      <span class="status-dot"></span>
-      <span>Loading&hellip;</span>
-    </div>
+    <h1>Get started with <em>Maskin</em></h1>
+    <p>Maskin is an open-source workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. This guide connects Claude to the hosted Maskin MCP so you can drive a workspace from inside Claude Code or Claude Desktop. Expect to spend about five minutes.</p>
+
+    <h2>Prerequisites</h2>
+    <ul>
+      <li><strong><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></strong> or <strong><a href="https://claude.ai/download">Claude Desktop</a></strong> installed.</li>
+      <li>An <strong><a href="https://console.anthropic.com/settings/keys">Anthropic API key</a></strong>. Maskin runs Claude Code in sandboxes on your behalf and uses this key to authenticate those runs.</li>
+    </ul>
+    <p>You don't need to clone anything, install dependencies, or run a local server. Maskin is hosted at <a href="https://maskin.sindre.ai"><code>maskin.sindre.ai</code></a>.</p>
+
+    <h2>Step 1 — Sign in and create a workspace</h2>
+    <ol>
+      <li>Go to <a href="https://maskin.sindre.ai"><strong>maskin.sindre.ai</strong></a> and sign in.</li>
+      <li>Create your first workspace from the prompt. A workspace is an isolated environment with its own objects, actors, and settings — you can create more later.</li>
+    </ol>
+    <p>Once you're in, you'll see the unified pipeline view: <strong>Insights → Bets → Tasks</strong>. All work — yours and your agents' — lives as objects in this pipeline.</p>
+
+    <h2>Step 2 — Paste your Anthropic API key</h2>
+    <p>Maskin needs your Anthropic API key to run agent sessions in its sandboxes. Keys are stored encrypted and scoped to the workspace.</p>
+    <ol>
+      <li>Open <strong>Settings → Integrations</strong> (or <strong>Settings → LLM keys</strong>) from the workspace sidebar.</li>
+      <li>Paste your Anthropic API key and <strong>Save</strong>. Maskin validates the key with a cheap call to Anthropic before storing it.</li>
+      <li>You can update or remove the key from the same screen at any time. After save, only the last four characters are shown.</li>
+    </ol>
+
+    <h2>Step 3 — Get your Maskin API key and workspace ID</h2>
+    <p>To let Claude talk to your workspace, you need two values from the UI:</p>
+    <ol>
+      <li>Open <strong>Settings → API keys</strong> and click <strong>Create key</strong>. Copy the <code>ank_…</code> value that appears — this is your <strong>Maskin API key</strong>. You'll only see it once.</li>
+      <li>Open <strong>Settings → Workspace</strong> and copy the <strong>Workspace ID</strong> (UUID). This tells the MCP which workspace to act on.</li>
+    </ol>
+    <p>Keep both values handy for the next step.</p>
+
+    <h2>Step 4 — Connect Claude to the hosted Maskin MCP</h2>
+
+    <h3>Claude Code</h3>
+    <p>From a terminal, run:</p>
+    <pre><code>claude mcp add maskin \
+  --transport http \
+  --url https://maskin.sindre.ai/mcp \
+  --header "Authorization: Bearer &lt;YOUR_MASKIN_API_KEY&gt;" \
+  --header "X-Workspace-Id: &lt;YOUR_WORKSPACE_ID&gt;"</code></pre>
+    <p>Replace <code>&lt;YOUR_MASKIN_API_KEY&gt;</code> with the <code>ank_…</code> key from Step 3 and <code>&lt;YOUR_WORKSPACE_ID&gt;</code> with the workspace UUID.</p>
+    <p>If Claude Code is already running, reload plugins so the new tools show up in the current session:</p>
+    <pre><code>/reload-plugins</code></pre>
+
+    <h3>Claude Desktop</h3>
+    <p>Open your Claude Desktop MCP config (<code>Settings → Developer → Edit config</code>) and add the <code>maskin</code> entry:</p>
+    <pre><code>{
+  "mcpServers": {
+    "maskin": {
+      "type": "http",
+      "url": "https://maskin.sindre.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer &lt;YOUR_MASKIN_API_KEY&gt;",
+        "X-Workspace-Id": "&lt;YOUR_WORKSPACE_ID&gt;"
+      }
+    }
+  }
+}</code></pre>
+    <p>Save the file and restart Claude Desktop.</p>
+
+    <h2>Step 5 — Make your first MCP call</h2>
+    <p>Back in Claude Code or Claude Desktop, ask:</p>
+    <blockquote>
+      <p>Use the maskin MCP to call <code>get_started</code>.</p>
+    </blockquote>
+    <p><code>get_started</code> is the entry-point tool. It previews and applies a workspace template — either <strong>development</strong> (for shipping a product), <strong>growth</strong> (for running a launch or outreach pipeline), or <strong>custom</strong> (a short questionnaire that tailors the workspace to whatever you're working on). Once you pick one, Claude seeds the workspace with object types, statuses, custom fields, and a first set of objects, and kicks off the pipeline.</p>
+    <p>If the tool returns a response without errors, you're connected. From here Claude can create and update insights, bets, and tasks, run triggers, and stream events directly against your hosted workspace.</p>
+
+    <h2>What's next</h2>
+    <ul>
+      <li><strong>Invite teammates.</strong> Workspaces support multiple members — add humans and agents from <strong>Settings → Members</strong>.</li>
+      <li><strong>Wire up integrations.</strong> Connect Slack, GitHub, Google Calendar, and more from <strong>Settings → Integrations</strong> to let agents react to real-world events.</li>
+      <li><strong>Explore the 39 MCP tools.</strong> <code>get_started</code> is just the start — list objects, create bets, fire triggers, and manage agent sessions all from Claude. Run <code>list_tools</code> to see the full set.</li>
+    </ul>
+
+    <hr />
+
+    <p>Stuck? Open an issue in <a href="https://github.com/sindre-ai/maskin/issues"><code>sindre-ai/maskin</code></a> or read the <a href="https://github.com/sindre-ai/maskin#readme">README</a> for deeper background on the data model, agent sessions, and the event stream.</p>
   </main>
 </div>
 
@@ -375,11 +410,111 @@
   </span>
 </footer>
 
-<script
-  src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
-  integrity="sha384-/TQbtLCAerC3jgaim+N78RZSDYV7ryeoBCVqTuzRrFec2akfBkHS7ACQ3PQhvMVi"
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"></script>
+<!--
+  Raw markdown mirror of the rendered content above. The Copy Page button
+  copies this exact text to the clipboard so users can paste a Markdown
+  version into Claude. Keep this block in sync with the HTML above and
+  with docs/get-started/get-started.md.
+-->
+<script type="text/markdown" id="raw-markdown"># Get started with *Maskin*
+
+Maskin is an open-source workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. This guide connects Claude to the hosted Maskin MCP so you can drive a workspace from inside Claude Code or Claude Desktop. Expect to spend about five minutes.
+
+## Prerequisites
+
+- **[Claude Code](https://docs.claude.com/en/docs/claude-code/overview)** or **[Claude Desktop](https://claude.ai/download)** installed.
+- An **[Anthropic API key](https://console.anthropic.com/settings/keys)**. Maskin runs Claude Code in sandboxes on your behalf and uses this key to authenticate those runs.
+
+You don't need to clone anything, install dependencies, or run a local server. Maskin is hosted at [`maskin.sindre.ai`](https://maskin.sindre.ai).
+
+## Step 1 — Sign in and create a workspace
+
+1. Go to [**maskin.sindre.ai**](https://maskin.sindre.ai) and sign in.
+2. Create your first workspace from the prompt. A workspace is an isolated environment with its own objects, actors, and settings — you can create more later.
+
+Once you're in, you'll see the unified pipeline view: **Insights → Bets → Tasks**. All work — yours and your agents' — lives as objects in this pipeline.
+
+## Step 2 — Paste your Anthropic API key
+
+Maskin needs your Anthropic API key to run agent sessions in its sandboxes. Keys are stored encrypted and scoped to the workspace.
+
+1. Open **Settings → Integrations** (or **Settings → LLM keys**) from the workspace sidebar.
+2. Paste your Anthropic API key and **Save**. Maskin validates the key with a cheap call to Anthropic before storing it.
+3. You can update or remove the key from the same screen at any time. After save, only the last four characters are shown.
+
+## Step 3 — Get your Maskin API key and workspace ID
+
+To let Claude talk to your workspace, you need two values from the UI:
+
+1. Open **Settings → API keys** and click **Create key**. Copy the `ank_…` value that appears — this is your **Maskin API key**. You'll only see it once.
+2. Open **Settings → Workspace** and copy the **Workspace ID** (UUID). This tells the MCP which workspace to act on.
+
+Keep both values handy for the next step.
+
+## Step 4 — Connect Claude to the hosted Maskin MCP
+
+### Claude Code
+
+From a terminal, run:
+
+```sh
+claude mcp add maskin \
+  --transport http \
+  --url https://maskin.sindre.ai/mcp \
+  --header "Authorization: Bearer <YOUR_MASKIN_API_KEY>" \
+  --header "X-Workspace-Id: <YOUR_WORKSPACE_ID>"
+```
+
+Replace `<YOUR_MASKIN_API_KEY>` with the `ank_…` key from Step 3 and `<YOUR_WORKSPACE_ID>` with the workspace UUID.
+
+If Claude Code is already running, reload plugins so the new tools show up in the current session:
+
+```sh
+/reload-plugins
+```
+
+### Claude Desktop
+
+Open your Claude Desktop MCP config (`Settings → Developer → Edit config`) and add the `maskin` entry:
+
+```json
+{
+  "mcpServers": {
+    "maskin": {
+      "type": "http",
+      "url": "https://maskin.sindre.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer <YOUR_MASKIN_API_KEY>",
+        "X-Workspace-Id": "<YOUR_WORKSPACE_ID>"
+      }
+    }
+  }
+}
+```
+
+Save the file and restart Claude Desktop.
+
+## Step 5 — Make your first MCP call
+
+Back in Claude Code or Claude Desktop, ask:
+
+> Use the maskin MCP to call `get_started`.
+
+`get_started` is the entry-point tool. It previews and applies a workspace template — either **development** (for shipping a product), **growth** (for running a launch or outreach pipeline), or **custom** (a short questionnaire that tailors the workspace to whatever you're working on). Once you pick one, Claude seeds the workspace with object types, statuses, custom fields, and a first set of objects, and kicks off the pipeline.
+
+If the tool returns a response without errors, you're connected. From here Claude can create and update insights, bets, and tasks, run triggers, and stream events directly against your hosted workspace.
+
+## What's next
+
+- **Invite teammates.** Workspaces support multiple members — add humans and agents from **Settings → Members**.
+- **Wire up integrations.** Connect Slack, GitHub, Google Calendar, and more from **Settings → Integrations** to let agents react to real-world events.
+- **Explore the 39 MCP tools.** `get_started` is just the start — list objects, create bets, fire triggers, and manage agent sessions all from Claude. Run `list_tools` to see the full set.
+
+---
+
+Stuck? Open an issue in [`sindre-ai/maskin`](https://github.com/sindre-ai/maskin/issues) or read the [README](https://github.com/sindre-ai/maskin#readme) for deeper background on the data model, agent sessions, and the event stream.
+</script>
+
 <script>
   (function () {
     var root = document.documentElement;
@@ -412,10 +547,12 @@
   })();
 
   (function () {
-    var contentEl = document.getElementById('content');
     var copyBtn = document.getElementById('copy-page');
     var copyLabel = document.getElementById('copy-page-label');
-    var rawMarkdown = '';
+    var mdEl = document.getElementById('raw-markdown');
+    if (!copyBtn || !mdEl) return;
+
+    var rawMarkdown = mdEl.textContent.replace(/^\s+/, '').replace(/\s+$/, '') + '\n';
 
     function setCopyLabel(text, copied) {
       copyLabel.textContent = text;
@@ -423,9 +560,8 @@
     }
 
     function flashCopied(message) {
-      var original = 'Copy Page';
       setCopyLabel(message, true);
-      setTimeout(function () { setCopyLabel(original, false); }, 1500);
+      setTimeout(function () { setCopyLabel('Copy Page', false); }, 1500);
     }
 
     async function fallbackCopy(text) {
@@ -444,7 +580,6 @@
     }
 
     copyBtn.addEventListener('click', async function () {
-      if (!rawMarkdown || copyBtn.disabled) return;
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
           await navigator.clipboard.writeText(rawMarkdown);
@@ -456,39 +591,6 @@
         flashCopied('Copy failed');
       }
     });
-
-    if (typeof marked === 'undefined') {
-      contentEl.innerHTML = '<div class="error-box"><strong>Could not load renderer.</strong> The marked.js CDN may be blocked. Try reloading, or read <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md">the source markdown on GitHub</a>.</div>';
-      return;
-    }
-
-    marked.setOptions({ gfm: true, breaks: false });
-
-    fetch('get-started.md', { cache: 'no-cache' })
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      })
-      .then(function (md) {
-        rawMarkdown = md;
-        contentEl.innerHTML = marked.parse(md);
-        copyBtn.disabled = false;
-      })
-      .catch(function (err) {
-        var box = document.createElement('div');
-        box.className = 'error-box';
-        var strong = document.createElement('strong');
-        strong.textContent = 'Could not load get-started.md.';
-        box.appendChild(strong);
-        box.appendChild(document.createTextNode(' ' + String(err) + '. Read '));
-        var link = document.createElement('a');
-        link.href = 'https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md';
-        link.textContent = 'the source on GitHub';
-        box.appendChild(link);
-        box.appendChild(document.createTextNode(' instead.'));
-        contentEl.innerHTML = '';
-        contentEl.appendChild(box);
-      });
   })();
 </script>
 
