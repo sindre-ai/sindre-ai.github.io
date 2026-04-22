@@ -82,7 +82,7 @@
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: "Geist Sans", "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+      font-family: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -330,7 +330,7 @@
       <a href="/">Home</a>
       <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="noopener">GitHub</a>
       <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
         </svg>
       </button>
@@ -345,14 +345,14 @@
     </div>
     <div class="page-actions">
       <button class="btn btn-secondary" id="copy-page" type="button" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="9" y="9" width="13" height="13" rx="2"/>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
         </svg>
         <span id="copy-page-label">Copy Page</span>
       </button>
-      <a class="btn btn-primary" id="open-in-claude" href="#" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor">
+      <a class="btn btn-primary" id="open-in-claude" href="https://claude.ai/new" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/>
         </svg>
         Open in Claude
@@ -462,7 +462,7 @@
       return;
     }
 
-    marked.setOptions({ gfm: true, breaks: false, headerIds: true, mangle: false });
+    marked.setOptions({ gfm: true, breaks: false });
 
     fetch('get-started.md', { cache: 'no-cache' })
       .then(function (res) {
@@ -475,9 +475,19 @@
         copyBtn.disabled = false;
       })
       .catch(function (err) {
-        contentEl.innerHTML = '<div class="error-box"><strong>Could not load get-started.md.</strong> ' +
-          String(err).replace(/</g, '&lt;') +
-          '. Read <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md">the source on GitHub</a> instead.</div>';
+        var box = document.createElement('div');
+        box.className = 'error-box';
+        var strong = document.createElement('strong');
+        strong.textContent = 'Could not load get-started.md.';
+        box.appendChild(strong);
+        box.appendChild(document.createTextNode(' ' + String(err) + '. Read '));
+        var link = document.createElement('a');
+        link.href = 'https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md';
+        link.textContent = 'the source on GitHub';
+        box.appendChild(link);
+        box.appendChild(document.createTextNode(' instead.'));
+        contentEl.innerHTML = '';
+        contentEl.appendChild(box);
       });
   })();
 </script>
