@@ -68,7 +68,7 @@
   <h1>Get started with <em>Maskin</em></h1>
   <p>Connect Claude to the hosted Maskin MCP in under five minutes. Maskin is an open-source workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. This guide walks you through connecting Claude to the hosted Maskin MCP so you can drive a workspace from inside Claude Code or Claude Desktop.</p>
   <div class="hero-actions">
-    <a class="btn-primary" href="https://claude.ai/new?q=Set%20up%20the%20Maskin%20MCP%20for%20me.%20Fetch%20https%3A%2F%2Fsindre.ai%2Fdocs%2Fget-started%2F%20and%20follow%20the%20'Automated%20setup'%20section%3A%20ask%20me%20for%20my%20Maskin%20API%20key%20(ank_...)%20and%20workspace%20ID%20from%20maskin.sindre.ai%20Settings%2C%20then%20run%20the%20%60claude%20mcp%20add%20maskin%60%20command%20yourself.%20If%20you're%20Claude%20Code%2C%20run%20%60%2Freload-plugins%60%20afterwards%3B%20if%20you're%20Claude%20Desktop%2C%20tell%20me%20to%20restart%20the%20app%20instead.%20Then%20drive%20the%20%60get_started%60%20MCP%20tool%20interactively.%20Execute%20each%20step%2C%20don't%20just%20explain%20it." target="_blank" rel="noopener">
+    <a class="btn-primary" href="https://claude.ai/new?q=Help%20me%20connect%20the%20hosted%20Maskin%20MCP%20to%20Claude.%20Fetch%20https%3A%2F%2Fsindre.ai%2Fdocs%2Fget-started%2F%20for%20context.%20Then%20check%20your%20environment%3A%20can%20you%20run%20shell%20commands%20on%20MY%20machine%20(Claude%20Code%20%2F%20Desktop%20with%20bash)%3F%20If%20YES%20%E2%80%94%20ask%20me%20for%20my%20Maskin%20API%20key%20(ank_...)%20and%20workspace%20ID%20from%20maskin.sindre.ai%20Settings%2C%20run%20the%20%60claude%20mcp%20add%20maskin%20--transport%20http%20--url%20https%3A%2F%2Fmaskin.sindre.ai%2Fmcp%20--header%20%22Authorization%3A%20Bearer%20%3CKEY%3E%22%20--header%20%22X-Workspace-Id%3A%20%3CID%3E%22%60%20command%20yourself%2C%20run%20%60%2Freload-plugins%60%2C%20then%20call%20the%20%60get_started%60%20MCP%20tool.%20If%20NO%20(you're%20sandboxed%2C%20e.g.%20claude.ai%20web)%20%E2%80%94%20ask%20my%20shell%20(bash%20%2F%20PowerShell%20%2F%20cmd)%2C%20generate%20a%20paste-ready%20command%20tailored%20to%20it%2C%20and%20walk%20me%20through%20running%20%60%2Freload-plugins%60%20and%20%60get_started%60%20from%20Claude%20Code%20or%20Desktop%20after%20I've%20pasted." target="_blank" rel="noopener">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/></svg>
       Open in Claude
     </a>
@@ -88,14 +88,15 @@
   <p>You don't need to clone anything, install dependencies, or run a local server. Maskin is hosted at <a href="https://maskin.sindre.ai"><code>maskin.sindre.ai</code></a>.</p>
 
   <h2>Automated setup (Claude runs it)</h2>
-  <p>Click <strong>Open in Claude</strong> at the top of this page. A pre-filled prompt opens in Claude Code (or Claude Desktop) that tells Claude to drive the setup end-to-end — no copy-pasting commands.</p>
-  <p>You still do the browser-auth steps below (Steps 1–3) because they require signing in and pasting your Anthropic API key into the Maskin UI. Then Claude takes over and runs Steps 4–5 for you.</p>
-  <ol>
-    <li><strong>You:</strong> do Steps 1–3 in the Maskin UI. Have your Maskin API key (<code>ank_…</code>) and workspace ID (UUID) ready.</li>
-    <li><strong>Claude:</strong> asks you for those two values, then runs <code>claude mcp add maskin …</code> with the right headers. In Claude Code it runs <code>/reload-plugins</code>; in Claude Desktop it tells you to restart the app. Then it calls the <code>get_started</code> MCP tool.</li>
-    <li><strong>You:</strong> pick a template (development / growth / custom). Claude applies it, seeds the workspace, and kicks off the pipeline.</li>
-  </ol>
-  <p>Prefer to wire it by hand? Follow the numbered steps below — they produce the same result.</p>
+  <p>Click <strong>Open in Claude</strong> at the top of this page. The pre-filled prompt tells Claude to drive Steps 4–5 based on where it's running. You still do Steps 1–3 in the Maskin UI yourself (sign in, paste Anthropic key, copy your Maskin API key + workspace ID) — those require browser auth.</p>
+  <p>What Claude does next depends on its environment:</p>
+  <ul>
+    <li><strong>Claude Code (terminal) or Claude Desktop with shell access:</strong> Claude runs <code>claude mcp add maskin …</code> directly, runs <code>/reload-plugins</code> (or tells you to restart Desktop), then calls <code>get_started</code> and drives the template pick interactively.</li>
+    <li><strong>claude.ai web (sandboxed):</strong> Claude can't touch your local shell, so it asks which shell you're using (bash / PowerShell / cmd), generates a paste-ready <code>claude mcp add</code> command for that shell, and walks you through <code>/reload-plugins</code> and invoking <code>get_started</code> once you've pasted.</li>
+  </ul>
+  <p>Want the most direct path? Start Claude Code in your terminal and paste the prompt below — Claude Code has shell access so it executes every step itself:</p>
+  <pre><code>Help me connect the hosted Maskin MCP. Ask me for my Maskin API key (ank_...) and workspace ID from maskin.sindre.ai Settings. Then run `claude mcp add maskin --transport http --url https://maskin.sindre.ai/mcp --header "Authorization: Bearer &lt;KEY&gt;" --header "X-Workspace-Id: &lt;ID&gt;"`, run `/reload-plugins`, and call the `get_started` MCP tool interactively.</code></pre>
+  <p>Prefer to wire it by hand? Follow the numbered steps below — same result.</p>
 
   <h2>Step 1 — Sign in and create a workspace</h2>
   <ol>
