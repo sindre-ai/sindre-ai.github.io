@@ -16,7 +16,7 @@ Click **Open in Claude** at the top of this page. A pre-filled prompt opens in C
 You still do the browser-auth steps below (Steps 1–3) because they require signing in and pasting your Anthropic API key into the Maskin UI. Then Claude takes over and runs Steps 4–5 for you.
 
 1. **You:** do Steps 1–3 in the Maskin UI. Have your Maskin API key (`ank_…`) and workspace ID (UUID) ready.
-2. **Claude:** asks you for those two values, then runs `claude mcp add maskin …` with the right headers, runs `/reload-plugins`, and calls the `get_started` MCP tool.
+2. **Claude:** asks you for those two values, then runs `claude mcp add maskin …` with the right headers. In Claude Code it runs `/reload-plugins`; in Claude Desktop it tells you to restart the app. Then it calls the `get_started` MCP tool.
 3. **You:** pick a template (development / growth / custom). Claude applies it, seeds the workspace, and kicks off the pipeline.
 
 Prefer to wire it by hand? Follow the numbered steps below — they produce the same result.
