@@ -9,8 +9,6 @@
   <link rel="canonical" href="https://sindre.ai/docs/get-started/" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 
-  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
-  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
   <meta name="color-scheme" content="dark light" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -35,93 +33,72 @@
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="nav-logo">Maskin</a>
-    <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="noopener">GitHub</a>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
-        </svg>
-      </button>
-    </div>
+<article>
+  <div class="page-actions">
+    <button class="btn btn-secondary" id="copy-page" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="9" y="9" width="13" height="13" rx="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      <span id="copy-page-label">Copy Page</span>
+    </button>
+    <a class="btn btn-primary" id="open-in-claude" href="https://claude.ai/new" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/>
+      </svg>
+      Open in Claude
+    </a>
   </div>
-</nav>
 
-<div class="page">
-  <header class="page-header">
-    <div>
-      <div class="page-eyebrow">Documentation</div>
-    </div>
-    <div class="page-actions">
-      <button class="btn btn-secondary" id="copy-page" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="9" y="9" width="13" height="13" rx="2"/>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-        </svg>
-        <span id="copy-page-label">Copy Page</span>
-      </button>
-      <a class="btn btn-primary" id="open-in-claude" href="https://claude.ai/new" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M4 4h5v2H6v12h12v-3h2v5H4V4zm10 0h6v6h-2V7.41l-7.29 7.3-1.42-1.42L16.59 6H14V4z"/>
-        </svg>
-        Open in Claude
-      </a>
-    </div>
-  </header>
+  <h1>Get started with <em>Maskin</em></h1>
+  <p>Maskin is an open-source workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. This guide connects Claude to the hosted Maskin MCP so you can drive a workspace from inside Claude Code or Claude Desktop. Expect to spend about five minutes.</p>
 
-  <article>
-    <h1>Get started with <em>Maskin</em></h1>
-    <p>Maskin is an open-source workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. This guide connects Claude to the hosted Maskin MCP so you can drive a workspace from inside Claude Code or Claude Desktop. Expect to spend about five minutes.</p>
+  <h2>Prerequisites</h2>
+  <ul>
+    <li><strong><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></strong> or <strong><a href="https://claude.ai/download">Claude Desktop</a></strong> installed.</li>
+    <li>An <strong><a href="https://console.anthropic.com/settings/keys">Anthropic API key</a></strong>. Maskin runs Claude Code in sandboxes on your behalf and uses this key to authenticate those runs.</li>
+  </ul>
+  <p>You don't need to clone anything, install dependencies, or run a local server. Maskin is hosted at <a href="https://maskin.sindre.ai"><code>maskin.sindre.ai</code></a>.</p>
 
-    <h2>Prerequisites</h2>
-    <ul>
-      <li><strong><a href="https://docs.claude.com/en/docs/claude-code/overview">Claude Code</a></strong> or <strong><a href="https://claude.ai/download">Claude Desktop</a></strong> installed.</li>
-      <li>An <strong><a href="https://console.anthropic.com/settings/keys">Anthropic API key</a></strong>. Maskin runs Claude Code in sandboxes on your behalf and uses this key to authenticate those runs.</li>
-    </ul>
-    <p>You don't need to clone anything, install dependencies, or run a local server. Maskin is hosted at <a href="https://maskin.sindre.ai"><code>maskin.sindre.ai</code></a>.</p>
+  <h2>Step 1 — Sign in and create a workspace</h2>
+  <ol>
+    <li>Go to <a href="https://maskin.sindre.ai"><strong>maskin.sindre.ai</strong></a> and sign in.</li>
+    <li>Create your first workspace from the prompt. A workspace is an isolated environment with its own objects, actors, and settings — you can create more later.</li>
+  </ol>
+  <p>Once you're in, you'll see the unified pipeline view: <strong>Insights → Bets → Tasks</strong>. All work — yours and your agents' — lives as objects in this pipeline.</p>
 
-    <h2>Step 1 — Sign in and create a workspace</h2>
-    <ol>
-      <li>Go to <a href="https://maskin.sindre.ai"><strong>maskin.sindre.ai</strong></a> and sign in.</li>
-      <li>Create your first workspace from the prompt. A workspace is an isolated environment with its own objects, actors, and settings — you can create more later.</li>
-    </ol>
-    <p>Once you're in, you'll see the unified pipeline view: <strong>Insights → Bets → Tasks</strong>. All work — yours and your agents' — lives as objects in this pipeline.</p>
+  <h2>Step 2 — Paste your Anthropic API key</h2>
+  <p>Maskin needs your Anthropic API key to run agent sessions in its sandboxes. Keys are stored encrypted and scoped to the workspace.</p>
+  <ol>
+    <li>Open <strong>Settings → Integrations</strong> (or <strong>Settings → LLM keys</strong>) from the workspace sidebar.</li>
+    <li>Paste your Anthropic API key and <strong>Save</strong>. Maskin validates the key with a cheap call to Anthropic before storing it.</li>
+    <li>You can update or remove the key from the same screen at any time. After save, only the last four characters are shown.</li>
+  </ol>
 
-    <h2>Step 2 — Paste your Anthropic API key</h2>
-    <p>Maskin needs your Anthropic API key to run agent sessions in its sandboxes. Keys are stored encrypted and scoped to the workspace.</p>
-    <ol>
-      <li>Open <strong>Settings → Integrations</strong> (or <strong>Settings → LLM keys</strong>) from the workspace sidebar.</li>
-      <li>Paste your Anthropic API key and <strong>Save</strong>. Maskin validates the key with a cheap call to Anthropic before storing it.</li>
-      <li>You can update or remove the key from the same screen at any time. After save, only the last four characters are shown.</li>
-    </ol>
+  <h2>Step 3 — Get your Maskin API key and workspace ID</h2>
+  <p>To let Claude talk to your workspace, you need two values from the UI:</p>
+  <ol>
+    <li>Open <strong>Settings → API keys</strong> and click <strong>Create key</strong>. Copy the <code>ank_…</code> value that appears — this is your <strong>Maskin API key</strong>. You'll only see it once.</li>
+    <li>Open <strong>Settings → Workspace</strong> and copy the <strong>Workspace ID</strong> (UUID). This tells the MCP which workspace to act on.</li>
+  </ol>
+  <p>Keep both values handy for the next step.</p>
 
-    <h2>Step 3 — Get your Maskin API key and workspace ID</h2>
-    <p>To let Claude talk to your workspace, you need two values from the UI:</p>
-    <ol>
-      <li>Open <strong>Settings → API keys</strong> and click <strong>Create key</strong>. Copy the <code>ank_…</code> value that appears — this is your <strong>Maskin API key</strong>. You'll only see it once.</li>
-      <li>Open <strong>Settings → Workspace</strong> and copy the <strong>Workspace ID</strong> (UUID). This tells the MCP which workspace to act on.</li>
-    </ol>
-    <p>Keep both values handy for the next step.</p>
+  <h2>Step 4 — Connect Claude to the hosted Maskin MCP</h2>
 
-    <h2>Step 4 — Connect Claude to the hosted Maskin MCP</h2>
-
-    <h3>Claude Code</h3>
-    <p>From a terminal, run:</p>
-    <pre><code>claude mcp add maskin \
+  <h3>Claude Code</h3>
+  <p>From a terminal, run:</p>
+  <pre><code>claude mcp add maskin \
   --transport http \
   --url https://maskin.sindre.ai/mcp \
   --header "Authorization: Bearer &lt;YOUR_MASKIN_API_KEY&gt;" \
   --header "X-Workspace-Id: &lt;YOUR_WORKSPACE_ID&gt;"</code></pre>
-    <p>Replace <code>&lt;YOUR_MASKIN_API_KEY&gt;</code> with the <code>ank_…</code> key from Step 3 and <code>&lt;YOUR_WORKSPACE_ID&gt;</code> with the workspace UUID.</p>
-    <p>If Claude Code is already running, reload plugins so the new tools show up in the current session:</p>
-    <pre><code>/reload-plugins</code></pre>
+  <p>Replace <code>&lt;YOUR_MASKIN_API_KEY&gt;</code> with the <code>ank_…</code> key from Step 3 and <code>&lt;YOUR_WORKSPACE_ID&gt;</code> with the workspace UUID.</p>
+  <p>If Claude Code is already running, reload plugins so the new tools show up in the current session:</p>
+  <pre><code>/reload-plugins</code></pre>
 
-    <h3>Claude Desktop</h3>
-    <p>Open your Claude Desktop MCP config (<code>Settings → Developer → Edit config</code>) and add the <code>maskin</code> entry:</p>
-    <pre><code>{
+  <h3>Claude Desktop</h3>
+  <p>Open your Claude Desktop MCP config (<code>Settings → Developer → Edit config</code>) and add the <code>maskin</code> entry:</p>
+  <pre><code>{
   "mcpServers": {
     "maskin": {
       "type": "http",
@@ -133,57 +110,40 @@
     }
   }
 }</code></pre>
-    <p>Save the file and restart Claude Desktop.</p>
+  <p>Save the file and restart Claude Desktop.</p>
 
-    <h2>Step 5 — Make your first MCP call</h2>
-    <p>Back in Claude Code or Claude Desktop, ask:</p>
-    <blockquote>
-      <p>Use the maskin MCP to call <code>get_started</code>.</p>
-    </blockquote>
-    <p><code>get_started</code> is the entry-point tool. It previews and applies a workspace template — either <strong>development</strong> (for shipping a product), <strong>growth</strong> (for running a launch or outreach pipeline), or <strong>custom</strong> (a short questionnaire that tailors the workspace to whatever you're working on). Once you pick one, Claude seeds the workspace with object types, statuses, custom fields, and a first set of objects, and kicks off the pipeline.</p>
-    <p>If the tool returns a response without errors, you're connected. From here Claude can create and update insights, bets, and tasks, run triggers, and stream events directly against your hosted workspace.</p>
+  <h2>Step 5 — Make your first MCP call</h2>
+  <p>Back in Claude Code or Claude Desktop, ask:</p>
+  <blockquote>
+    <p>Use the maskin MCP to call <code>get_started</code>.</p>
+  </blockquote>
+  <p><code>get_started</code> is the entry-point tool. It previews and applies a workspace template — either <strong>development</strong> (for shipping a product), <strong>growth</strong> (for running a launch or outreach pipeline), or <strong>custom</strong> (a short questionnaire that tailors the workspace to whatever you're working on). Once you pick one, Claude seeds the workspace with object types, statuses, custom fields, and a first set of objects, and kicks off the pipeline.</p>
+  <p>If the tool returns a response without errors, you're connected. From here Claude can create and update insights, bets, and tasks, run triggers, and stream events directly against your hosted workspace.</p>
 
-    <h2>What's next</h2>
-    <ul>
-      <li><strong>Invite teammates.</strong> Workspaces support multiple members — add humans and agents from <strong>Settings → Members</strong>.</li>
-      <li><strong>Wire up integrations.</strong> Connect Slack, GitHub, Google Calendar, and more from <strong>Settings → Integrations</strong> to let agents react to real-world events.</li>
-      <li><strong>Explore the 39 MCP tools.</strong> <code>get_started</code> is just the start — list objects, create bets, fire triggers, and manage agent sessions all from Claude. Run <code>list_tools</code> to see the full set.</li>
-    </ul>
+  <h2>What's next</h2>
+  <ul>
+    <li><strong>Invite teammates.</strong> Workspaces support multiple members — add humans and agents from <strong>Settings → Members</strong>.</li>
+    <li><strong>Wire up integrations.</strong> Connect Slack, GitHub, Google Calendar, and more from <strong>Settings → Integrations</strong> to let agents react to real-world events.</li>
+    <li><strong>Explore the 39 MCP tools.</strong> <code>get_started</code> is just the start — list objects, create bets, fire triggers, and manage agent sessions all from Claude. Run <code>list_tools</code> to see the full set.</li>
+  </ul>
 
-    <hr />
+  <hr />
 
-    <p>Stuck? Open an issue in <a href="https://github.com/sindre-ai/maskin/issues"><code>sindre-ai/maskin</code></a> or read the <a href="https://github.com/sindre-ai/maskin#readme">README</a> for deeper background on the data model, agent sessions, and the event stream.</p>
-  </article>
-</div>
+  <p>Stuck? Open an issue in <a href="https://github.com/sindre-ai/maskin/issues"><code>sindre-ai/maskin</code></a> or read the <a href="https://github.com/sindre-ai/maskin#readme">README</a> for deeper background on the data model, agent sessions, and the event stream.</p>
+</article>
 
 <footer>
   <span>&copy; Maskin</span>
   <span>
+    <a href="/">Home</a>
+    &middot;
+    <a href="https://github.com/sindre-ai/maskin" target="_blank" rel="noopener">GitHub</a>
+    &middot;
     <a href="https://github.com/sindre-ai/sindre-ai.github.io/blob/main/docs/get-started/get-started.md" target="_blank" rel="noopener">Edit on GitHub</a>
   </span>
 </footer>
 
-<link rel="alternate" type="text/markdown" href="./get-started.md" />
-
 <script>
-  (function () {
-    var root = document.documentElement;
-    var stored = null;
-    try { stored = localStorage.getItem('theme'); } catch (e) {}
-    if (stored === 'light' || stored === 'dark') {
-      root.setAttribute('data-theme', stored);
-    }
-    var btn = document.getElementById('theme-toggle');
-    if (btn) {
-      btn.addEventListener('click', function () {
-        var current = root.getAttribute('data-theme');
-        var next = current === 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('theme', next); } catch (e) {}
-      });
-    }
-  })();
-
   (function () {
     var openInClaudeBtn = document.getElementById('open-in-claude');
     if (openInClaudeBtn) {
