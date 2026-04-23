@@ -16,7 +16,7 @@ Click **Open in Claude** at the top of this page. The pre-filled prompt tells Cl
 What Claude does next depends on its environment:
 
 - **Claude Code (terminal) or Claude Desktop with shell access:** Claude runs `claude mcp add maskin …` directly, runs `/reload-plugins` (or tells you to restart Desktop), then calls `get_started` and drives the template pick interactively.
-- **claude.ai web (sandboxed):** Claude can't touch your local shell, so it asks which shell you're using (bash / PowerShell / cmd), generates a paste-ready `claude mcp add` command for that shell, and walks you through `/reload-plugins` and invoking `get_started` once you've pasted.
+- **claude.ai web (sandboxed):** Claude can't touch your local shell, so it walks you through the UI flow: **Customize → Connectors → Add Custom Connector**, enter **Name:** `Maskin` and **Remote MCP server URL:** `https://maskin.sindre.ai/mcp`, plus auth headers `Authorization: Bearer <KEY>` and `X-Workspace-Id: <ID>`. Once wired, Claude calls `get_started` and drives the template pick.
 
 Want the most direct path? Start Claude Code in your terminal and paste this prompt — Claude Code has shell access so it executes every step itself:
 
