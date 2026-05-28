@@ -338,6 +338,136 @@
     }
     .btn-secondary:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-1px); }
 
+    /* ===== PROMPT BAR ===== */
+    .prompt-bar-wrap {
+      max-width: 720px;
+      margin: 32px 0 28px;
+    }
+    .prompt-bar {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      padding: 18px 18px 18px 22px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hover);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .prompt-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-subtle), var(--shadow-md);
+    }
+    .prompt-bar.is-dragover {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    .prompt-input {
+      flex: 1;
+      min-height: 56px;
+      max-height: 240px;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 17px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      padding: 0;
+    }
+    .prompt-input::placeholder { color: var(--text-muted); }
+    .prompt-submit {
+      flex: 0 0 auto;
+      width: 40px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; border-radius: 10px;
+      background: var(--text); color: var(--bg);
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s, background 0.2s;
+    }
+    .prompt-submit:hover:not(:disabled) { transform: translateY(-1px); }
+    .prompt-submit:disabled { opacity: 0.35; cursor: not-allowed; }
+    .prompt-submit svg { width: 16px; height: 16px; }
+    .prompt-file-input { display: none; }
+    .prompt-route-hint {
+      position: absolute;
+      left: 22px;
+      bottom: -22px;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+    .prompt-route-hint.is-visible { opacity: 1; transform: translateY(0); }
+    .prompt-route-hint b {
+      color: var(--accent-text);
+      font-weight: 500;
+    }
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .prompt-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 450;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .prompt-chip:hover:not(:disabled) {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--bg-hover);
+    }
+    .prompt-chip:disabled { cursor: not-allowed; opacity: 0.7; }
+    .prompt-chip svg { width: 14px; height: 14px; opacity: 0.85; }
+    .prompt-chip-badge {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 999px;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      margin-left: 2px;
+    }
+    .prompt-file-pill {
+      display: none;
+      align-items: center; gap: 8px;
+      padding: 6px 10px 6px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 999px;
+      margin-right: 8px;
+    }
+    .prompt-file-pill.is-visible { display: inline-flex; }
+    .prompt-file-pill button {
+      width: 18px; height: 18px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--text-muted); cursor: pointer; border-radius: 50%;
+    }
+    .prompt-file-pill button:hover { color: var(--text); background: var(--bg-hover); }
+    @media (max-width: 640px) {
+      .prompt-bar { padding: 14px; gap: 10px; }
+      .prompt-input { font-size: 16px; min-height: 48px; }
+      .prompt-submit { width: 36px; height: 36px; }
+      .prompt-chip { font-size: 12px; padding: 7px 12px; }
+    }
+
     /* ===== APP MOCKUP ===== */
     .mockup-section {
       position: relative;
@@ -911,6 +1041,39 @@
 <section class="hero">
   <h1 class="fade-up d1" id="hero-headline">Your team has been<br>using AI <em>alone</em>.</h1>
   <p class="fade-up d2" id="hero-sub">Context scattered across a hundred private Claude chats. Work nobody else can see, remember, or build on. Maskin is the workspace where your whole team &mdash; humans and AI agents &mdash; works together, with shared memory and a real process.</p>
+
+  <!-- Prompt bar: paste a hunch, drop a file, or a URL -->
+  <div class="prompt-bar-wrap fade-up d3" id="prompt-bar-wrap">
+    <form class="prompt-bar" id="prompt-form" novalidate aria-label="Try Maskin: paste a hunch, drop a file, or paste a URL">
+      <span class="prompt-file-pill" id="prompt-file-pill" aria-live="polite">
+        <span id="prompt-file-name"></span>
+        <button type="button" id="prompt-file-clear" aria-label="Remove file">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+      </span>
+      <textarea class="prompt-input" id="prompt-input" rows="1"
+        placeholder="Paste a customer note, type a hunch, or drop a file&hellip;"
+        aria-label="Describe your bet, paste notes, or paste a URL"></textarea>
+      <button class="prompt-submit" id="prompt-submit" type="submit" aria-label="Draft my bet" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <input class="prompt-file-input" type="file" id="prompt-file"
+        accept=".txt,.md,.markdown,.pdf,.docx,.csv,.json,.html,.rtf" />
+      <div class="prompt-route-hint" id="prompt-route-hint"></div>
+    </form>
+    <div class="prompt-chips" role="group" aria-label="Other ways to start">
+      <button type="button" class="prompt-chip" id="prompt-chip-file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>
+        Drop a file
+      </button>
+      <button type="button" class="prompt-chip" id="prompt-chip-connect" disabled aria-disabled="true" title="Coming soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.5-1.5"/></svg>
+        Connect Linear / Productboard
+        <span class="prompt-chip-badge">Soon</span>
+      </button>
+    </div>
+  </div>
+
   <div class="hero-actions fade-up d3">
     <a href="https://47woc.share.hsforms.com/2cA2Rrhs9TouQ-gGvK6FQEg" class="btn-primary" target="_blank">
       Join the waitlist
@@ -1983,5 +2146,135 @@ document.getElementById('bet-detail-back').addEventListener('click', () => {
   body.no-glow .hero::before,
   body.no-glow .mockup-section::before { display: none !important; }
 </style>
+
+<script>
+/* ===== Prompt bar: smart-route text vs URL vs file =====
+   The submit handler dispatches a `maskin:prompt-submit` CustomEvent
+   so T3 (streaming endpoint) and T5 (inline renderer) can wire in
+   without touching this module. */
+(function() {
+  const wrap = document.getElementById('prompt-bar-wrap');
+  if (!wrap) return;
+
+  const form    = document.getElementById('prompt-form');
+  const input   = document.getElementById('prompt-input');
+  const submit  = document.getElementById('prompt-submit');
+  const fileEl  = document.getElementById('prompt-file');
+  const chipFile = document.getElementById('prompt-chip-file');
+  const hint    = document.getElementById('prompt-route-hint');
+  const filePill = document.getElementById('prompt-file-pill');
+  const fileName = document.getElementById('prompt-file-name');
+  const fileClear = document.getElementById('prompt-file-clear');
+
+  // Exposed for manual classifier checks in DevTools.
+  const URL_RE = /^https?:\/\/[^\s]+$/i;
+
+  function classify(text, file) {
+    if (file) return 'file';
+    const trimmed = (text || '').trim();
+    if (!trimmed) return 'empty';
+    // A bare URL on its own routes as URL; URL embedded in prose stays text.
+    if (URL_RE.test(trimmed)) return 'url';
+    return 'text';
+  }
+
+  let attachedFile = null;
+
+  function autosize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 240) + 'px';
+  }
+
+  function updateRouteHint() {
+    const kind = classify(input.value, attachedFile);
+    submit.disabled = (kind === 'empty');
+    if (kind === 'empty') {
+      hint.classList.remove('is-visible');
+      hint.textContent = '';
+      return;
+    }
+    const label = {
+      text: 'Drafting your bet from <b>text</b>',
+      url:  'Reading the <b>URL</b> first',
+      file: 'Reading your <b>file</b> first'
+    }[kind];
+    hint.innerHTML = label;
+    hint.classList.add('is-visible');
+  }
+
+  function setFile(file) {
+    attachedFile = file || null;
+    if (attachedFile) {
+      fileName.textContent = attachedFile.name;
+      filePill.classList.add('is-visible');
+    } else {
+      filePill.classList.remove('is-visible');
+      fileEl.value = '';
+    }
+    updateRouteHint();
+  }
+
+  input.addEventListener('input', () => { autosize(); updateRouteHint(); });
+  fileEl.addEventListener('change', () => setFile(fileEl.files && fileEl.files[0]));
+  chipFile.addEventListener('click', () => fileEl.click());
+  fileClear.addEventListener('click', () => setFile(null));
+
+  // Drag-drop on the whole prompt-bar.
+  let dragDepth = 0;
+  form.addEventListener('dragenter', (e) => {
+    if (!e.dataTransfer || !Array.from(e.dataTransfer.types || []).includes('Files')) return;
+    e.preventDefault();
+    dragDepth++;
+    form.classList.add('is-dragover');
+  });
+  form.addEventListener('dragover', (e) => {
+    if (!e.dataTransfer) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+  form.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) form.classList.remove('is-dragover');
+  });
+  form.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragDepth = 0;
+    form.classList.remove('is-dragover');
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) setFile(file);
+  });
+
+  // Cmd/Ctrl+Enter submits; Enter alone inserts a newline.
+  input.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!submit.disabled) form.requestSubmit();
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const kind = classify(input.value, attachedFile);
+    if (kind === 'empty') return;
+    const detail = {
+      kind,
+      text: input.value.trim(),
+      file: attachedFile,
+      url: kind === 'url' ? input.value.trim() : null
+    };
+    // Success-path log line — visible during dev, useful for T3/T5 wiring later.
+    console.info('[maskin] prompt-submit', { kind, hasFile: !!attachedFile, len: detail.text.length });
+    form.dispatchEvent(new CustomEvent('maskin:prompt-submit', { detail, bubbles: true }));
+  });
+
+  // Expose the classifier so the routing logic can be checked manually
+  // in DevTools — the brief calls smart-routing reliability the riskiest bit.
+  window.__maskinPromptRoute = { classify };
+
+  // Initial state
+  autosize();
+  updateRouteHint();
+})();
+</script>
 </body>
 </html>
