@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Maskin backend base URL for the landing-page guest Bet Strategist endpoint (T5). Override per environment. -->
+  <meta name="maskin-api-base" content="https://maskin.sindre.ai" />
   <title>Maskin — Your team's workspace for working with AI agents</title>
   <meta name="description" content="Stop using AI alone. Maskin is the purpose-built workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. Open source." />
 
@@ -466,6 +468,130 @@
       .prompt-input { font-size: 16px; min-height: 48px; }
       .prompt-submit { width: 36px; height: 36px; }
       .prompt-chip { font-size: 12px; padding: 7px 12px; }
+    }
+
+    /* ===== DRAFT STREAM (T5) ===== */
+    .draft-stream {
+      display: none;
+      max-width: 720px;
+      margin: 22px 0 0;
+      padding: 22px 22px 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out, border-color 0.2s;
+    }
+    .draft-stream.is-visible { display: block; opacity: 1; transform: translateY(0); }
+    .draft-stream.is-streaming { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-subtle), var(--shadow-md); }
+    .draft-stream-header {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .draft-stream-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-muted);
+    }
+    .draft-stream.is-streaming .draft-stream-dot {
+      background: var(--accent);
+      animation: draft-stream-pulse 1.1s ease-in-out infinite;
+    }
+    .draft-stream.is-error .draft-stream-dot,
+    .draft-stream.is-malformed .draft-stream-dot { background: #e16464; }
+    .draft-stream.is-done .draft-stream-dot { background: #4ade80; }
+    @keyframes draft-stream-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.55; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .draft-stream.is-streaming .draft-stream-dot { animation: none; }
+      .draft-stream { transition: opacity 0.15s; transform: none; }
+    }
+    .draft-stream-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .draft-stream-body h3 {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--accent-text);
+      margin: 18px 0 6px;
+    }
+    .draft-stream-body h3:first-child { margin-top: 0; }
+    .draft-stream-body p { margin: 0 0 12px; color: var(--text-secondary); }
+    .draft-stream-body p:last-child { margin-bottom: 0; }
+    .draft-stream-body strong { color: var(--text); font-weight: 600; }
+    .draft-stream-body em { font-style: italic; color: var(--text-secondary); }
+    .draft-stream-body ul { margin: 0 0 12px; padding-left: 20px; color: var(--text-secondary); }
+    .draft-stream-body li { margin: 0 0 4px; }
+    .draft-stream-body code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+    }
+    .draft-stream-cursor {
+      display: inline-block;
+      width: 6px; height: 1em;
+      vertical-align: -2px;
+      background: var(--accent);
+      margin-left: 2px;
+      animation: draft-stream-cursor 1s steps(2) infinite;
+    }
+    @keyframes draft-stream-cursor { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .draft-stream-cursor { animation: none; opacity: 1; }
+    }
+    .draft-stream-banner {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px;
+      margin: 0 0 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+    }
+    .draft-stream-banner.is-warn {
+      border-color: rgba(225, 100, 100, 0.4);
+      background: rgba(225, 100, 100, 0.06);
+      color: var(--text);
+    }
+    .draft-stream-banner svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 2px; }
+    .draft-stream-banner b { color: var(--text); font-weight: 600; }
+    .draft-stream-actions {
+      margin-top: 14px;
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .draft-stream-actions button,
+    .draft-stream-actions a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 500;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .draft-stream-actions button:hover,
+    .draft-stream-actions a:hover { background: var(--bg-hover); border-color: var(--text-muted); }
+    @media (max-width: 640px) {
+      .draft-stream { padding: 18px; margin-top: 18px; }
+      .draft-stream-body { font-size: 14px; }
     }
 
     /* ===== USED-BY STRIP ===== */
@@ -1252,6 +1378,9 @@
     </div>
   </div>
 
+  <!-- Streaming draft renderer (T5). Populated by the script at the bottom of the page on `maskin:prompt-submit`. -->
+  <section class="draft-stream" id="draft-stream" role="region" aria-live="polite" aria-atomic="false" aria-label="Bet draft"></section>
+
   <div class="hero-actions fade-up d3">
     <a href="/docs/get-started/" class="btn-secondary">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -1934,6 +2063,501 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   // Initial state
   autosize();
   updateRouteHint();
+})();
+</script>
+
+<script>
+/* ===== Inline streaming draft renderer (T5) =====
+   Subscribes to T4's `maskin:prompt-submit` CustomEvent, POSTs to T3's public
+   guest endpoint, parses the SSE stream, and renders the Bet Strategist draft
+   live below the hero input.
+
+   Contract (from T3):
+     POST {API_BASE}/api/public/bet-strategist/drafts
+     body: { prompt: string, 1..4000 chars }
+     credentials: include  (signed HttpOnly guest cookie)
+     200 + text/event-stream — named events with JSON payloads:
+       event: draft_started   data: { draftId }
+       event: delta           data: { text }            (many)
+       event: error           data: { message }         (optional, on stream failure)
+       event: done            data: { draftId, isMalformed, failed }
+     429 + { error: { code: 'RATE_LIMITED', message, hint } }  — guest cap hit
+     503 — Anthropic key missing on the server
+
+   The draft is markdown with these exact headings, in order:
+     ## Hypothesis  ## Success  ## Exit criteria  ## First test
+   Missing any of them flips the malformed banner.
+
+   We dispatch `maskin:draft-complete` / `maskin:draft-malformed` / `maskin:draft-error`
+   on the form so T7 (signup CTA) and T8 (analytics) can subscribe without
+   touching this module. */
+(function() {
+  const renderer = document.getElementById('draft-stream');
+  const form     = document.getElementById('prompt-form');
+  const submit   = document.getElementById('prompt-submit');
+  const input    = document.getElementById('prompt-input');
+  if (!renderer || !form || !submit) return;
+
+  const meta = document.querySelector('meta[name="maskin-api-base"]');
+  const API_BASE = ((meta && meta.content) || 'https://maskin.sindre.ai').replace(/\/$/, '');
+  const ENDPOINT = API_BASE + '/api/public/bet-strategist/drafts';
+  const SIGNUP_URL = '/docs/get-started/';
+  const MAX_PROMPT_CHARS = 4000;
+  const TEXT_LIKE_EXT = /\.(txt|md|markdown|csv|json|html|rtf)$/i;
+  const TEXT_LIKE_MIME = /^(text\/|application\/(json|csv|x-rtf|rtf))/i;
+  const REQUIRED_HEADINGS = ['## Hypothesis', '## Success', '## Exit criteria', '## First test'];
+
+  let abortCtl = null;     // AbortController for the active stream
+  let currentReq = 0;      // monotonic request id — guards against late events from a superseded stream
+
+  /* ---------- markdown rendering (tiny + safe) ---------- */
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function(c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function renderInline(s) {
+    s = escapeHtml(s);
+    // code spans first so ** inside backticks doesn't transform
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/(^|[^\*])\*([^*]+)\*/g, '$1<em>$2</em>');
+    return s;
+  }
+  // Convert the partial markdown buffer into HTML. The Bet Strategist output is
+  // narrow (h2 headings + paragraphs + optional bullets), so a tiny renderer is
+  // enough and avoids pulling in a markdown library for a single use site.
+  function renderMarkdown(md) {
+    const lines = md.replace(/\r\n?/g, '\n').split('\n');
+    let html = '';
+    let para = [];
+    let bullets = [];
+    function flushPara() {
+      if (para.length) { html += '<p>' + renderInline(para.join(' ')) + '</p>'; para = []; }
+    }
+    function flushBullets() {
+      if (bullets.length) {
+        html += '<ul>' + bullets.map(function(b){ return '<li>' + renderInline(b) + '</li>'; }).join('') + '</ul>';
+        bullets = [];
+      }
+    }
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const h2 = /^##\s+(.+)$/.exec(line);
+      const h3 = /^###\s+(.+)$/.exec(line);
+      const bullet = /^[-*]\s+(.+)$/.exec(line);
+      if (h2) {
+        flushPara(); flushBullets();
+        html += '<h3>' + escapeHtml(h2[1].trim()) + '</h3>';
+      } else if (h3) {
+        flushPara(); flushBullets();
+        html += '<h4>' + escapeHtml(h3[1].trim()) + '</h4>';
+      } else if (bullet) {
+        flushPara();
+        bullets.push(bullet[1]);
+      } else if (line.trim() === '') {
+        flushPara(); flushBullets();
+      } else {
+        flushBullets();
+        para.push(line);
+      }
+    }
+    flushPara(); flushBullets();
+    return html;
+  }
+
+  function setState(state) {
+    renderer.classList.remove('is-streaming', 'is-done', 'is-error', 'is-malformed');
+    if (state) renderer.classList.add('is-' + state);
+  }
+
+  function show() {
+    renderer.hidden = false;
+    // next frame so the fade-in transition runs
+    requestAnimationFrame(function() { renderer.classList.add('is-visible'); });
+  }
+
+  function setSubmitDisabled(disabled) {
+    submit.disabled = disabled;
+    submit.setAttribute('aria-busy', disabled ? 'true' : 'false');
+  }
+
+  function renderHeader(label) {
+    return '<div class="draft-stream-header"><span class="draft-stream-dot" aria-hidden="true"></span><span>' + escapeHtml(label) + '</span></div>';
+  }
+
+  function renderBanner(opts) {
+    const cls = opts.warn ? 'draft-stream-banner is-warn' : 'draft-stream-banner';
+    const icon = opts.warn
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>';
+    return '<div class="' + cls + '">' + icon + '<div>' + opts.html + '</div></div>';
+  }
+
+  function renderRetryActions() {
+    return '<div class="draft-stream-actions">' +
+      '<button type="button" data-action="retry">Try again</button>' +
+      '<a href="' + SIGNUP_URL + '">Sign up to keep drafting</a>' +
+    '</div>';
+  }
+
+  function renderEarlyState(label) {
+    renderer.innerHTML = renderHeader(label) + '<div class="draft-stream-body"><p>' + escapeHtml('Reading your input\u2026') + '</p></div>';
+  }
+
+  function renderStreaming(buffer) {
+    const body = renderMarkdown(buffer) + '<span class="draft-stream-cursor" aria-hidden="true"></span>';
+    renderer.innerHTML = renderHeader('Drafting your bet\u2026') + '<div class="draft-stream-body">' + body + '</div>';
+  }
+
+  function renderDone(buffer, isMalformed) {
+    let banner = '';
+    if (isMalformed) {
+      banner = renderBanner({
+        warn: true,
+        html: '<b>This draft missed structure.</b> Try again with a sharper paragraph, or sign up to refine it with the Bet Strategist.'
+      });
+    }
+    const actions = isMalformed ? renderRetryActions() : '<div class="draft-stream-actions">' +
+      '<button type="button" data-action="retry">Draft another</button>' +
+      '<a href="' + SIGNUP_URL + '">Save this bet \u2014 sign up</a>' +
+    '</div>';
+    renderer.innerHTML =
+      renderHeader(isMalformed ? 'Draft incomplete' : 'Your draft bet') +
+      banner +
+      '<div class="draft-stream-body">' + (renderMarkdown(buffer) || '<p>(empty draft)</p>') + '</div>' +
+      actions;
+  }
+
+  function renderError(opts) {
+    const banner = renderBanner({ warn: true, html: opts.html });
+    let actions = '<div class="draft-stream-actions"><button type="button" data-action="retry">Try again</button>';
+    if (opts.signup !== false) actions += '<a href="' + SIGNUP_URL + '">Sign up to keep drafting</a>';
+    actions += '</div>';
+    renderer.innerHTML = renderHeader(opts.title || 'Couldn\u2019t draft your bet') + banner + actions;
+  }
+
+  // Retry button — re-submits with the current input contents (if any) or just
+  // focuses the prompt bar so the user can edit. We use event delegation so the
+  // listener survives re-renders.
+  renderer.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-action="retry"]');
+    if (!btn) return;
+    if (input && input.value.trim()) {
+      form.requestSubmit();
+    } else if (input) {
+      input.focus();
+    }
+  });
+
+  /* ---------- prompt build ---------- */
+  function buildPromptFromText(text) {
+    return (text || '').trim().slice(0, MAX_PROMPT_CHARS);
+  }
+  function buildPromptFromUrl(url) {
+    const trimmed = (url || '').trim().slice(0, MAX_PROMPT_CHARS - 100);
+    return ('Draft a bet for this URL: ' + trimmed).slice(0, MAX_PROMPT_CHARS);
+  }
+  async function buildPromptFromFile(file) {
+    const name = file.name || 'attached-file';
+    const isText = TEXT_LIKE_EXT.test(name) || TEXT_LIKE_MIME.test(file.type || '');
+    if (!isText) {
+      const ext = (name.split('.').pop() || 'file').toLowerCase();
+      const err = new Error('unsupported_file');
+      err.userMessage = 'Reading <b>.' + escapeHtml(ext) + '</b> files isn\u2019t live yet \u2014 paste the relevant text into the bar instead.';
+      throw err;
+    }
+    let text;
+    try {
+      text = await file.text();
+    } catch (e) {
+      const err = new Error('file_read_failed');
+      err.userMessage = 'Couldn\u2019t read that file. Try pasting the contents instead.';
+      throw err;
+    }
+    const header = 'Drafting from file: ' + name + '\n\n';
+    const remaining = Math.max(0, MAX_PROMPT_CHARS - header.length);
+    return header + text.slice(0, remaining);
+  }
+
+  /* ---------- SSE parser + stream consumer ----------
+     SSE frames are separated by a blank line; each frame has `event:` and
+     `data:` lines. We read from the fetch ReadableStream, decode, and split on
+     `\n\n` from a rolling buffer. */
+  async function consumeStream(response, reqId) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let raw = '';
+    let buffer = '';
+    let lastDoneIsMalformed = null;
+    let streamError = null;
+    let receivedAnyDelta = false;
+
+    show();
+    setState('streaming');
+    renderStreaming(buffer);
+
+    try {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { value, done } = await reader.read();
+        if (reqId !== currentReq) { try { reader.cancel(); } catch(e){} return; }
+        if (done) break;
+        raw += decoder.decode(value, { stream: true });
+        let frameStart = 0;
+        let idx;
+        while ((idx = raw.indexOf('\n\n', frameStart)) !== -1) {
+          const frame = raw.slice(frameStart, idx);
+          frameStart = idx + 2;
+          let event = 'message';
+          let data = '';
+          const lines = frame.split('\n');
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.startsWith('event:')) event = line.slice(6).trim();
+            else if (line.startsWith('data:')) data += (data ? '\n' : '') + line.slice(5).trim();
+          }
+          let payload = null;
+          try { payload = data ? JSON.parse(data) : null; } catch (e) { payload = null; }
+          if (event === 'draft_started') {
+            // payload.draftId — could be threaded into T7's claim flow later.
+          } else if (event === 'delta' && payload && typeof payload.text === 'string') {
+            buffer += payload.text;
+            receivedAnyDelta = true;
+            renderStreaming(buffer);
+          } else if (event === 'error') {
+            streamError = (payload && payload.message) || 'Stream failed';
+          } else if (event === 'done' && payload) {
+            lastDoneIsMalformed = !!payload.isMalformed || !!payload.failed;
+          }
+        }
+        raw = raw.slice(frameStart);
+      }
+    } finally {
+      try { reader.releaseLock(); } catch (e) {}
+    }
+
+    if (reqId !== currentReq) return; // superseded by a newer request
+
+    const trimmed = buffer.trim();
+    const localMalformed = !trimmed || REQUIRED_HEADINGS.some(function(h){ return trimmed.indexOf(h) === -1; });
+    const isMalformed = (lastDoneIsMalformed === null ? localMalformed : (lastDoneIsMalformed || localMalformed));
+
+    if (streamError && !receivedAnyDelta) {
+      setState('error');
+      renderError({
+        title: 'Stream failed',
+        html: '<b>Something interrupted the stream.</b> Try again in a moment.'
+      });
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'stream_error', message: streamError }, bubbles: true
+      }));
+      return;
+    }
+
+    if (isMalformed) {
+      setState('malformed');
+      renderDone(buffer, true);
+      console.info('[maskin] draft malformed', { receivedAnyDelta, hasBuffer: !!trimmed });
+      form.dispatchEvent(new CustomEvent('maskin:draft-malformed', {
+        detail: { buffer: buffer, missingHeadings: REQUIRED_HEADINGS.filter(function(h){ return trimmed.indexOf(h) === -1; }) },
+        bubbles: true
+      }));
+      return;
+    }
+
+    setState('done');
+    renderDone(buffer, false);
+    console.info('[maskin] draft complete', { chars: trimmed.length });
+    form.dispatchEvent(new CustomEvent('maskin:draft-complete', {
+      detail: { buffer: buffer, chars: trimmed.length }, bubbles: true
+    }));
+  }
+
+  async function handleSubmit(detail) {
+    // Cancel any in-flight stream — last submit wins.
+    if (abortCtl) { try { abortCtl.abort(); } catch(e){} }
+    abortCtl = new AbortController();
+    const reqId = ++currentReq;
+
+    setSubmitDisabled(true);
+    show();
+    setState('streaming');
+    renderEarlyState('Preparing\u2026');
+
+    let prompt;
+    try {
+      if (detail.kind === 'file' && detail.file) {
+        prompt = await buildPromptFromFile(detail.file);
+      } else if (detail.kind === 'url' && detail.url) {
+        prompt = buildPromptFromUrl(detail.url);
+      } else {
+        prompt = buildPromptFromText(detail.text);
+      }
+    } catch (err) {
+      setState('error');
+      renderError({
+        title: 'Can\u2019t use that input',
+        html: err.userMessage || '<b>Couldn\u2019t read your input.</b> Try pasting text instead.',
+        signup: false
+      });
+      setSubmitDisabled(false);
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'input_error', message: String(err && err.message || err) }, bubbles: true
+      }));
+      return;
+    }
+
+    if (!prompt || !prompt.trim()) {
+      setState('error');
+      renderError({
+        title: 'Empty input',
+        html: '<b>Nothing to draft from.</b> Type or paste a hunch into the bar.',
+        signup: false
+      });
+      setSubmitDisabled(false);
+      return;
+    }
+
+    console.info('[maskin] draft request', { kind: detail.kind, promptChars: prompt.length });
+
+    let response;
+    try {
+      response = await fetch(ENDPOINT, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'text/event-stream' },
+        body: JSON.stringify({ prompt: prompt }),
+        signal: abortCtl.signal
+      });
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      console.error('[maskin] draft fetch failed', err);
+      setState('error');
+      renderError({
+        title: 'Network error',
+        html: '<b>Couldn\u2019t reach the Bet Strategist.</b> Check your connection and try again.',
+        signup: false
+      });
+      setSubmitDisabled(false);
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'network_error', message: String(err && err.message || err) }, bubbles: true
+      }));
+      return;
+    }
+
+    if (reqId !== currentReq) return;
+
+    if (response.status === 429) {
+      let msg = 'You\u2019ve hit the guest cap.';
+      let hint = 'Sign up to keep drafting bets.';
+      try {
+        const body = await response.json();
+        if (body && body.error) {
+          if (body.error.message) msg = body.error.message;
+          if (body.error.hint) hint = body.error.hint;
+        }
+      } catch (e) {}
+      setState('error');
+      renderError({
+        title: 'Guest limit reached',
+        html: '<b>' + escapeHtml(msg) + '</b> ' + escapeHtml(hint)
+      });
+      setSubmitDisabled(false);
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'rate_limited', message: msg }, bubbles: true
+      }));
+      return;
+    }
+
+    if (response.status === 503) {
+      setState('error');
+      renderError({
+        title: 'Bet Strategist offline',
+        html: '<b>The Bet Strategist is offline right now.</b> Try again in a minute.',
+        signup: false
+      });
+      setSubmitDisabled(false);
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'unavailable' }, bubbles: true
+      }));
+      return;
+    }
+
+    if (!response.ok || !response.body) {
+      let msg = 'Request failed (HTTP ' + response.status + ')';
+      try {
+        const body = await response.json();
+        if (body && body.error && body.error.message) msg = body.error.message;
+      } catch (e) {}
+      setState('error');
+      renderError({
+        title: 'Couldn\u2019t draft your bet',
+        html: '<b>' + escapeHtml(msg) + '</b> Try again, or sign up to refine it.'
+      });
+      setSubmitDisabled(false);
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'http_error', status: response.status, message: msg }, bubbles: true
+      }));
+      return;
+    }
+
+    try {
+      await consumeStream(response, reqId);
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      console.error('[maskin] draft stream consume failed', err);
+      setState('error');
+      renderError({
+        title: 'Stream interrupted',
+        html: '<b>The connection dropped mid-draft.</b> Try again.'
+      });
+      form.dispatchEvent(new CustomEvent('maskin:draft-error', {
+        detail: { kind: 'consume_error', message: String(err && err.message || err) }, bubbles: true
+      }));
+    } finally {
+      if (reqId === currentReq) setSubmitDisabled(false);
+    }
+  }
+
+  document.addEventListener('maskin:prompt-submit', function(e) {
+    if (!e.detail) return;
+    handleSubmit(e.detail);
+  });
+
+  // Expose internals so the classifier-style manual checks the team already
+  // uses on T4 work for T5 too. Pure functions; no side effects.
+  window.__maskinDraftRenderer = {
+    renderMarkdown: renderMarkdown,
+    isMalformedDraft: function(s) {
+      const t = (s || '').trim();
+      if (!t) return true;
+      return REQUIRED_HEADINGS.some(function(h){ return t.indexOf(h) === -1; });
+    },
+    parseSseFrames: function(blob) {
+      const frames = [];
+      let raw = String(blob || '');
+      let frameStart = 0;
+      let idx;
+      while ((idx = raw.indexOf('\n\n', frameStart)) !== -1) {
+        const frame = raw.slice(frameStart, idx);
+        frameStart = idx + 2;
+        let event = 'message';
+        let data = '';
+        const lines = frame.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          if (line.startsWith('event:')) event = line.slice(6).trim();
+          else if (line.startsWith('data:')) data += (data ? '\n' : '') + line.slice(5).trim();
+        }
+        let payload = null;
+        try { payload = data ? JSON.parse(data) : null; } catch (e) {}
+        frames.push({ event: event, data: data, payload: payload });
+      }
+      return { frames: frames, rest: raw.slice(frameStart) };
+    },
+    endpoint: ENDPOINT
+  };
 })();
 </script>
 </body>
