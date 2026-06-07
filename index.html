@@ -2560,5 +2560,194 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   };
 })();
 </script>
+
+<script>
+/* Funnel instrumentation (T8).
+   Listens for the prompt-bar CustomEvents that T4/T5 dispatch, plus a
+   page_view on load and a signup_cta_click on any link that points at the
+   signup path. Each event carries a persistent `anonId` (localStorage) and a
+   per-tab `sessionId` (sessionStorage). Events post in small batches to the
+   public maskin endpoint via `sendBeacon` on visibility/page-hide and via
+   `fetch(keepalive)` for in-page flushes.
+
+   The endpoint just structured-logs each event — see
+   `apps/dev/src/routes/public-landing-events.ts` on the maskin side. The bet's
+   kill metric (% malformed drafts in 48h) is computed server-side from
+   `objects` rows by `apps/dev/src/routes/admin-landing-funnel.ts`; this script
+   only carries the leading and conversion-side events. */
+(function() {
+  var metaEl = document.querySelector('meta[name="maskin-api-base"]');
+  var apiBase = (metaEl && metaEl.getAttribute('content')) || 'https://maskin.sindre.ai';
+  var ENDPOINT = apiBase + '/api/public/landing-events';
+  var SIGNUP_HREF_RE = /\/(docs\/get-started|signup|sign-up|register)(\/|$)/i;
+  var BATCH_MAX = 12;
+  var FLUSH_MS = 2500;
+
+  function uuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      try { return window.crypto.randomUUID(); } catch (e) {}
+    }
+    // RFC 4122 v4-ish fallback. Good enough for an anon id; never used for auth.
+    return 'fid-' + Math.random().toString(36).slice(2, 10) + '-' + Date.now().toString(36);
+  }
+
+  function readStored(storage, key) {
+    try { return storage.getItem(key); } catch (e) { return null; }
+  }
+  function writeStored(storage, key, value) {
+    try { storage.setItem(key, value); } catch (e) {}
+  }
+
+  var anonId = readStored(window.localStorage, 'maskin_anon_id');
+  if (!anonId) {
+    anonId = uuid();
+    writeStored(window.localStorage, 'maskin_anon_id', anonId);
+  }
+  var sessionId = readStored(window.sessionStorage, 'maskin_landing_sid');
+  if (!sessionId) {
+    sessionId = uuid();
+    writeStored(window.sessionStorage, 'maskin_landing_sid', sessionId);
+  }
+
+  var queue = [];
+  var flushTimer = null;
+  var ENABLED = true; // disabled if the endpoint hard-fails so we don't retry forever
+
+  function scheduleFlush() {
+    if (flushTimer || !ENABLED) return;
+    flushTimer = window.setTimeout(function() {
+      flushTimer = null;
+      flushQueue('timer');
+    }, FLUSH_MS);
+  }
+
+  function track(name, props) {
+    if (!ENABLED) return;
+    var ev = {
+      name: String(name),
+      ts: new Date().toISOString(),
+      anonId: anonId,
+      sessionId: sessionId
+    };
+    if (props && typeof props === 'object') ev.props = props;
+    queue.push(ev);
+    if (queue.length >= BATCH_MAX) {
+      flushQueue('full');
+    } else {
+      scheduleFlush();
+    }
+  }
+
+  function flushQueue(reason) {
+    if (queue.length === 0) return;
+    var batch = queue.splice(0, BATCH_MAX);
+    var payload = JSON.stringify({ events: batch });
+    var sent = false;
+
+    // Prefer sendBeacon on unload paths; it survives page transitions.
+    if (reason === 'pagehide' || reason === 'visibilitychange') {
+      try {
+        if (navigator.sendBeacon) {
+          var blob = new Blob([payload], { type: 'application/json' });
+          sent = navigator.sendBeacon(ENDPOINT, blob);
+        }
+      } catch (e) {}
+    }
+
+    if (!sent) {
+      try {
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          credentials: 'omit',
+          keepalive: true
+        }).catch(function(err) {
+          console.warn('[maskin] landing-events flush failed', err);
+        });
+      } catch (err) {
+        // Last-ditch: if even fetch() throws synchronously the endpoint is unreachable.
+        // Disable to avoid hot-looping; the next page load will retry.
+        ENABLED = false;
+        console.warn('[maskin] landing-events disabled after fetch error', err);
+      }
+    }
+  }
+
+  // ── page_view ──────────────────────────────────────────────────────────
+  var referrer = document.referrer || null;
+  track('page_view', {
+    path: window.location.pathname + window.location.search,
+    referrer: referrer,
+    viewportW: window.innerWidth || null,
+    viewportH: window.innerHeight || null
+  });
+
+  // ── funnel events from T4 (submit) and T5 (renderer) ───────────────────
+  document.addEventListener('maskin:prompt-submit', function(e) {
+    var d = (e && e.detail) || {};
+    track('prompt_submit', {
+      kind: d.kind || null,
+      promptChars: typeof d.promptChars === 'number' ? d.promptChars : null
+    });
+  });
+  document.addEventListener('maskin:draft-complete', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_complete', { chars: typeof d.chars === 'number' ? d.chars : null });
+  });
+  document.addEventListener('maskin:draft-malformed', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_malformed', {
+      receivedAnyDelta: !!d.receivedAnyDelta,
+      hasBuffer: !!d.hasBuffer
+    });
+  });
+  document.addEventListener('maskin:draft-error', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_error', {
+      reason: d.reason || null,
+      status: typeof d.status === 'number' ? d.status : null
+    });
+  });
+
+  // ── signup CTA clicks (delegation) ─────────────────────────────────────
+  document.addEventListener('click', function(e) {
+    var t = e.target;
+    while (t && t !== document) {
+      if (t.tagName === 'A' && t.getAttribute('href')) {
+        var href = t.getAttribute('href');
+        if (SIGNUP_HREF_RE.test(href)) {
+          track('signup_cta_click', {
+            href: href,
+            // Best-effort label: stripped text content of the link, capped.
+            label: (t.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80)
+          });
+          // Force a synchronous flush so the click event survives the navigation.
+          flushQueue('cta_click');
+          return;
+        }
+      }
+      t = t.parentNode;
+    }
+  }, true);
+
+  // ── flush on visibility change / page hide ─────────────────────────────
+  function onVisibility() {
+    if (document.visibilityState === 'hidden') flushQueue('visibilitychange');
+  }
+  document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('pagehide', function() { flushQueue('pagehide'); });
+
+  // ── expose for manual checks (mirrors T4 / T5 conventions) ─────────────
+  window.__maskinFunnel = {
+    track: track,
+    flush: function() { flushQueue('manual'); },
+    queueLength: function() { return queue.length; },
+    anonId: anonId,
+    sessionId: sessionId,
+    endpoint: ENDPOINT
+  };
+})();
+</script>
 </body>
 </html>
