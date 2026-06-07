@@ -2101,7 +2101,14 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   const meta = document.querySelector('meta[name="maskin-api-base"]');
   const API_BASE = ((meta && meta.content) || 'https://maskin.sindre.ai').replace(/\/$/, '');
   const ENDPOINT = API_BASE + '/api/public/bet-strategist/drafts';
-  const SIGNUP_URL = '/docs/get-started/';
+  // Signup CTA on the draft panel goes straight to the maskin signup form
+  // carrying `?claim=1` so the post-signup hook calls the public claim endpoint.
+  // The HttpOnly `maskin_guest` cookie set by /drafts above persists on the
+  // maskin.sindre.ai domain across the top-level navigation (SameSite=Lax,
+  // sindre.ai is the registrable parent), so the claim endpoint sees the same
+  // guestSessionId and copies the visitor's completed draft into their new
+  // workspace.
+  const SIGNUP_URL = API_BASE + '/signup?claim=1';
   const MAX_PROMPT_CHARS = 4000;
   const TEXT_LIKE_EXT = /\.(txt|md|markdown|csv|json|html|rtf)$/i;
   const TEXT_LIKE_MIME = /^(text\/|application\/(json|csv|x-rtf|rtf))/i;
