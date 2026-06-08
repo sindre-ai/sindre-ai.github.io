@@ -1,0 +1,6 @@
+{
+  "enabledMcpjsonServers": [
+    "maskin"
+  ],
+  "enableAllProjectMcpServers": true
+}

@@ -2092,6 +2092,62 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
    on the form so T7 (signup CTA) and T8 (analytics) can subscribe without
    touching this module. */
 (function() {
+  const promptForm = document.getElementById('prompt-form');
+  const promptStream = document.getElementById('draft-stream');
+  if (!promptForm || !promptStream) return;
+
+  const pendingPromptKey = 'maskin_pending_prompt';
+  const signupUrl = (
+    location.hostname === 'localhost' ||
+    location.hostname === '127.0.0.1' ||
+    location.hostname === '::1'
+  )
+    ? 'http://localhost:5173/signup'
+    : 'https://maskin.sindre.ai/signup';
+  const promptToSignupUrl = (prompt) =>
+    signupUrl + '?pending_prompt=' + encodeURIComponent(prompt);
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function(c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function showRedirecting(prompt) {
+    promptStream.hidden = false;
+    promptStream.className = 'draft-stream is-visible is-streaming';
+    promptStream.innerHTML =
+      '<div class="draft-stream-header"><span class="draft-stream-dot" aria-hidden="true"></span><span>Preparing signup</span></div>' +
+      '<div class="draft-stream-body">' +
+      '<p>Saving your prompt and sending you to signup...</p>' +
+      '<p><em>' + escapeHtml(prompt) + '</em></p>' +
+      '</div>';
+  }
+
+  function showSaveError() {
+    promptStream.hidden = false;
+    promptStream.className = 'draft-stream is-visible is-error';
+    promptStream.innerHTML =
+      '<div class="draft-stream-header"><span class="draft-stream-dot" aria-hidden="true"></span><span>Prompt not saved</span></div>' +
+      '<div class="draft-stream-body"><p>We could not save your prompt locally. Please try again.</p></div>';
+  }
+
+  document.addEventListener('maskin:prompt-submit', function(e) {
+    if (!e.detail || !e.detail.text) return;
+    try {
+      localStorage.setItem(pendingPromptKey, e.detail.text);
+      console.info('[maskin] prompt saved for signup', { kind: e.detail.kind, len: e.detail.text.length });
+      showRedirecting(e.detail.text);
+      window.setTimeout(function() {
+        window.location.assign(promptToSignupUrl(e.detail.text));
+      }, 200);
+    } catch (err) {
+      console.error('[maskin] failed to save pending prompt', err);
+      showSaveError();
+    }
+  });
+
+  return;
   const renderer = document.getElementById('draft-stream');
   const form     = document.getElementById('prompt-form');
   const submit   = document.getElementById('prompt-submit');
@@ -2099,7 +2155,15 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   if (!renderer || !form || !submit) return;
 
   const meta = document.querySelector('meta[name="maskin-api-base"]');
-  const API_BASE = ((meta && meta.content) || 'https://maskin.sindre.ai').replace(/\/$/, '');
+  const isLocalHost =
+    location.hostname === 'localhost' ||
+    location.hostname === '127.0.0.1' ||
+    location.hostname === '::1';
+  const API_BASE = (
+    isLocalHost
+      ? 'http://localhost:3000'
+      : ((meta && meta.content) || 'https://maskin.sindre.ai')
+  ).replace(/\/$/, '');
   const ENDPOINT = API_BASE + '/api/public/bet-strategist/drafts';
   const SIGNUP_URL = '/docs/get-started/';
   const MAX_PROMPT_CHARS = 4000;
