@@ -2113,17 +2113,6 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     });
   }
 
-  function showRedirecting(prompt) {
-    promptStream.hidden = false;
-    promptStream.className = 'draft-stream is-visible is-streaming';
-    promptStream.innerHTML =
-      '<div class="draft-stream-header"><span class="draft-stream-dot" aria-hidden="true"></span><span>Preparing signup</span></div>' +
-      '<div class="draft-stream-body">' +
-      '<p>Saving your prompt and sending you to signup...</p>' +
-      '<p><em>' + escapeHtml(prompt) + '</em></p>' +
-      '</div>';
-  }
-
   function showSaveError() {
     promptStream.hidden = false;
     promptStream.className = 'draft-stream is-visible is-error';
@@ -2137,7 +2126,6 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     try {
       localStorage.setItem(pendingPromptKey, e.detail.text);
       console.info('[maskin] prompt saved for signup', { kind: e.detail.kind, len: e.detail.text.length });
-      showRedirecting(e.detail.text);
       window.setTimeout(function() {
         window.location.assign(promptToSignupUrl(e.detail.text));
       }, 200);
