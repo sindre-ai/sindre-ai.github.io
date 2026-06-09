@@ -2431,7 +2431,7 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
       renderDone(buffer, true);
       console.info('[maskin] draft malformed', { receivedAnyDelta, hasBuffer: !!trimmed });
       form.dispatchEvent(new CustomEvent('maskin:draft-malformed', {
-        detail: { buffer: buffer, missingHeadings: REQUIRED_HEADINGS.filter(function(h){ return trimmed.indexOf(h) === -1; }) },
+        detail: { buffer: buffer, missingHeadings: REQUIRED_HEADINGS.filter(function(h){ return trimmed.indexOf(h) === -1; }), receivedAnyDelta: receivedAnyDelta },
         bubbles: true
       }));
       return;
@@ -2759,7 +2759,7 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     var d = (e && e.detail) || {};
     track('prompt_submit', {
       kind: d.kind || null,
-      promptChars: typeof d.promptChars === 'number' ? d.promptChars : null
+      promptChars: d.text ? d.text.length : null
     });
   });
   document.addEventListener('maskin:draft-complete', function(e) {
@@ -2770,13 +2770,13 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     var d = (e && e.detail) || {};
     track('draft_malformed', {
       receivedAnyDelta: !!d.receivedAnyDelta,
-      hasBuffer: !!d.hasBuffer
+      hasBuffer: !!d.buffer
     });
   });
   document.addEventListener('maskin:draft-error', function(e) {
     var d = (e && e.detail) || {};
     track('draft_error', {
-      reason: d.reason || null,
+      kind: d.kind || null,
       status: typeof d.status === 'number' ? d.status : null
     });
   });
