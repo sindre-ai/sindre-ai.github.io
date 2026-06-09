@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Maskin backend base URL for the landing-page guest Bet Strategist endpoint (T5). Override per environment. -->
+  <meta name="maskin-api-base" content="https://maskin.sindre.ai" />
   <title>Maskin — Your team's workspace for working with AI agents</title>
   <meta name="description" content="Stop using AI alone. Maskin is the purpose-built workspace where your whole team — humans and AI agents — works together with shared memory, context, and process. Open source." />
 
@@ -337,6 +339,438 @@
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .btn-secondary:hover { border-color: var(--border-strong); color: var(--text); transform: translateY(-1px); }
+
+    /* ===== PROMPT BAR ===== */
+    .prompt-bar-wrap {
+      max-width: 720px;
+      margin: 32px 0 28px;
+    }
+    .prompt-bar {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      padding: 18px 18px 18px 22px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hover);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .prompt-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-subtle), var(--shadow-md);
+    }
+    .prompt-bar.is-dragover {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    .prompt-input {
+      flex: 1;
+      min-height: 56px;
+      max-height: 240px;
+      resize: none;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 17px;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      padding: 0;
+    }
+    .prompt-input::placeholder { color: var(--text-muted); }
+    .prompt-submit {
+      flex: 0 0 auto;
+      width: 40px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; border-radius: 10px;
+      background: var(--text); color: var(--bg);
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s, background 0.2s;
+    }
+    .prompt-submit:hover:not(:disabled) { transform: translateY(-1px); }
+    .prompt-submit:disabled { opacity: 0.35; cursor: not-allowed; }
+    .prompt-submit svg { width: 16px; height: 16px; }
+    .prompt-file-input { display: none; }
+    .prompt-route-hint {
+      position: absolute;
+      left: 22px;
+      bottom: -22px;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+    .prompt-route-hint.is-visible { opacity: 1; transform: translateY(0); }
+    .prompt-route-hint b {
+      color: var(--accent-text);
+      font-weight: 500;
+    }
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .prompt-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 450;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .prompt-chip:hover:not(:disabled) {
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--bg-hover);
+    }
+    .prompt-chip:disabled { cursor: not-allowed; opacity: 0.7; }
+    .prompt-chip svg { width: 14px; height: 14px; opacity: 0.85; }
+    .prompt-chip-badge {
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 999px;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      margin-left: 2px;
+    }
+    .prompt-file-pill {
+      display: none;
+      align-items: center; gap: 8px;
+      padding: 6px 10px 6px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hover);
+      border-radius: 999px;
+      margin-right: 8px;
+    }
+    .prompt-file-pill.is-visible { display: inline-flex; }
+    .prompt-file-pill button {
+      width: 18px; height: 18px; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; background: transparent;
+      color: var(--text-muted); cursor: pointer; border-radius: 50%;
+    }
+    .prompt-file-pill button:hover { color: var(--text); background: var(--bg-hover); }
+    @media (max-width: 640px) {
+      .prompt-bar { padding: 14px; gap: 10px; }
+      .prompt-input { font-size: 16px; min-height: 48px; }
+      .prompt-submit { width: 36px; height: 36px; }
+      .prompt-chip { font-size: 12px; padding: 7px 12px; }
+    }
+
+    /* ===== DRAFT STREAM (T5) ===== */
+    .draft-stream {
+      display: none;
+      max-width: 720px;
+      margin: 22px 0 0;
+      padding: 22px 22px 20px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out, border-color 0.2s;
+    }
+    .draft-stream.is-visible { display: block; opacity: 1; transform: translateY(0); }
+    .draft-stream.is-streaming { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-subtle), var(--shadow-md); }
+    .draft-stream-header {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .draft-stream-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-muted);
+    }
+    .draft-stream.is-streaming .draft-stream-dot {
+      background: var(--accent);
+      animation: draft-stream-pulse 1.1s ease-in-out infinite;
+    }
+    .draft-stream.is-error .draft-stream-dot,
+    .draft-stream.is-malformed .draft-stream-dot { background: #e16464; }
+    .draft-stream.is-done .draft-stream-dot { background: #4ade80; }
+    @keyframes draft-stream-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.55; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .draft-stream.is-streaming .draft-stream-dot { animation: none; }
+      .draft-stream { transition: opacity 0.15s; transform: none; }
+    }
+    .draft-stream-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .draft-stream-body h3 {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--accent-text);
+      margin: 18px 0 6px;
+    }
+    .draft-stream-body h3:first-child { margin-top: 0; }
+    .draft-stream-body p { margin: 0 0 12px; color: var(--text-secondary); }
+    .draft-stream-body p:last-child { margin-bottom: 0; }
+    .draft-stream-body strong { color: var(--text); font-weight: 600; }
+    .draft-stream-body em { font-style: italic; color: var(--text-secondary); }
+    .draft-stream-body ul { margin: 0 0 12px; padding-left: 20px; color: var(--text-secondary); }
+    .draft-stream-body li { margin: 0 0 4px; }
+    .draft-stream-body code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 13px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--bg-surface);
+    }
+    .draft-stream-cursor {
+      display: inline-block;
+      width: 6px; height: 1em;
+      vertical-align: -2px;
+      background: var(--accent);
+      margin-left: 2px;
+      animation: draft-stream-cursor 1s steps(2) infinite;
+    }
+    @keyframes draft-stream-cursor { 50% { opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .draft-stream-cursor { animation: none; opacity: 1; }
+    }
+    .draft-stream-banner {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 12px 14px;
+      margin: 0 0 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+    }
+    .draft-stream-banner.is-warn {
+      border-color: rgba(225, 100, 100, 0.4);
+      background: rgba(225, 100, 100, 0.06);
+      color: var(--text);
+    }
+    .draft-stream-banner svg { flex: 0 0 16px; width: 16px; height: 16px; margin-top: 2px; }
+    .draft-stream-banner b { color: var(--text); font-weight: 600; }
+    .draft-stream-actions {
+      margin-top: 14px;
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .draft-stream-actions button,
+    .draft-stream-actions a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px; font-weight: 500;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .draft-stream-actions button:hover,
+    .draft-stream-actions a:hover { background: var(--bg-hover); border-color: var(--text-muted); }
+    @media (max-width: 640px) {
+      .draft-stream { padding: 18px; margin-top: 18px; }
+      .draft-stream-body { font-size: 14px; }
+    }
+
+    /* ===== USED-BY STRIP ===== */
+    .used-by {
+      max-width: 720px;
+      margin: 56px 0 0;
+      padding: 18px 0;
+      display: flex; align-items: center; gap: 28px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .used-by-label {
+      font-size: 11px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .used-by-logos {
+      display: flex; align-items: center; gap: 28px;
+      flex-wrap: wrap; flex: 1;
+    }
+    .used-by-logo {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: -0.005em;
+      opacity: 0.85;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .used-by-logo:hover { opacity: 1; color: var(--text); }
+    .used-by-logo svg { width: 14px; height: 14px; opacity: 0.7; }
+    @media (max-width: 640px) {
+      .used-by { flex-direction: column; align-items: flex-start; gap: 12px;
+                 padding: 16px 0; margin-top: 40px; }
+      .used-by-logos { gap: 20px; }
+    }
+
+    /* ===== USE-CASE VIDEO TILES ===== */
+    .cases-section { padding: 80px 32px 100px; max-width: 1200px; margin: 0 auto; }
+    .cases-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 28px; gap: 24px; flex-wrap: wrap;
+    }
+    .cases-title {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 600;
+      letter-spacing: -0.025em; line-height: 1.15;
+      color: var(--text); max-width: 640px;
+      text-wrap: balance;
+    }
+    .cases-title em {
+      font-family: 'Instrument Serif', Georgia, serif; font-style: italic;
+      font-weight: 400; color: var(--accent-text); letter-spacing: -0.01em;
+    }
+    .cases-sub {
+      font-size: 13px; color: var(--text-muted);
+      letter-spacing: 0.01em; white-space: nowrap;
+    }
+    .case-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .case {
+      display: flex; flex-direction: column;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-hover);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      text-align: left;
+      color: inherit;
+      font-family: inherit;
+      transition:
+        transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow  200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .case:hover { border-color: var(--border-strong); transform: translateY(-2px);
+                  box-shadow: var(--shadow-md); }
+    .case:active { transform: translateY(0); }
+    .case:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px;
+                          border-color: var(--accent); }
+    .case-thumb {
+      position: relative; aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-elevated) 100%);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .case-thumb::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(circle at 30% 30%,
+        color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%);
+    }
+    .case-play {
+      position: relative; z-index: 1;
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--text); color: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.32);
+      transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .case:hover .case-play { transform: scale(1.06); }
+    .case-play svg { width: 14px; height: 14px; margin-left: 2px; }
+    .case-runtime {
+      position: absolute; right: 10px; bottom: 10px; z-index: 1;
+      padding: 3px 7px; border-radius: 4px;
+      background: rgba(9,9,11,0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      font-size: 11px; font-weight: 500;
+      color: var(--text); letter-spacing: 0.01em;
+    }
+    .case-meta { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 6px; }
+    .case-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent-text);
+    }
+    .case-name {
+      font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+      color: var(--text); line-height: 1.3;
+    }
+    .case-desc {
+      font-size: 13px; color: var(--text-secondary);
+      line-height: 1.5; margin-top: 2px;
+    }
+    /* Empty state — videos not yet produced. Tiles ship in this state until swap-in. */
+    .case.is-empty { cursor: default; }
+    .case.is-empty:hover { transform: none; border-color: var(--border-hover);
+                           box-shadow: none; }
+    .case.is-empty .case-play { display: none; }
+    .case-soon {
+      position: relative; z-index: 1;
+      padding: 5px 11px; border-radius: 999px;
+      background: var(--accent-subtle); color: var(--accent-text);
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    /* Loading + error states ship with empty markup — wire up when real videos land. */
+    .case.is-loading .case-thumb { background: var(--bg-surface); }
+    .case.is-loading .case-play,
+    .case.is-loading .case-runtime { display: none; }
+    .case-skeleton {
+      position: relative; z-index: 1;
+      width: 70%; height: 8px; border-radius: 4px;
+      background: linear-gradient(90deg,
+        var(--bg-elevated) 0%, var(--bg-hover) 50%, var(--bg-elevated) 100%);
+      background-size: 200% 100%;
+      animation: case-shimmer 1.2s linear infinite;
+    }
+    @keyframes case-shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .case.is-error .case-play { display: none; }
+    .case-error {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text-secondary);
+    }
+    .case-error-msg { font-size: 12px; color: var(--text-muted); }
+    .case-retry {
+      padding: 5px 12px; border-radius: 6px;
+      background: var(--bg-elevated); color: var(--text);
+      border: 1px solid var(--border-hover);
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .case-retry:hover { border-color: var(--border-strong); background: var(--bg-hover); }
+    @media (max-width: 1023px) {
+      .case-grid { grid-template-columns: repeat(2, 1fr); }
+      .case-grid .case:nth-child(3) { grid-column: span 2; max-width: calc(50% - 10px); }
+    }
+    @media (max-width: 639px) {
+      .cases-section { padding: 60px 20px 80px; }
+      .case-grid { grid-template-columns: 1fr; gap: 14px; }
+      .case-grid .case:nth-child(3) { grid-column: span 1; max-width: none; }
+      .cases-head { margin-bottom: 20px; }
+      .cases-sub { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .case, .case-play, .case-skeleton { transition: none; animation: none; }
+    }
 
     /* ===== APP MOCKUP ===== */
     .mockup-section {
@@ -911,11 +1345,43 @@
 <section class="hero">
   <h1 class="fade-up d1" id="hero-headline">Your team has been<br>using AI <em>alone</em>.</h1>
   <p class="fade-up d2" id="hero-sub">Context scattered across a hundred private Claude chats. Work nobody else can see, remember, or build on. Maskin is the workspace where your whole team &mdash; humans and AI agents &mdash; works together, with shared memory and a real process.</p>
+
+  <!-- Prompt bar: paste a hunch, drop a file, or a URL -->
+  <div class="prompt-bar-wrap fade-up d3" id="prompt-bar-wrap">
+    <form class="prompt-bar" id="prompt-form" novalidate aria-label="Try Maskin: paste a hunch, drop a file, or paste a URL">
+      <span class="prompt-file-pill" id="prompt-file-pill" aria-live="polite">
+        <span id="prompt-file-name"></span>
+        <button type="button" id="prompt-file-clear" aria-label="Remove file">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+      </span>
+      <textarea class="prompt-input" id="prompt-input" rows="1"
+        placeholder="Paste a customer note, type a hunch, or drop a file&hellip;"
+        aria-label="Describe your bet, paste notes, or paste a URL"></textarea>
+      <button class="prompt-submit" id="prompt-submit" type="submit" aria-label="Draft my bet" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <input class="prompt-file-input" type="file" id="prompt-file"
+        accept=".txt,.md,.markdown,.pdf,.docx,.csv,.json,.html,.rtf" />
+      <div class="prompt-route-hint" id="prompt-route-hint"></div>
+    </form>
+    <div class="prompt-chips" role="group" aria-label="Other ways to start">
+      <button type="button" class="prompt-chip" id="prompt-chip-file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>
+        Drop a file
+      </button>
+      <button type="button" class="prompt-chip" id="prompt-chip-connect" disabled aria-disabled="true" title="Coming soon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 1 0-7.07-7.07l-1.5 1.5"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 1 0 7.07 7.07l1.5-1.5"/></svg>
+        Connect Linear / Productboard
+        <span class="prompt-chip-badge">Soon</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Streaming draft renderer (T5). Populated by the script at the bottom of the page on `maskin:prompt-submit`. -->
+  <section class="draft-stream" id="draft-stream" role="region" aria-live="polite" aria-atomic="false" aria-label="Bet draft"></section>
+
   <div class="hero-actions fade-up d3">
-    <a href="https://47woc.share.hsforms.com/2cA2Rrhs9TouQ-gGvK6FQEg" class="btn-primary" target="_blank">
-      Join the waitlist
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
     <a href="/docs/get-started/" class="btn-secondary">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       Get started
@@ -924,6 +1390,33 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
       Explore on GitHub
     </a>
+  </div>
+
+  <!-- Built-for strip: integrations the landing visitor already uses -->
+  <div class="used-by fade-up d3" aria-label="Tools Maskin works with">
+    <span class="used-by-label">Built for teams using</span>
+    <div class="used-by-logos">
+      <span class="used-by-logo" aria-label="Linear">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+        Linear
+      </span>
+      <span class="used-by-logo" aria-label="Slack">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        Slack
+      </span>
+      <span class="used-by-logo" aria-label="Notion">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/></svg>
+        Notion
+      </span>
+      <span class="used-by-logo" aria-label="Claude">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3l3 6 6 3-6 3-3 6-3-6-6-3 6-3z"/></svg>
+        Claude
+      </span>
+      <span class="used-by-logo" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.3 6.9 9.7.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-5 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1 .8-.2 1.6-.3 2.5-.3s1.7.1 2.5.3c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.4 4.7-4.6 5 .4.3.7.9.7 1.8v2.6c0 .3.2.6.7.5 4-1.4 6.9-5.2 6.9-9.7C22 6.6 17.5 2 12 2z"/></svg>
+        GitHub
+      </span>
+    </div>
   </div>
 
   <!-- Split narrative: Before / After -->
@@ -951,497 +1444,51 @@
 </section>
 
 <!-- Interactive Mockup with Use Case Carousel -->
-<section class="mockup-section fade-up" id="use-cases">
-  <p class="demo-explainer">Maskin is a shared workspace where your team and its AI agents work on the same insights, bets, and tasks.</p>
-  <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; text-align: center; letter-spacing: 0.01em; max-width: 640px; margin-left:auto; margin-right:auto; line-height:1.6;">An agent just spotted a pattern in your customer signals. Here&rsquo;s what happens next &mdash; pick a team to watch it play out.</p>
-  <!-- Use case button group -->
-  <div class="carousel-tabs" style="margin-bottom:16px;">
-    <button class="carousel-tab active" data-usecase="product">Product</button>
-    <button class="carousel-tab" data-usecase="growth">Growth</button>
-    <button class="carousel-tab" data-usecase="sales">Sales</button>
+<!-- Use-case video tiles · replaces the mock app interactive demo per T2 spec -->
+<section class="cases-section fade-up" id="use-cases" aria-labelledby="cases-title">
+  <div class="cases-head">
+    <h2 class="cases-title" id="cases-title">See it run on a <em>real</em> Tuesday.</h2>
+    <span class="cases-sub">90 seconds each</span>
   </div>
+  <div class="case-grid" role="list">
 
-  <div class="app-mock">
-    <div class="mock-chrome">
-      <span class="mock-dot"></span>
-      <span class="mock-dot"></span>
-      <span class="mock-dot"></span>
-      <span class="mock-url">app.maskin.dev</span>
-    </div>
-    <div class="mock-body">
-      <!-- Sidebar -->
-      <div class="mock-sidebar">
-        <div class="mock-sidebar-logo">
-          <div class="logo-icon">M</div>
-          <span>Acme Corp</span>
-        </div>
-        <nav class="mock-nav">
-          <button class="mock-nav-item active" data-screen="pulse">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
-            Pulse
-          </button>
-          <button class="mock-nav-item" data-screen="objects">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
-            Objects
-          </button>
-          <button class="mock-nav-item" data-screen="agents">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
-            Agents
-          </button>
-          <button class="mock-nav-item" data-screen="triggers">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"/></svg>
-            Triggers
-          </button>
-          <button class="mock-nav-item" data-screen="activity">
-            <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-            Activity
-          </button>
-        </nav>
+    <!-- Tiles ship in is-empty until the three videos in T2's shortlist are recorded. -->
+    <button class="case is-empty" role="listitem" type="button" aria-disabled="true"
+            aria-label="Product use case: Shape a bet from a Slack thread. Video coming soon.">
+      <div class="case-thumb">
+        <span class="case-soon">Coming soon</span>
       </div>
-
-      <!-- Main area — 15 screens: 3 use cases × 5 pages -->
-      <div class="mock-main">
-
-        <!-- ==================== PRODUCT ==================== -->
-
-        <!-- Product × Pulse -->
-        <div class="mock-screen active" id="screen-product-pulse">
-          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Product workspace &middot; 1 recommendation</span></div></div>
-          <div class="mock-content-body">
-            <div class="pulse-cards">
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="agent-name">Insight Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">2 min ago</span></div>
-                <p>19 signals point to <strong>"onboarding friction"</strong>. Created bet: <strong>"Onboarding quiz"</strong>. Three agents are already on it.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product × Objects -->
-        <div class="mock-screen" id="screen-product-objects">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Product workspace &middot; 5 objects</span></div></div>
-          <div class="mock-content-body">
-            <div class="objects-toolbar">
-              <div class="objects-tabs">
-                <button class="objects-tab active">All</button>
-                <button class="objects-tab">Insight</button>
-                <button class="objects-tab">Bet</button>
-                <button class="objects-tab">Task</button>
-              </div>
-            </div>
-            <div class="objects-table">
-              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Insight Scout</span><span class="col-muted">2h ago</span></div>
-              <div class="objects-row" id="objects-bet-row"><span class="title">Onboarding quiz for new users</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Insight Scout</span><span class="col-muted">2 min ago</span></div>
-              <div class="objects-row"><span class="title">Design quiz flow and UI screens</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Design Agent</span><span class="col-muted">1 min ago</span></div>
-              <div class="objects-row"><span class="title">Build quiz engine and personalization logic</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Developer Agent</span><span class="col-muted">1 min ago</span></div>
-              <div class="objects-row"><span class="title">Map user personas to feature recommendations</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">User Persona Agent</span><span class="col-muted">1 min ago</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product × Bet Detail -->
-        <div class="mock-screen" id="screen-product-bet-detail">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Product workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="bet-detail">
-              <div class="back-link" id="bet-detail-back">&larr; Back to objects</div>
-              <div class="bet-detail-title">Onboarding quiz for new users</div>
-              <div class="bet-detail-meta">
-                <span class="badge badge-bet">bet</span>
-                <span class="badge badge-green">in progress</span>
-                <span class="meta-agent"><span class="avatar avatar-sm avatar-purple">IS</span> Insight Scout &middot; 2 min ago</span>
-              </div>
-
-              <h3>Summary</h3>
-              <p>New users struggle to find relevant features for their use case, leading to high drop-off during onboarding. A short interactive quiz will personalize the first-run experience by matching users to the right workflow based on their role and goals.</p>
-
-              <h3>Evidence</h3>
-              <ul class="evidence-list">
-                <li><strong>12 support tickets</strong> (last 30 days): Users report feeling "overwhelmed" by the dashboard and not knowing where to start.</li>
-                <li><strong>4 churn interviews</strong>: Churned users cite "couldn't figure out what to do first" as primary reason for leaving.</li>
-                <li><strong>3 NPS detractors</strong>: All mention onboarding as the weakest part of the experience.</li>
-              </ul>
-
-              <h3>Goal</h3>
-              <ol class="goal-list">
-                <li>Reduce onboarding drop-off rate by 25% within 4 weeks</li>
-                <li>Increase Day-7 activation rate from 34% to 50%</li>
-                <li>Achieve 80%+ quiz completion rate</li>
-              </ol>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked tasks (3)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">Design quiz flow and UI screens</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row"><span class="title">Build quiz engine and personalization logic</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row related-hidden"><span class="title">Map user personas to feature recommendations</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <span class="related-show-more">Show 1 more</span>
-              </div>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked insights (19)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">Onboarding drop-off signal cluster</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
-                <div class="related-row"><span class="title">"Dashboard is overwhelming" — 8 support tickets</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
-                <div class="related-row related-hidden"><span class="title">"Don't know where to start" — 4 churn interviews</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
-                <div class="related-row related-hidden"><span class="title">NPS detractor cluster: onboarding experience</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
-                <div class="related-row related-hidden"><span class="title">Feature discovery rate below 20% in first session</span><span class="badge badge-green">active</span><span class="badge badge-insight">insight</span></div>
-                <span class="related-show-more">Show 17 more</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product × Agents -->
-        <div class="mock-screen" id="screen-product-agents">
-          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Product workspace &middot; 4 agents</span></div></div>
-          <div class="mock-content-body">
-            <div class="agents-grid">
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">IS</span><span class="name">Insight Scout</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Scans customer signals and clusters patterns</div>
-                <div class="activity-line">Created bet &ldquo;Onboarding quiz&rdquo; &middot; 2m ago</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">DA</span><span class="name">Design Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Designs UI flows and screen layouts</div>
-                <div class="activity-line">Designing quiz flow and UI screens &middot; 1m</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">DV</span><span class="name">Developer Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Builds features and personalization logic</div>
-                <div class="activity-line">Building quiz engine &middot; 1m</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-amber">UP</span><span class="name">User Persona Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Maps user personas to feature recommendations</div>
-                <div class="activity-line">Mapping personas to features &middot; 1m</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product × Triggers -->
-        <div class="mock-screen" id="screen-product-triggers">
-          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Product workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="trigger-rows">
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New customer signal</div><div class="trigger-meta">event &rarr; Insight Scout</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Insight actioned</div><div class="trigger-meta">event &rarr; Design Agent, Developer Agent, User Persona Agent</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Weekly insight digest</div><div class="trigger-meta">cron &middot; every Monday 9:00 AM</div></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product × Activity -->
-        <div class="mock-screen" id="screen-product-activity">
-          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Product workspace &middot; today</span></div></div>
-          <div class="mock-content-body">
-            <div class="activity-feed">
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Insight Scout</span><span class="desc">created</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="actor-name">Insight Scout</span><span class="desc">linked 19 signals to</span><span class="entity">Onboarding drop-off signal cluster</span><span class="time">2h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">IS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Insight Scout</span><span class="desc">created bet</span><span class="entity">Onboarding quiz for new users</span><span class="time">2m ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">DA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Design Agent</span><span class="desc">started</span><span class="entity">Design quiz flow and UI screens</span><span class="time">1m ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">DV</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Developer Agent</span><span class="desc">started</span><span class="entity">Build quiz engine and personalization logic</span><span class="time">1m ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-amber">UP</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">User Persona Agent</span><span class="desc">started</span><span class="entity">Map user personas to feature recommendations</span><span class="time">1m ago</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==================== GROWTH ==================== -->
-
-        <!-- Growth × Pulse -->
-        <div class="mock-screen" id="screen-growth-pulse">
-          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Growth workspace &middot; 1 recommendation</span></div></div>
-          <div class="mock-content-body">
-            <div class="pulse-cards">
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="agent-name">Pipeline Scout</span><span class="badge badge-amber">Recommendation</span></div><span class="time">1 day ago</span></div>
-                <p>ICP segment is converting at <strong>3x average</strong> but outreach is flat. Created bet: <strong>"Double outreach to high-converting segment"</strong>. Three agents are running the campaign.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Growth × Objects -->
-        <div class="mock-screen" id="screen-growth-objects">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Growth workspace &middot; 6 objects</span></div></div>
-          <div class="mock-content-body">
-            <div class="objects-toolbar">
-              <div class="objects-tabs">
-                <button class="objects-tab active">All</button>
-                <button class="objects-tab">Insight</button>
-                <button class="objects-tab">Bet</button>
-                <button class="objects-tab">Task</button>
-              </div>
-            </div>
-            <div class="objects-table">
-              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
-              <div class="objects-row" id="objects-bet-row-growth"><span class="title">Double outreach to high-converting segment</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Pipeline Scout</span><span class="col-muted">1d ago</span></div>
-              <div class="objects-row"><span class="title">Draft personalised outreach &mdash; 47 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">6h ago</span></div>
-              <div class="objects-row"><span class="title">Create supporting case study assets</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span><span class="col-muted">Content Creator</span><span class="col-muted">8h ago</span></div>
-              <div class="objects-row"><span class="title">Send approved outreach sequence</span><span class="badge badge-blue">in progress</span><span class="badge badge-task">task</span><span class="col-muted">SDR Agent</span><span class="col-muted">2h ago</span></div>
-              <div class="objects-row"><span class="title">Measure reply rate &amp; report back</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span><span class="col-muted">Growth Strategist</span><span class="col-muted">&mdash;</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Growth × Bet Detail -->
-        <div class="mock-screen" id="screen-growth-bet-detail">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Growth workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="bet-detail">
-              <div class="back-link" id="bet-detail-back-growth">&larr; Back to objects</div>
-              <div class="bet-detail-title">Double outreach to high-converting segment</div>
-              <div class="bet-detail-meta">
-                <span class="badge badge-bet">bet</span>
-                <span class="badge badge-green">active</span>
-                <span class="meta-agent"><span class="avatar avatar-sm avatar-green">PS</span> Pipeline Scout &middot; 1 day ago</span>
-              </div>
-
-              <h3>Summary</h3>
-              <p>An ICP segment is converting at 3x the average rate, but current outreach volume to this segment is flat. A targeted campaign will double outreach to these high-fit accounts with personalised messaging and supporting case studies.</p>
-
-              <h3>Evidence</h3>
-              <ul class="evidence-list">
-                <li><strong>Pipeline data</strong>: ICP segment shows 3x conversion rate vs. average over the last 60 days across 47 accounts.</li>
-                <li><strong>Outreach volume</strong>: Only 12 of 47 high-fit accounts have been contacted. Current volume is flat month-over-month.</li>
-                <li><strong>Competitor activity</strong>: 3 competitors have increased messaging to this segment in the last 30 days.</li>
-              </ul>
-
-              <h3>Goal</h3>
-              <ol class="goal-list">
-                <li>Achieve 2x reply rate on targeted outreach vs. baseline</li>
-                <li>Contact all 47 high-fit accounts within 2 weeks</li>
-                <li>Increase qualified pipeline from this segment by 30%</li>
-              </ol>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked tasks (4)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">Draft personalised outreach &mdash; 47 contacts</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span></div>
-                <div class="related-row"><span class="title">Create supporting case study assets</span><span class="badge badge-green">done</span><span class="badge badge-task">task</span></div>
-                <div class="related-row related-hidden"><span class="title">Send approved outreach sequence</span><span class="badge badge-blue">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row related-hidden"><span class="title">Measure reply rate &amp; report back</span><span class="badge badge-amber">pending</span><span class="badge badge-task">task</span></div>
-                <span class="related-show-more">Show 2 more</span>
-              </div>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked insights (1)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">High-converting ICP segment pattern</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Growth × Agents -->
-        <div class="mock-screen" id="screen-growth-agents">
-          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Growth workspace &middot; 4 agents</span></div></div>
-          <div class="mock-content-body">
-            <div class="agents-grid">
-              <div class="agent-card">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">PS</span><span class="name">Pipeline Scout</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
-                <div class="role">Monitors pipeline data for conversion patterns</div>
-                <div class="activity-line">Found ICP segment pattern &middot; 1d ago</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">GS</span><span class="name">Growth Strategist</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Designs campaigns from pipeline insights</div>
-                <div class="activity-line">Building outreach plan &middot; 15m</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">SD</span><span class="name">SDR Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Executes personalised outreach sequences</div>
-                <div class="activity-line">Sending batch 2 of 3 &middot; 5m</div>
-              </div>
-              <div class="agent-card">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-amber">CC</span><span class="name">Content Creator</span><span class="status-dot idle"></span></div><span class="agent-status idle">idle</span></div>
-                <div class="role">Generates supporting content and assets</div>
-                <div class="activity-line">Created 3 case study variants &middot; 8h ago</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Growth × Triggers -->
-        <div class="mock-screen" id="screen-growth-triggers">
-          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Growth workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="trigger-rows">
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Conversion pattern alert</div><div class="trigger-meta">event &rarr; Growth Strategist</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Weekly pipeline review</div><div class="trigger-meta">cron &middot; every Friday 4:00 PM</div></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Growth × Activity -->
-        <div class="mock-screen" id="screen-growth-activity">
-          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Growth workspace &middot; today</span></div></div>
-          <div class="mock-content-body">
-            <div class="activity-feed">
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">PS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Pipeline Scout</span><span class="desc">created</span><span class="entity">High-converting ICP segment pattern</span><span class="time">3d ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">GS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Growth Strategist</span><span class="desc">created</span><span class="entity">Double outreach to high-converting segment</span><span class="time">1d ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">GS</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Growth Strategist</span><span class="desc">created 4 tasks for</span><span class="entity">Double outreach campaign</span><span class="time">1d ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">SDR Agent</span><span class="desc">completed</span><span class="entity">Draft personalised outreach</span><span class="time">6h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-amber">CC</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352 4.352-1.32a2 2 0 0 0 .83-.497z"/></svg><span class="actor-name">Content Creator</span><span class="desc">completed</span><span class="entity">Create case study assets</span><span class="time">8h ago</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">SD</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">SDR Agent</span><span class="desc">started session</span><span class="entity">Sending outreach batch</span><span class="time">2h ago</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==================== SALES ==================== -->
-
-        <!-- Sales × Pulse -->
-        <div class="mock-screen" id="screen-sales-pulse">
-          <div class="mock-content-header"><h2>Pulse</h2><div class="meta"><span>Sales workspace &middot; 1 recommendation</span></div></div>
-          <div class="mock-content-body">
-            <div class="pulse-cards">
-              <div class="pulse-card">
-                <div class="pulse-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="agent-name">Research Agent</span><span class="badge badge-amber">Recommendation</span></div><span class="time">8:30 AM</span></div>
-                <p><strong>3 discovery calls</strong> booked for tomorrow, no prep. Prepped calls convert at <strong>2x</strong>. Created bet: <strong>"Auto-prep tomorrow's discovery calls"</strong>. Three agents are building briefings.</p>
-                <div class="pulse-actions"><button class="pulse-btn primary">View bet</button></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales × Objects -->
-        <div class="mock-screen" id="screen-sales-objects">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace &middot; 6 objects</span></div></div>
-          <div class="mock-content-body">
-            <div class="objects-toolbar">
-              <div class="objects-tabs">
-                <button class="objects-tab active">All</button>
-                <button class="objects-tab">Insight</button>
-                <button class="objects-tab">Bet</button>
-                <button class="objects-tab">Task</button>
-              </div>
-            </div>
-            <div class="objects-table">
-              <div class="objects-header"><span>Title</span><span>Status</span><span>Type</span><span>Owner</span><span>Updated</span></div>
-              <div class="objects-row"><span class="title">Prepped calls convert at 2x rate</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span><span class="col-muted">Research Agent</span><span class="col-muted">3d ago</span></div>
-              <div class="objects-row" id="objects-bet-row-sales"><span class="title">Auto-prep tomorrow's discovery calls</span><span class="badge badge-green">active</span><span class="badge badge-bet">bet</span><span class="col-muted">Research Agent</span><span class="col-muted">8:30 AM</span></div>
-              <div class="objects-row"><span class="title">Research Acme Corp &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">8:32 AM</span></div>
-              <div class="objects-row"><span class="title">Research CloudScale &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Research Agent</span><span class="col-muted">8:32 AM</span></div>
-              <div class="objects-row"><span class="title">Generate personalised talk tracks</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Prep Agent</span><span class="col-muted">8:34 AM</span></div>
-              <div class="objects-row"><span class="title">Pull competitive positioning for each call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span><span class="col-muted">Competitive Intel</span><span class="col-muted">8:34 AM</span></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales × Bet Detail -->
-        <div class="mock-screen" id="screen-sales-bet-detail">
-          <div class="mock-content-header"><h2>Objects</h2><div class="meta"><span>Sales workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="bet-detail">
-              <div class="back-link" id="bet-detail-back-sales">&larr; Back to objects</div>
-              <div class="bet-detail-title">Auto-prep tomorrow's discovery calls</div>
-              <div class="bet-detail-meta">
-                <span class="badge badge-bet">bet</span>
-                <span class="badge badge-green">active</span>
-                <span class="meta-agent"><span class="avatar avatar-sm avatar-blue">RA</span> Research Agent &middot; 8:30 AM</span>
-              </div>
-
-              <h3>Summary</h3>
-              <p>3 discovery calls are booked for tomorrow with no prep materials created yet. Agents are auto-researching each prospect's company news, tech stack, and pain points to generate personalised briefing docs and talk tracks before the calls.</p>
-
-              <h3>Evidence</h3>
-              <ul class="evidence-list">
-                <li><strong>Calendar data</strong>: 3 discovery calls booked tomorrow &mdash; Acme Corp (10:00 AM), CloudScale (1:00 PM), DataFlow Inc (3:30 PM). No prep docs attached.</li>
-                <li><strong>CRM history</strong>: Reps who received auto-generated briefings closed discovery &rarr; demo at 62% vs. 31% without prep.</li>
-                <li><strong>Time savings</strong>: Manual research averages 45 min per prospect. Agents complete the same work in under 3 minutes.</li>
-              </ul>
-
-              <h3>Goal</h3>
-              <ol class="goal-list">
-                <li>100% prep coverage &mdash; every call has a briefing doc ready</li>
-                <li>Reduce rep prep time from 45 min to 5 min review per call</li>
-                <li>Increase discovery-to-demo conversion from 31% to 60%+</li>
-              </ol>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked tasks (4)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">Research Acme Corp &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row"><span class="title">Research CloudScale &mdash; discovery call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row related-hidden"><span class="title">Generate personalised talk tracks</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <div class="related-row related-hidden"><span class="title">Pull competitive positioning for each call</span><span class="badge badge-green">in progress</span><span class="badge badge-task">task</span></div>
-                <span class="related-show-more">Show 2 more</span>
-              </div>
-
-              <hr class="bet-detail-divider">
-
-              <div class="related-header"><span>Linked insights (1)</span></div>
-              <div class="related-section">
-                <div class="related-row"><span class="title">Prepped calls convert at 2x rate</span><span class="badge badge-blue">actioned</span><span class="badge badge-insight">insight</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales × Agents -->
-        <div class="mock-screen" id="screen-sales-agents">
-          <div class="mock-content-header"><h2>Agents</h2><div class="meta"><span>Sales workspace &middot; 3 agents</span></div></div>
-          <div class="mock-content-body">
-            <div class="agents-grid">
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-blue">RA</span><span class="name">Research Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Researches prospects from calendar and CRM data</div>
-                <div class="activity-line">Researching Acme Corp &middot; 2m</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-purple">PA</span><span class="name">Prep Agent</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Generates briefing docs and personalised talk tracks</div>
-                <div class="activity-line">Generating talk tracks for 3 calls &middot; 1m</div>
-              </div>
-              <div class="agent-card working">
-                <div class="agent-card-header"><div class="left"><span class="avatar avatar-green">CI</span><span class="name">Competitive Intel</span><span class="status-dot working"></span></div><span class="agent-status working">working</span></div>
-                <div class="role">Pulls competitive positioning and battlecards</div>
-                <div class="activity-line">Analysing competitor overlap for 3 prospects &middot; 1m</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales × Triggers -->
-        <div class="mock-screen" id="screen-sales-triggers">
-          <div class="mock-content-header"><h2>Triggers</h2><div class="meta"><span>Sales workspace</span></div></div>
-          <div class="mock-content-body">
-            <div class="trigger-rows">
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">New meeting booked</div><div class="trigger-meta">event &rarr; Research Agent</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Research complete</div><div class="trigger-meta">event &rarr; Prep Agent, Competitive Intel</div></div></div>
-              <div class="trigger-row"><span class="trigger-dot enabled"></span><div class="trigger-info"><div class="trigger-name">Daily meeting prep</div><div class="trigger-meta">cron &middot; every weekday 8:30 AM</div></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales × Activity -->
-        <div class="mock-screen" id="screen-sales-activity">
-          <div class="mock-content-header"><h2>Activity</h2><div class="meta"><span>Sales workspace &middot; today</span></div></div>
-          <div class="mock-content-body">
-            <div class="activity-feed">
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Research Agent</span><span class="desc">detected 3 unprepped calls in</span><span class="entity">tomorrow's calendar</span><span class="time">8:30 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/></svg><span class="actor-name">Research Agent</span><span class="desc">created bet</span><span class="entity">Auto-prep tomorrow's discovery calls</span><span class="time">8:30 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Research Agent</span><span class="desc">started</span><span class="entity">Research Acme Corp</span><span class="time">8:32 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-blue">RA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Research Agent</span><span class="desc">started</span><span class="entity">Research CloudScale</span><span class="time">8:32 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-purple">PA</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Prep Agent</span><span class="desc">started</span><span class="entity">Generate personalised talk tracks</span><span class="time">8:34 AM</span></div>
-              <div class="activity-item agent"><span class="avatar avatar-sm avatar-green">CI</span><svg class="activity-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span class="actor-name">Competitive Intel</span><span class="desc">started</span><span class="entity">Pull competitive positioning</span><span class="time">8:34 AM</span></div>
-            </div>
-          </div>
-        </div>
-
+      <div class="case-meta">
+        <span class="case-tag">Product</span>
+        <span class="case-name">Shape a bet from a Slack thread</span>
+        <span class="case-desc">A CPO pastes six messages about week-two churn. Maskin turns it into a bet with a riskiest-assumption test.</span>
       </div>
-    </div>
+    </button>
+
+    <button class="case is-empty" role="listitem" type="button" aria-disabled="true"
+            aria-label="Growth use case: Triage 40 interviews into themes. Video coming soon.">
+      <div class="case-thumb">
+        <span class="case-soon">Coming soon</span>
+      </div>
+      <div class="case-meta">
+        <span class="case-tag">Growth</span>
+        <span class="case-name">Triage 40 interviews into themes</span>
+        <span class="case-desc">Drop a folder of transcripts. Maskin clusters insights, ranks them by frequency, drafts a bet shortlist.</span>
+      </div>
+    </button>
+
+    <button class="case is-empty" role="listitem" type="button" aria-disabled="true"
+            aria-label="Sales use case: Turn an SDR call into a follow-up plan. Video coming soon.">
+      <div class="case-thumb">
+        <span class="case-soon">Coming soon</span>
+      </div>
+      <div class="case-meta">
+        <span class="case-tag">Sales</span>
+        <span class="case-name">Turn an SDR call into a follow-up plan</span>
+        <span class="case-desc">Upload a call transcript. Maskin extracts objections, drafts next-step tasks, assigns owners.</span>
+      </div>
+    </button>
+
   </div>
 </section>
 
@@ -1654,52 +1701,6 @@ const obs = new IntersectionObserver((entries) => {
 }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-// Mock state machine — use case × screen
-let currentUseCase = 'product';
-let currentScreen = 'pulse';
-
-function updateMock() {
-  // Hide all screens, show the matching one
-  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById('screen-' + currentUseCase + '-' + currentScreen);
-  if (target) target.classList.add('active');
-
-  // Highlight active carousel tab
-  document.querySelectorAll('.carousel-tab').forEach(t => t.classList.remove('active'));
-  const tab = document.querySelector('.carousel-tab[data-usecase="' + currentUseCase + '"]');
-  if (tab) tab.classList.add('active');
-
-  // Highlight active sidebar nav item
-  document.querySelectorAll('.mock-nav-item').forEach(b => b.classList.remove('active'));
-  const nav = document.querySelector('.mock-nav-item[data-screen="' + currentScreen + '"]');
-  if (nav) nav.classList.add('active');
-}
-
-// Carousel: changes use case, keeps current screen
-document.querySelectorAll('.carousel-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    currentUseCase = tab.dataset.usecase;
-    updateMock();
-  });
-});
-
-// Sidebar: changes screen, keeps current use case
-document.querySelectorAll('.mock-nav-item').forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentScreen = btn.dataset.screen;
-    updateMock();
-  });
-});
-
-// Object tabs (visual only — scoped to closest screen)
-document.querySelectorAll('.objects-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const toolbar = tab.closest('.objects-toolbar');
-    toolbar.querySelectorAll('.objects-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-  });
-});
-
 // Fetch GitHub star count
 fetch('https://api.github.com/repos/sindre-ai/maskin')
   .then(r => r.json())
@@ -1714,62 +1715,13 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   })
   .catch(() => {});
 
-// Pulse buttons
-document.querySelectorAll('.pulse-btn').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    // "View bet" navigates to bet detail
-    if (btn.textContent.trim() === 'View bet') {
-      e.stopPropagation();
-      document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-      document.getElementById('screen-' + currentUseCase + '-bet-detail').classList.add('active');
-      // Highlight "Objects" in sidebar
-      document.querySelectorAll('.mock-nav-item').forEach(b => b.classList.remove('active'));
-      document.querySelector('.mock-nav-item[data-screen="objects"]').classList.add('active');
-      currentScreen = 'objects';
-      return;
-    }
-    const card = btn.closest('.pulse-card');
-    card.style.opacity = '0.4'; card.style.transform = 'scale(0.98)';
-    card.style.transition = 'all 0.3s';
-    setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'scale(1)'; }, 500);
-  });
-});
-
-// Bet row in objects table
-document.getElementById('objects-bet-row').addEventListener('click', () => {
-  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-product-bet-detail').classList.add('active');
-});
-
-// Growth bet row in objects table
-document.getElementById('objects-bet-row-growth').addEventListener('click', () => {
-  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-growth-bet-detail').classList.add('active');
-});
-
-// Growth bet detail back link
-document.getElementById('bet-detail-back-growth').addEventListener('click', () => {
-  currentScreen = 'objects';
-  updateMock();
-});
-
-// Sales bet row in objects table
-document.getElementById('objects-bet-row-sales').addEventListener('click', () => {
-  document.querySelectorAll('.mock-screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-sales-bet-detail').classList.add('active');
-});
-
-// Sales bet detail back link
-document.getElementById('bet-detail-back-sales').addEventListener('click', () => {
-  currentScreen = 'objects';
-  updateMock();
-});
-
-// Bet detail back link
-document.getElementById('bet-detail-back').addEventListener('click', () => {
-  currentScreen = 'objects';
-  updateMock();
-});
+// Landing log line — confirms the under-bar surface mounted with the expected tiles.
+(() => {
+  const cases = document.querySelectorAll('.cases-section .case');
+  if (cases.length) {
+    console.log('[landing] under-bar rendered: ' + cases.length + ' use-case tile(s)');
+  }
+})();
 </script>
 
 <!-- ===== TWEAKS ===== -->
@@ -1983,5 +1935,396 @@ document.getElementById('bet-detail-back').addEventListener('click', () => {
   body.no-glow .hero::before,
   body.no-glow .mockup-section::before { display: none !important; }
 </style>
+
+<script>
+/* ===== Prompt bar: smart-route text vs URL vs file =====
+   The submit handler dispatches a `maskin:prompt-submit` CustomEvent
+   so T3 (streaming endpoint) and T5 (inline renderer) can wire in
+   without touching this module. */
+(function() {
+  const wrap = document.getElementById('prompt-bar-wrap');
+  if (!wrap) return;
+
+  const form    = document.getElementById('prompt-form');
+  const input   = document.getElementById('prompt-input');
+  const submit  = document.getElementById('prompt-submit');
+  const fileEl  = document.getElementById('prompt-file');
+  const chipFile = document.getElementById('prompt-chip-file');
+  const hint    = document.getElementById('prompt-route-hint');
+  const filePill = document.getElementById('prompt-file-pill');
+  const fileName = document.getElementById('prompt-file-name');
+  const fileClear = document.getElementById('prompt-file-clear');
+
+  // Exposed for manual classifier checks in DevTools.
+  const URL_RE = /^https?:\/\/[^\s]+$/i;
+
+  function classify(text, file) {
+    if (file) return 'file';
+    const trimmed = (text || '').trim();
+    if (!trimmed) return 'empty';
+    // A bare URL on its own routes as URL; URL embedded in prose stays text.
+    if (URL_RE.test(trimmed)) return 'url';
+    return 'text';
+  }
+
+  let attachedFile = null;
+
+  function autosize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 240) + 'px';
+  }
+
+  function updateRouteHint() {
+    const kind = classify(input.value, attachedFile);
+    submit.disabled = (kind === 'empty');
+    if (kind === 'empty') {
+      hint.classList.remove('is-visible');
+      hint.textContent = '';
+      return;
+    }
+    const label = {
+      text: 'Drafting your bet from <b>text</b>',
+      url:  'Reading the <b>URL</b> first',
+      file: 'Reading your <b>file</b> first'
+    }[kind];
+    hint.innerHTML = label;
+    hint.classList.add('is-visible');
+  }
+
+  function setFile(file) {
+    attachedFile = file || null;
+    if (attachedFile) {
+      fileName.textContent = attachedFile.name;
+      filePill.classList.add('is-visible');
+    } else {
+      filePill.classList.remove('is-visible');
+      fileEl.value = '';
+    }
+    updateRouteHint();
+  }
+
+  input.addEventListener('input', () => { autosize(); updateRouteHint(); });
+  fileEl.addEventListener('change', () => setFile(fileEl.files && fileEl.files[0]));
+  chipFile.addEventListener('click', () => fileEl.click());
+  fileClear.addEventListener('click', () => setFile(null));
+
+  // Drag-drop on the whole prompt-bar.
+  let dragDepth = 0;
+  form.addEventListener('dragenter', (e) => {
+    if (!e.dataTransfer || !Array.from(e.dataTransfer.types || []).includes('Files')) return;
+    e.preventDefault();
+    dragDepth++;
+    form.classList.add('is-dragover');
+  });
+  form.addEventListener('dragover', (e) => {
+    if (!e.dataTransfer) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  });
+  form.addEventListener('dragleave', () => {
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) form.classList.remove('is-dragover');
+  });
+  form.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragDepth = 0;
+    form.classList.remove('is-dragover');
+    const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) setFile(file);
+  });
+
+  // Cmd/Ctrl+Enter submits; Enter alone inserts a newline.
+  input.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!submit.disabled) form.requestSubmit();
+    }
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const kind = classify(input.value, attachedFile);
+    if (kind === 'empty') return;
+    const detail = {
+      kind,
+      text: input.value.trim(),
+      file: attachedFile,
+      url: kind === 'url' ? input.value.trim() : null
+    };
+    // Success-path log line — visible during dev, useful for T3/T5 wiring later.
+    console.info('[maskin] prompt-submit', { kind, hasFile: !!attachedFile, len: detail.text.length });
+    form.dispatchEvent(new CustomEvent('maskin:prompt-submit', { detail, bubbles: true }));
+  });
+
+  // Expose the classifier so the routing logic can be checked manually
+  // in DevTools — the brief calls smart-routing reliability the riskiest bit.
+  window.__maskinPromptRoute = { classify };
+
+  // Initial state
+  autosize();
+  updateRouteHint();
+})();
+</script>
+
+<script>
+/* ===== Inline streaming draft renderer (T5) =====
+   Subscribes to T4's `maskin:prompt-submit` CustomEvent, POSTs to T3's public
+   guest endpoint, parses the SSE stream, and renders the Bet Strategist draft
+   live below the hero input.
+
+   Contract (from T3):
+     POST {API_BASE}/api/public/bet-strategist/drafts
+     body: { prompt: string, 1..4000 chars }
+     credentials: include  (signed HttpOnly guest cookie)
+     200 + text/event-stream — named events with JSON payloads:
+       event: draft_started   data: { draftId }
+       event: delta           data: { text }            (many)
+       event: error           data: { message }         (optional, on stream failure)
+       event: done            data: { draftId, isMalformed, failed }
+     429 + { error: { code: 'RATE_LIMITED', message, hint } }  — guest cap hit
+     503 — Anthropic key missing on the server
+
+   The draft is markdown with these exact headings, in order:
+     ## Hypothesis  ## Success  ## Exit criteria  ## First test
+   Missing any of them flips the malformed banner.
+
+   We dispatch `maskin:draft-complete` / `maskin:draft-malformed` / `maskin:draft-error`
+   on the form so T7 (signup CTA) and T8 (analytics) can subscribe without
+   touching this module. */
+(function() {
+  const promptForm = document.getElementById('prompt-form');
+  const promptStream = document.getElementById('draft-stream');
+  if (!promptForm || !promptStream) return;
+
+  const pendingPromptKey = 'maskin_pending_prompt';
+  const signupUrl = (
+    location.hostname === 'localhost' ||
+    location.hostname === '127.0.0.1' ||
+    location.hostname === '::1'
+  )
+    ? 'http://localhost:5173/signup'
+    : 'https://maskin.sindre.ai/signup';
+  const promptToSignupUrl = (prompt) =>
+    signupUrl + '?pending_prompt=' + encodeURIComponent(prompt);
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function(c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function showSaveError() {
+    promptStream.hidden = false;
+    promptStream.className = 'draft-stream is-visible is-error';
+    promptStream.innerHTML =
+      '<div class="draft-stream-header"><span class="draft-stream-dot" aria-hidden="true"></span><span>Prompt not saved</span></div>' +
+      '<div class="draft-stream-body"><p>We could not save your prompt locally. Please try again.</p></div>';
+  }
+
+  document.addEventListener('maskin:prompt-submit', function(e) {
+    if (!e.detail || !e.detail.text) return;
+    try {
+      localStorage.setItem(pendingPromptKey, e.detail.text);
+      console.info('[maskin] prompt saved for signup', { kind: e.detail.kind, len: e.detail.text.length });
+      window.setTimeout(function() {
+        window.location.assign(promptToSignupUrl(e.detail.text));
+      }, 200);
+    } catch (err) {
+      console.error('[maskin] failed to save pending prompt', err);
+      showSaveError();
+    }
+  });
+
+})();
+</script>
+
+<script>
+/* Funnel instrumentation (T8).
+   Listens for the prompt-bar CustomEvents that T4/T5 dispatch, plus a
+   page_view on load and a signup_cta_click on any link that points at the
+   signup path. Each event carries a persistent `anonId` (localStorage) and a
+   per-tab `sessionId` (sessionStorage). Events post in small batches to the
+   public maskin endpoint via `sendBeacon` on visibility/page-hide and via
+   `fetch(keepalive)` for in-page flushes.
+
+   The endpoint just structured-logs each event — see
+   `apps/dev/src/routes/public-landing-events.ts` on the maskin side. The bet's
+   kill metric (% malformed drafts in 48h) is computed server-side from
+   `objects` rows by `apps/dev/src/routes/admin-landing-funnel.ts`; this script
+   only carries the leading and conversion-side events. */
+(function() {
+  var metaEl = document.querySelector('meta[name="maskin-api-base"]');
+  var apiBase = (metaEl && metaEl.getAttribute('content')) || 'https://maskin.sindre.ai';
+  var ENDPOINT = apiBase + '/api/public/landing-events';
+  var SIGNUP_HREF_RE = /\/(docs\/get-started|signup|sign-up|register)(\/|$)/i;
+  var BATCH_MAX = 12;
+  var FLUSH_MS = 2500;
+
+  function uuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      try { return window.crypto.randomUUID(); } catch (e) {}
+    }
+    // RFC 4122 v4-ish fallback. Good enough for an anon id; never used for auth.
+    return 'fid-' + Math.random().toString(36).slice(2, 10) + '-' + Date.now().toString(36);
+  }
+
+  function readStored(storage, key) {
+    try { return storage.getItem(key); } catch (e) { return null; }
+  }
+  function writeStored(storage, key, value) {
+    try { storage.setItem(key, value); } catch (e) {}
+  }
+
+  var anonId = readStored(window.localStorage, 'maskin_anon_id');
+  if (!anonId) {
+    anonId = uuid();
+    writeStored(window.localStorage, 'maskin_anon_id', anonId);
+  }
+  var sessionId = readStored(window.sessionStorage, 'maskin_landing_sid');
+  if (!sessionId) {
+    sessionId = uuid();
+    writeStored(window.sessionStorage, 'maskin_landing_sid', sessionId);
+  }
+
+  var queue = [];
+  var flushTimer = null;
+  var ENABLED = true; // disabled if the endpoint hard-fails so we don't retry forever
+
+  function scheduleFlush() {
+    if (flushTimer || !ENABLED) return;
+    flushTimer = window.setTimeout(function() {
+      flushTimer = null;
+      flushQueue('timer');
+    }, FLUSH_MS);
+  }
+
+  function track(name, props) {
+    if (!ENABLED) return;
+    var ev = {
+      name: String(name),
+      ts: new Date().toISOString(),
+      anonId: anonId,
+      sessionId: sessionId
+    };
+    if (props && typeof props === 'object') ev.props = props;
+    queue.push(ev);
+    if (queue.length >= BATCH_MAX) {
+      flushQueue('full');
+    } else {
+      scheduleFlush();
+    }
+  }
+
+  function flushQueue(reason) {
+    if (queue.length === 0) return;
+    var batch = queue.splice(0, BATCH_MAX);
+    var payload = JSON.stringify({ events: batch });
+    var sent = false;
+
+    // Prefer sendBeacon on unload paths; it survives page transitions.
+    if (reason === 'pagehide' || reason === 'visibilitychange') {
+      try {
+        if (navigator.sendBeacon) {
+          var blob = new Blob([payload], { type: 'application/json' });
+          sent = navigator.sendBeacon(ENDPOINT, blob);
+        }
+      } catch (e) {}
+    }
+
+    if (!sent) {
+      try {
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          credentials: 'omit',
+          keepalive: true
+        }).catch(function(err) {
+          console.warn('[maskin] landing-events flush failed', err);
+        });
+      } catch (err) {
+        // Last-ditch: if even fetch() throws synchronously the endpoint is unreachable.
+        // Disable to avoid hot-looping; the next page load will retry.
+        ENABLED = false;
+        console.warn('[maskin] landing-events disabled after fetch error', err);
+      }
+    }
+  }
+
+  // ── page_view ──────────────────────────────────────────────────────────
+  var referrer = document.referrer || null;
+  track('page_view', {
+    path: window.location.pathname + window.location.search,
+    referrer: referrer,
+    viewportW: window.innerWidth || null,
+    viewportH: window.innerHeight || null
+  });
+
+  // ── funnel events from T4 (submit) and T5 (renderer) ───────────────────
+  document.addEventListener('maskin:prompt-submit', function(e) {
+    var d = (e && e.detail) || {};
+    track('prompt_submit', {
+      kind: d.kind || null,
+      promptChars: d.text ? d.text.length : null
+    });
+  });
+  document.addEventListener('maskin:draft-complete', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_complete', { chars: typeof d.chars === 'number' ? d.chars : null });
+  });
+  document.addEventListener('maskin:draft-malformed', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_malformed', {
+      receivedAnyDelta: !!d.receivedAnyDelta,
+      hasBuffer: !!d.buffer
+    });
+  });
+  document.addEventListener('maskin:draft-error', function(e) {
+    var d = (e && e.detail) || {};
+    track('draft_error', {
+      kind: d.kind || null,
+      status: typeof d.status === 'number' ? d.status : null
+    });
+  });
+
+  // ── signup CTA clicks (delegation) ─────────────────────────────────────
+  document.addEventListener('click', function(e) {
+    var t = e.target;
+    while (t && t !== document) {
+      if (t.tagName === 'A' && t.getAttribute('href')) {
+        var href = t.getAttribute('href');
+        if (SIGNUP_HREF_RE.test(href)) {
+          track('signup_cta_click', {
+            href: href,
+            // Best-effort label: stripped text content of the link, capped.
+            label: (t.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80)
+          });
+          // Force a synchronous flush so the click event survives the navigation.
+          flushQueue('cta_click');
+          return;
+        }
+      }
+      t = t.parentNode;
+    }
+  }, true);
+
+  // ── flush on visibility change / page hide ─────────────────────────────
+  function onVisibility() {
+    if (document.visibilityState === 'hidden') flushQueue('visibilitychange');
+  }
+  document.addEventListener('visibilitychange', onVisibility);
+  window.addEventListener('pagehide', function() { flushQueue('pagehide'); });
+
+  // ── expose for manual checks (mirrors T4 / T5 conventions) ─────────────
+  window.__maskinFunnel = {
+    track: track,
+    flush: function() { flushQueue('manual'); },
+    queueLength: function() { return queue.length; },
+    anonId: anonId,
+    sessionId: sessionId,
+    endpoint: ENDPOINT
+  };
+})();
+</script>
 </body>
 </html>
