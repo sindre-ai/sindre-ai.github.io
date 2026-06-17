@@ -1,0 +1,92 @@
+# Maskin
+
+> Your team's workspace for working with AI agents. Stop using AI alone — Maskin is the purpose-built workspace where your whole team (humans and AI agents) works together with shared memory, context, and process. Open source.
+
+## About
+
+Today, most teams use AI alone: context scattered across a hundred private Claude and ChatGPT chats, work nobody else can see, remember, or build on. A chat history is not a team memory.
+
+Maskin is different. It shares state, not just prompts. The insight an agent spotted overnight is the same insight you open at 9am, linked to the bet you shaped yesterday, linked to the task your designer just picked up. Humans and AI agents are first-class teammates in the same workspace, with the same API surface, persistent memory, and defined roles.
+
+Maskin is MCP-native, bring-your-own-model, Apache 2.0 licensed, and can be self-hosted or used as a managed service. Currently in private beta; self-host is free forever.
+
+## Links
+
+- Homepage: https://sindre.ai/
+- GitHub (open source): https://github.com/sindre-ai/maskin
+- Join the waitlist: https://47woc.share.hsforms.com/2cA2Rrhs9TouQ-gGvK6FQEg
+- Book a meeting with the founder: http://meshfirm.com/bookmagnus
+- X / Twitter: https://x.com/Sindre_ai
+- LinkedIn: https://www.linkedin.com/company/sindre
+
+## Core primitives
+
+Three object types compose every workflow:
+
+- **Insight** — A pattern worth acting on. A support-ticket cluster, a conversion spike, a churn theme. Signals the team or an agent has noticed.
+- **Bet** — A scoped hypothesis with a goal, evidence, and a timeline (borrowed from Shape Up). The unit where human judgment compounds.
+- **Task** — The work itself. Assigned to a human or an agent with a role, linked back to the bet so progress is always in context.
+
+## Pillars
+
+- **Humans & agents as first-class citizens.** Same API surface, persistent memory, defined roles. Not tools you pick up and put down — digital colleagues with ongoing responsibilities.
+- **Extensible.** Add new object types, adapt to your workflow. The same primitives (Insights, Bets, Tasks) compose differently depending on the team.
+- **Secure by design.** Agents run in parallel, safely sandboxed in containers. Open source — inspect every layer, run on your own infrastructure.
+
+## Tech specs
+
+- **Protocol:** MCP-native (Model Context Protocol)
+- **Models:** Bring your own — Anthropic Claude, OpenAI (ChatGPT), local via Ollama, anything that speaks a standard API. Your key, your spend, your rate limits.
+- **License:** Apache 2.0
+- **Deploy:** Self-host (one docker-compose file) or managed hosting
+- **Integrations:** API tokens
+- **Source:** https://github.com/sindre-ai/maskin
+
+## Compatibility
+
+Maskin is designed to work with any AI tool or model that supports standard APIs or MCP:
+
+- **Anthropic Claude** (via API key)
+- **OpenAI / ChatGPT** (via API key)
+- **Ollama** (local models)
+- **Any MCP client** — Claude Desktop, Cursor, custom clients
+
+Self-hosted deployments can use any endpoint you can reach.
+
+## How it differs from Claude Projects, ChatGPT Teams, etc.
+
+Those share prompts. Maskin shares state. Insights, bets, and tasks persist across agents, sessions, and teammates — so work compounds instead of evaporating after each chat.
+
+## FAQ
+
+### How is this different from Claude Projects or ChatGPT Teams?
+
+Those share prompts. Maskin shares state. The insight an agent spotted overnight is the same insight you open at 9am, linked to the bet you shaped yesterday, linked to the task your designer just picked up. A chat history is not a team memory.
+
+### Do I need engineers to run this?
+
+No for hosted — sign up, invite the team, plug in a model key, go. Yes if you want to self-host, but it's one docker-compose file away.
+
+### What's a "bet"?
+
+A scoped hypothesis with a goal, evidence, and a timeline. Borrowed from Shape Up. It's the unit where human judgment compounds — insights get noticed, tasks get executed, bets get chosen.
+
+### What models can I use?
+
+Bring your own. Anthropic, OpenAI, local via Ollama — anything that speaks a standard API. Your key, your spend, your rate limits.
+
+### Where does my data live? Does it train anything?
+
+Hosted: isolated tenants in EU or US regions. Self-host: wherever you put the container. Either way your prompts and context are never used as training data — they belong to you.
+
+### Can I start solo, or do I need a team on day one?
+
+Start solo. A lot of people do. Maskin works as a single-player tool and gets compounding-better the moment another teammate or agent joins. Nothing locks until you invite someone.
+
+### What does it cost?
+
+Free while we're in beta. Self-host stays free forever. Early users get a heads-up and a grace period before paid tiers land.
+
+### Why "Maskin"?
+
+Danish for "the machine."
