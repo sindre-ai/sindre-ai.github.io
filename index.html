@@ -1968,6 +1968,23 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   }
 
   let attachedFile = null;
+  // Fire `maskin:prompt-bar-interacted` at most once per page load so the
+  // leading-indicator ratio `prompt_bar_interacted / pageview` isn't skewed
+  // by every keystroke. The T8 funnel module turns the CustomEvent into a
+  // tracked analytics event.
+  let interactedFired = false;
+  function dispatchInteracted() {
+    if (interactedFired) return;
+    interactedFired = true;
+    const kind = classify(input.value, attachedFile);
+    const detail = {
+      kind: kind === 'empty' ? 'text' : kind,
+      length: attachedFile
+        ? (attachedFile.size || 0)
+        : (input.value || '').length
+    };
+    form.dispatchEvent(new CustomEvent('maskin:prompt-bar-interacted', { detail, bubbles: true }));
+  }
 
   function autosize() {
     input.style.height = 'auto';
@@ -2003,8 +2020,8 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     updateRouteHint();
   }
 
-  input.addEventListener('input', () => { autosize(); updateRouteHint(); });
-  fileEl.addEventListener('change', () => setFile(fileEl.files && fileEl.files[0]));
+  input.addEventListener('input', () => { autosize(); updateRouteHint(); dispatchInteracted(); });
+  fileEl.addEventListener('change', () => { setFile(fileEl.files && fileEl.files[0]); if (fileEl.files && fileEl.files[0]) dispatchInteracted(); });
   chipFile.addEventListener('click', () => fileEl.click());
   fileClear.addEventListener('click', () => setFile(null));
 
@@ -2030,7 +2047,7 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
     dragDepth = 0;
     form.classList.remove('is-dragover');
     const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    if (file) setFile(file);
+    if (file) { setFile(file); dispatchInteracted(); }
   });
 
   // Cmd/Ctrl+Enter submits; Enter alone inserts a newline.
@@ -2261,6 +2278,17 @@ fetch('https://api.github.com/repos/sindre-ai/maskin')
   });
 
   // ── funnel events from T4 (submit) and T5 (renderer) ───────────────────
+  // Leading-indicator event for the bet's `prompt_bar_interacted / pageview`
+  // ratio. T4 dispatches at most once per page load on first meaningful
+  // engagement (keystroke / file attach / drop).
+  document.addEventListener('maskin:prompt-bar-interacted', function(e) {
+    var d = (e && e.detail) || {};
+    track('prompt_bar_interacted', {
+      prompt_type: d.kind || 'text',
+      prompt_length: typeof d.length === 'number' ? d.length : 0,
+      $pathname: window.location.pathname
+    });
+  });
   document.addEventListener('maskin:prompt-submit', function(e) {
     var d = (e && e.detail) || {};
     track('prompt_submit', {
