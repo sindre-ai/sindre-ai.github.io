@@ -212,5 +212,69 @@
   applyTheme(getTheme());
 </script>
 
+<!-- PostHog: docs-entry instrumentation for the TTFMCP funnel. Same project key
+     as the maskin web bundle, so person profiles merge once the visitor hands
+     off into the app and identifies. Key is a public project token. -->
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init me ws ys ps bs capture je Di ks register register_once register_for_session unregister unregister_for_session Ps getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty Es $s createPersonProfile Is opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Ss debug I As getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_tfrEvZMAfNvPzmof6dHMndPEDuLe4wNdPDBTUJA66Zww', {
+  api_host: 'https://eu.i.posthog.com',
+  person_profiles: 'identified_only',
+  autocapture: false,
+  capture_pageview: false,
+});
+
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var entryProps = {
+      $pathname: window.location.pathname,
+      referrer: document.referrer || null,
+      viewport_width: window.innerWidth,
+      viewport_height: window.innerHeight,
+    };
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (k) {
+      var v = params.get(k);
+      if (v) entryProps[k] = v;
+    });
+    posthog.capture('docs_get_started_entered', entryProps);
+    console.log('[docs] docs_get_started_entered captured');
+
+    // Decorate every outbound link to maskin.sindre.ai with the page's anon
+    // distinct_id so the cross-domain identity hop preserves the funnel.
+    // Inherited and aliased by the maskin web at boot.
+    function decorate(a) {
+      try {
+        if (!a || !a.href) return;
+        var u = new URL(a.href, window.location.href);
+        if (u.hostname !== 'maskin.sindre.ai') return;
+        if (u.searchParams.has('ph_distinct_id')) return;
+        var id = typeof posthog.get_distinct_id === 'function' ? posthog.get_distinct_id() : null;
+        if (!id) return;
+        u.searchParams.set('ph_distinct_id', id);
+        a.href = u.toString();
+      } catch (e) { /* never break the page */ }
+    }
+    function decorateAll() {
+      var anchors = document.querySelectorAll('a[href]');
+      for (var i = 0; i < anchors.length; i++) decorate(anchors[i]);
+    }
+    if (typeof posthog.onSessionId === 'function') {
+      posthog.onSessionId(decorateAll);
+    }
+    // Last-mile pass on click — covers cold-cache races and late-added links.
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      while (t && t !== document) {
+        if (t.tagName === 'A' && t.href) { decorate(t); break; }
+        t = t.parentNode;
+      }
+    }, true);
+  } catch (e) {
+    console.error('[docs] PostHog entry instrumentation failed:', e);
+  }
+})();
+</script>
+
 </body>
 </html>
